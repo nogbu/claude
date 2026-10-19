@@ -2,6 +2,7 @@
 """Runs each hook the way the hook runner does and checks every verdict.
 Run: python3 .claude/hooks/test_hooks.py"""
 import json
+import os
 import pathlib
 import subprocess
 import sys
@@ -10,14 +11,14 @@ import tempfile
 HOOKS = pathlib.Path(__file__).parent
 
 
-def run(hook, data):
+def run(hook, data, env=None):
     out = subprocess.run([sys.executable, str(HOOKS / hook)], input=json.dumps(data),
-                         capture_output=True, text=True, check=True).stdout
+                         capture_output=True, text=True, check=True, env=env).stdout
     return json.loads(out) if out else None
 
 
-def reply_refused(text):
-    out = run("reply-check.py", {"tool_input": {"text": text}})
+def reply_refused(text, transcript=None):
+    out = run("reply-check.py", {"tool_input": {"text": text}, "transcript_path": transcript})
     return bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
 
 
@@ -85,7 +86,48 @@ REPLIES = [
     ("Still open:", True),
     ("Saved. Nothing else is needed.", False),
     ("", False),
+    # Numbers with units need a source
+    ("TPS One: use 5 ml per gallon.", True),
+    ("TPS One: use 5 ml per gallon (unverified).", False),
+    ("TPS One: use 5 ml per gallon ([label](https://example.com/tps)).", False),
+    ("Waiting on the model took 12 min, source: usage report.", False),
+    ("Keep it at 65°F.", True),
+    ("98% of it came from the cache.", True),
+    ("You said \"5 ml\" earlier.", False),
+    ("Pick 2 to 4 options, 1 in 5 threads.", False),
 ]
+
+# Citing a file:line needs that file opened since Nwani's last message
+OPENED = record(("nwani", "what's the dose"))
+with open(OPENED, "a") as f:
+    f.write("\n" + json.dumps({"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "id": "t1", "name": "Read", "input": {"file_path": "/repo/learnings.md"}}]}}))
+CITES = [
+    ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED, False),
+    ("TPS One: 5 ml per gallon (projects/plantagram/learnings.md:3).", OPENED, False),
+    ("The rule is at CLAUDE.md:7.", OPENED, True),
+    ("TPS One: 5 ml per gallon (learnings.md:3).",
+     record(("nwani", "earlier"), ("reply", "x"), ("nwani", "now")), True),
+]
+
+# The lookup, run against a small set of rules and learnings
+ROOT = pathlib.Path(tempfile.mkdtemp())
+(ROOT / "CLAUDE.md").write_text("# Rules\n\n- Ask every question on a decision card.\n")
+(ROOT / "projects" / "plantagram").mkdir(parents=True)
+(ROOT / "projects" / "plantagram" / "learnings.md").write_text(
+    "# Learnings\n\n- TPS One dosage: 5 ml per gallon (source: label, confirmed 2026-10-19)\n")
+LOOKUPS = [
+    ("what's the dosage for tps one", "TPS One dosage"),
+    ("Is there a rule about questions in replies", "decision card"),
+    ("thanks", None),
+]
+
+
+def looked_up(message):
+    env = dict(os.environ, CLAUDE_PROJECT_DIR=str(ROOT))
+    out = run("lookup.py", {"prompt": '<wake><message trigger="true">%s</message></wake>' % message}, env)
+    return out["hookSpecificOutput"]["additionalContext"] if out else None
+
 
 CARDS = [("", False), ("   ", False), ("Still open after this: the usage script.", True)]
 
@@ -112,6 +154,13 @@ failures = []
 for text, want in REPLIES:
     if reply_refused(text) != want:
         failures.append("reply-check, expected %s: %r" % ("refused" if want else "allowed", text))
+for text, transcript, want in CITES:
+    if reply_refused(text, transcript) != want:
+        failures.append("reply-check citation, expected %s: %r" % ("refused" if want else "allowed", text))
+for message, want in LOOKUPS:
+    got = looked_up(message)
+    if (want is None and got) or (want and (not got or want not in got)):
+        failures.append("lookup, expected %r for %r, got %r" % (want, message, got))
 for context, want in CARDS:
     if card_refused(context) != want:
         failures.append("card-check, expected %s: %r" % ("refused" if want else "allowed", context))
@@ -120,7 +169,7 @@ for name, path, want in TURNS:
         failures.append("open-cards, expected %s: %s" % ("stopped" if want else "allowed", name))
 if stopped(TURNS[2][1], again=True):
     failures.append("open-cards, expected allowed: second stop in a row")
-total = len(REPLIES) + len(CARDS) + len(TURNS) + 1
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(CARDS) + len(TURNS) + 1
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))

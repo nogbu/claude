@@ -20,3 +20,9 @@ Nwani should be able to do everything by mouse.
 ## Lists are bulleted
 
 A list of three or more things goes one item per line as bullets, never strung together in a sentence. A hook refuses a reply with a semicolon, or with a "Still open:" line that isn't followed by bullets.
+
+## Check before answering
+
+- Settled facts go in learnings files, one per line, with where each came from and when it was confirmed: `learnings.md` for facts every project shares, `projects/[name]/learnings.md` for one project's.
+- A hook searches the rules and learnings files for the words in each of Nwani's messages and shows the matching lines before Claude answers. Check them before answering.
+- A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.

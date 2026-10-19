@@ -85,6 +85,24 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 ---
 
+## Facts Claude can rely on (learnings)
+
+**What it's for:** making sure Claude answers from checked facts instead of guessing, like a fertilizer's dosage or whether a rule exists.
+
+**How you use it:**
+- When a fact is settled, ask Claude to add it to the learnings. Each project has its own learnings file, and there's one shared file for facts every project uses.
+- Each line holds one fact, where it came from, and when it was confirmed.
+
+**What you'll see:**
+- Any number with a unit, like a dosage, size, time or temperature, comes with its source: a learnings line, a link, or the word "unverified".
+- If Claude says "unverified", treat it as a guess.
+
+**When it goes wrong:** if Claude gets a fact wrong that's in the learnings, say so. The lookup should have shown it. The likely cause is that the fact uses different words than your message. Adding the word you used to that line fixes it.
+
+**What's behind it:** every time you send a message, a check searches the rules and learnings for the words in it and shows Claude the matching lines before it answers. A second check stops any reply with a number and unit but no source. It also stops a reply that points to a file Claude didn't actually open.
+
+---
+
 ## Automatic checks (hooks)
 
 **What they're for:** catching mistakes that can be spotted with a simple test, so they don't depend on Claude remembering a rule.
@@ -96,7 +114,8 @@ How to use the systems we've built for working with Claude. Each section covers 
 **Checks in place:**
 | Check | What it stops |
 |---|---|
-| Reply check | Replies that ask you a question in text, use semicolons, or have a "Still open:" line without bullets |
+| Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
+| Reply check | Replies that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Open-cards check | Turns that end without bringing back an unanswered card |
 
