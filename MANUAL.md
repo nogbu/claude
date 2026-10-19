@@ -27,6 +27,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 - You can always type instead, with details: "yes but don't save it" or "no, change x to y". Claude does exactly what you write, nothing more.
 - If Claude needs something only you can describe, it says **Typed answer:** before the question, so you know a click won't do.
 - Files come as attachments and links you can click.
+- Everything you need to decide is in the message just above the card. The card itself only has the question and the buttons.
 
 **What you'll see:** questions on cards, not buried in paragraphs.
 
@@ -34,7 +35,36 @@ How to use the systems we've built for working with Claude. Each section covers 
 - If Claude asks a question in plain text, the system should have stopped it. Say so, and Claude will check why the safety check didn't catch it.
 - Known gap: a question inside quotation marks can slip through.
 
-**What's behind it:** a written rule tells Claude to use cards. An automatic check (a hook) reads every reply before it's sent and stops any reply with a question mark in it.
+**What's behind it:** a written rule tells Claude to use cards. An automatic check (a hook) reads every reply before it's sent and stops any reply with a question mark in it. Another check stops any card with text in its context box, because the app often doesn't show that box.
+
+---
+
+## Going off on tangents (open questions)
+
+**What it's for:** letting you follow any tangent without losing track of the questions you haven't answered yet.
+
+**How you use it:**
+- Ignore a card whenever you like and ask or say something else. Claude follows you.
+- Once the tangent is settled, Claude brings back the newest unanswered question on a fresh card. When you answer it, Claude brings back the next newest, and so on until nothing is left.
+- To get rid of a question, answer it, or say to drop it.
+
+**What you'll see:** the message just above each card ends with a **Still open:** list of everything else waiting, newest first.
+
+**When it goes wrong:** if a turn ends without bringing back an open question, say so. The check below should have caught it.
+
+**What's behind it:** at the end of every turn, a check reads the thread's own record of cards. If any card is still unanswered and the turn didn't end on a card, Claude is stopped and told which one to bring back. It only stops a turn once, so it can't get stuck in a loop.
+
+---
+
+## How Claude writes lists
+
+**What it's for:** lists that are easy to scan.
+
+**What you'll see:** any list of three or more things is a bulleted list, one item per line, never strung together in a sentence.
+
+**When it goes wrong:** a list written with commas can still slip through. Point it out.
+
+**What's behind it:** a written rule, plus a check that stops any reply with a semicolon (the usual way Claude strings items together) or a "Still open:" line without bullets under it.
 
 ---
 
@@ -66,7 +96,9 @@ How to use the systems we've built for working with Claude. Each section covers 
 **Checks in place:**
 | Check | What it stops |
 |---|---|
-| Question check | Replies that ask you a question in text instead of on a card |
+| Reply check | Replies that ask you a question in text, use semicolons, or have a "Still open:" line without bullets |
+| Card check | Cards with text in the context box |
+| Open-cards check | Turns that end without bringing back an unanswered card |
 
 **When it goes wrong:** hooks only work when the `nogbu/claude` repo is the only repo in a project. If it's not, they silently don't run.
 

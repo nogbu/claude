@@ -8,3 +8,15 @@ Nwani should be able to do everything by mouse.
 - A question only Nwani's own words can answer goes on its own line in a reply, starting "Typed answer:".
 - Files and links go out as attachments or links that open on click, never as paths or text to copy.
 - Never ask Nwani to paste a prompt or type a command; do it or link to it.
+- Never fill in a card's context; anything Nwani needs goes in the reply just before the card. A hook refuses a card with context filled in.
+
+## Open questions, newest first
+
+- Every question Claude asks stays open until Nwani answers it or says to drop it.
+- When Nwani goes off on a tangent, follow it. Once the tangent is settled, re-ask the newest open question on a fresh card, then the next newest, until none are left.
+- The reply just before each card ends with a "Still open:" line listing the rest of the queue, newest first.
+- A hook stops Claude from ending a turn without a card while any card is still open.
+
+## Lists are bulleted
+
+A list of three or more things goes one item per line as bullets, never strung together in a sentence. A hook refuses a reply with a semicolon, or with a "Still open:" line that isn't followed by bullets.

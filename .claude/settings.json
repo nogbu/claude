@@ -6,7 +6,28 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/question-check.py",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/reply-check.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__hearthbot__ask_decision",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/card-check.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/open-cards.py",
             "timeout": 10
           }
         ]
