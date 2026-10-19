@@ -103,6 +103,18 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 ---
 
+## Helpers and skills
+
+**What it's for:** letting you decide how much horsepower each predefined task gets.
+
+**How you use it:** when Claude sets up a reusable helper or skill (like the audit), it asks you on a card which model and effort level the task should use, with its recommendation. Pick one.
+
+**Good to know:** the task runs at its own level, so your thread's level doesn't change and nothing has to be switched back.
+
+**What's behind it:** a written rule, plus a check that refuses to save a helper or skill file that doesn't name both.
+
+---
+
 ## Automatic checks (hooks)
 
 **What they're for:** catching mistakes that can be spotted with a simple test, so they don't depend on Claude remembering a rule.
@@ -117,6 +129,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
 | Reply check | Replies that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
+| Helper check | Saving a helper or skill that doesn't name its model and effort level |
 | Open-cards check | Turns that end without bringing back an unanswered card |
 
 **When it goes wrong:** hooks only work when the `nogbu/claude` repo is the only repo in a project. If it's not, they silently don't run.

@@ -26,3 +26,9 @@ A list of three or more things goes one item per line as bullets, never strung t
 - Settled facts go in learnings files, one per line, with where each came from and when it was confirmed: `learnings.md` for facts every project shares, `projects/[name]/learnings.md` for one project's.
 - A hook searches the rules and learnings files for the words in each of Nwani's messages and shows the matching lines before Claude answers. Check them before answering.
 - A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
+
+
+## Helpers and skills
+
+- Before creating a predefined helper or skill, ask Nwani on a card which model and effort level it should use, with a recommendation and the reason.
+- The model and effort level Nwani picks are written in the settings block at the top of the helper's or skill's file. A hook refuses to save the file if either is missing.

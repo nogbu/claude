@@ -129,6 +129,25 @@ def looked_up(message):
     return out["hookSpecificOutput"]["additionalContext"] if out else None
 
 
+GOOD = "---\nname: audit\nmodel: sonnet\neffort: medium\n---\nDo the audit.\n"
+HELPERS = [
+    ({"file_path": "/r/.claude/agents/audit.md", "content": GOOD}, False),
+    ({"file_path": "/r/.claude/agents/audit.md", "content": GOOD.replace("effort: medium\n", "")}, True),
+    ({"file_path": "/r/.claude/skills/audit/SKILL.md", "content": "---\nname: audit\n---\nDo it.\n"}, True),
+    ({"file_path": "/r/.claude/skills/audit/SKILL.md", "content": "No header at all.\n"}, True),
+    ({"file_path": "/r/CLAUDE.md", "content": "No header needed here.\n"}, False),
+]
+
+
+def helper_refused(args, tool="Write"):
+    out = run("helper-check.py", {"tool_name": tool, "tool_input": args})
+    return bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+
+
+EDITED = pathlib.Path(tempfile.mkdtemp()) / ".claude" / "agents" / "audit.md"
+EDITED.parent.mkdir(parents=True)
+EDITED.write_text(GOOD)
+
 CARDS = [("", False), ("   ", False), ("Still open after this: the usage script.", True)]
 
 TURNS = [
@@ -161,6 +180,13 @@ for message, want in LOOKUPS:
     got = looked_up(message)
     if (want is None and got) or (want and (not got or want not in got)):
         failures.append("lookup, expected %r for %r, got %r" % (want, message, got))
+for args, want in HELPERS:
+    if helper_refused(args) != want:
+        failures.append("helper-check, expected %s: %r" % ("refused" if want else "allowed", args["file_path"]))
+if not helper_refused({"file_path": str(EDITED), "old_string": "model: sonnet\n", "new_string": ""}, "Edit"):
+    failures.append("helper-check, expected refused: an edit that removes the model")
+if helper_refused({"file_path": str(EDITED), "old_string": "Do the audit.", "new_string": "Do it."}, "Edit"):
+    failures.append("helper-check, expected allowed: an edit that keeps both")
 for context, want in CARDS:
     if card_refused(context) != want:
         failures.append("card-check, expected %s: %r" % ("refused" if want else "allowed", context))
@@ -169,7 +195,7 @@ for name, path, want in TURNS:
         failures.append("open-cards, expected %s: %s" % ("stopped" if want else "allowed", name))
 if stopped(TURNS[2][1], again=True):
     failures.append("open-cards, expected allowed: second stop in a row")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(CARDS) + len(TURNS) + 1
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + 1
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
