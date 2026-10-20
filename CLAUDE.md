@@ -27,6 +27,12 @@ A list of three or more things goes one item per line as bullets, never strung t
 - A hook searches the rules and learnings files for the words in each of Nwani's messages and shows the matching lines before Claude answers. Check them before answering.
 - A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
 
+## Optimize
+
+- Maximize speed and minimize usage, but only if it doesn't hurt accuracy or quality.
+- Every speed or usage recommendation cites numbers from `scripts/usage.py`, and the same numbers again after the change, to show whether it helped.
+- An audit goes through every item in `checklists/optimization.md` and marks each one applies, doesn't apply or already done, with the reason.
+- A change that cuts what Claude reads or checks says what it could miss. If it could miss anything that matters, it isn't recommended.
 
 ## Helpers and skills
 

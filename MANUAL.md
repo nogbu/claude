@@ -103,6 +103,24 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 ---
 
+## Speed and usage (optimization)
+
+**What it's for:** keeping Claude fast and cheap without making answers worse.
+
+**How you use it:**
+- Ask for a usage report on any thread to see how long it took and how much it used.
+- Ask for an audit any time. Claude goes through the optimization checklist item by item and brings you its best findings on cards.
+
+**What you'll see:**
+- Every speed or cost recommendation comes with real numbers from the usage report, and the same numbers again after the change so you can see whether it helped.
+- Any change that would make Claude read or check less says what it could miss. If it could miss anything important, Claude doesn't recommend it.
+
+**When it goes wrong:** if a recommendation has no numbers, or an obvious idea is missing, say so. The fix is to add the missing idea to the checklist so every later audit checks it.
+
+**What's behind it:** a usage script reads the thread's own record. The checklist was written from Anthropic's documentation, so you don't have to know how Claude works inside to get good recommendations.
+
+---
+
 ## Helpers and skills
 
 **What it's for:** letting you decide how much horsepower each predefined task gets.
@@ -141,6 +159,5 @@ How to use the systems we've built for working with Claude. Each section covers 
 These are planned but not built. Each gets its own section here once it exists.
 - **Save check:** an automatic check that rules can only change after you click Save.
 - **Manual check:** an automatic check that refuses a rule or hook change unless this manual is updated too.
-- **Usage report:** shows how long a thread took and how much it used, so speed and cost recommendations come with real numbers.
-- **Weekly audit:** Claude reviews its own setup against a fixed checklist and brings you its top three improvements on cards.
+- **Weekly audit:** an audit that runs on its own every week and brings you its top three findings on cards.
 - **Project folders:** each project (plantagram, 3dp and others) gets its own rules, separate from the shared ones.
