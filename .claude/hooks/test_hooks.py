@@ -169,6 +169,45 @@ TURNS = [
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer"), ("refused card", "Other")), True),
 ]
 
+def reviewed(*events):
+    """A thread record for review-check: "nwani" starts a turn, "review" or "background review" runs the
+    reviewer, "failed review" runs it and errors, "other helper" runs a different helper."""
+    lines = []
+    for n, kind in enumerate(events):
+        if kind == "nwani":
+            lines.append({"type": "user", "message": {"content": "a question"}})
+            continue
+        args = {"subagent_type": "Explore" if kind == "other helper" else "reviewer",
+                "prompt": "draft", "run_in_background": kind == "background review"}
+        lines.append({"type": "assistant", "message": {"content": [
+            {"type": "tool_use", "id": "toolu_%d" % n, "name": "Agent", "input": args}]}})
+        lines.append({"type": "user", "message": {"content": [
+            {"type": "tool_result", "tool_use_id": "toolu_%d" % n, "is_error": kind == "failed review",
+             "content": "Verdict: PASS"}]}})
+    f = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
+    f.write("\n".join(json.dumps(l) for l in lines))
+    f.close()
+    return f.name
+
+
+LONG = " ".join(["word"] * 41)
+REVIEWS = [
+    ("short reply, no review", "Saving now.", reviewed("nwani"), False),
+    ("40 words, no review", " ".join(["word"] * 40), reviewed("nwani"), False),
+    ("long reply, no review", LONG, reviewed("nwani"), True),
+    ("long reply, reviewed this turn", LONG, reviewed("nwani", "review"), False),
+    ("long reply, reviewed last turn only", LONG, reviewed("nwani", "review", "nwani"), True),
+    ("long reply, review ran in the background", LONG, reviewed("nwani", "background review"), True),
+    ("long reply, review failed", LONG, reviewed("nwani", "failed review"), True),
+    ("long reply, a different helper ran", LONG, reviewed("nwani", "other helper"), True),
+]
+
+
+def review_refused(text, transcript):
+    out = run("review-check.py", {"tool_input": {"text": text}, "transcript_path": transcript})
+    return bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+
+
 failures = []
 for text, want in REPLIES:
     if reply_refused(text) != want:
@@ -193,9 +232,12 @@ for context, want in CARDS:
 for name, path, want in TURNS:
     if stopped(path) != want:
         failures.append("open-cards, expected %s: %s" % ("stopped" if want else "allowed", name))
+for name, text, path, want in REVIEWS:
+    if review_refused(text, path) != want:
+        failures.append("review-check, expected %s: %s" % ("refused" if want else "allowed", name))
 if stopped(TURNS[2][1], again=True):
     failures.append("open-cards, expected allowed: second stop in a row")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + 1
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 1
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))

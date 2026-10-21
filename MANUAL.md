@@ -103,6 +103,22 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 ---
 
+## Reviewed answers
+
+**What it's for:** catching the simple wrong deductions you shouldn't have to look for, like ranking a full team against half-drafted ones, before you see them.
+
+**How you use it:** nothing to do. When you catch a mistake that got through anyway, say so. Claude adds that kind of mistake to the review checklist, so every later answer is checked for it.
+
+**What you'll see:**
+- Answers that say plainly when the data can't support what you asked, instead of answering anyway.
+- Longer answers take a little more time, because a second Claude checks them first.
+
+**When it goes wrong:** the reviewer is also Claude, so it can miss things. Each miss you report becomes a checklist line, so the same kind of miss gets caught next time.
+
+**What's behind it:** a separate helper (Opus, high effort) gets your message, the conversation and Claude's draft. Its only job is to find what's wrong: whether the draft reaches your actual goal, what it assumed without checking, what's missing, and anything on the review checklist. A check refuses any reply longer than 40 words unless the reviewer ran first. Short replies like "Saving now" skip it.
+
+---
+
 ## Speed and usage (optimization)
 
 **What it's for:** keeping Claude fast and cheap without making answers worse.
@@ -149,6 +165,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
 | Open-cards check | Turns that end without bringing back an unanswered card |
+| Review check | Replies longer than 40 words that the reviewer didn't check first |
 
 **When it goes wrong:** hooks only work when the `nogbu/claude` repo is the only repo in a project. If it's not, they silently don't run.
 
