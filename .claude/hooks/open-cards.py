@@ -45,6 +45,8 @@ def read_record(path):
                         calls[block.get("id")] = (name, args.get("question", ""))
                     elif name == CLOSE and args.get("message_id"):
                         closed.add(args["message_id"])
+            elif entry.get("type") == "user" and entry.get("isMeta"):
+                continue  # harness notes, like a helper's report, aren't Nwani's messages
             elif entry.get("type") == "user":
                 if isinstance(content, str):
                     closed.update(ANSWERED.findall(content))

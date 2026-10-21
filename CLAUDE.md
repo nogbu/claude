@@ -29,7 +29,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 
 ## Review before answering
 
-- Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer ran in the foreground since Nwani's last message.
+- Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer's report has come back since Nwani's last message.
 - When Nwani catches a mistake the reviewer missed, add its kind to `checklists/review.md`, not the single example.
 
 ## Optimize

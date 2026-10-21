@@ -36,6 +36,9 @@ def record(*events):
         if kind == "nwani":
             lines.append({"type": "user", "message": {"content": value}})
             continue
+        if kind == "note":
+            lines.append({"type": "user", "isMeta": True, "message": {"content": value}})
+            continue
         name = {"card": "mcp__hearthbot__ask_decision", "reply": "mcp__hearthbot__reply",
                 "withdraw": "mcp__hearthbot__close_decision", "refused card": "mcp__hearthbot__ask_decision"}[kind]
         args = {"message_id": value} if kind == "withdraw" else {"question": value} if "card" in kind else {"text": value}
@@ -102,7 +105,14 @@ OPENED = record(("nwani", "what's the dose"))
 with open(OPENED, "a") as f:
     f.write("\n" + json.dumps({"type": "assistant", "message": {"content": [
         {"type": "tool_use", "id": "t1", "name": "Read", "input": {"file_path": "/repo/learnings.md"}}]}}))
+OPENED_THEN_NOTE = record(("nwani", "what's the dose"))
+with open(OPENED_THEN_NOTE, "a") as f:
+    f.write("\n" + json.dumps({"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "id": "t1", "name": "Read", "input": {"file_path": "/repo/learnings.md"}}]}}))
+    f.write("\n" + json.dumps({"type": "user", "isMeta": True, "message": {"content": "a helper's report"}}))
+
 CITES = [
+    ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED_THEN_NOTE, False),
     ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED, False),
     ("TPS One: 5 ml per gallon (projects/plantagram/learnings.md:3).", OPENED, False),
     ("The rule is at CLAUDE.md:7.", OPENED, True),
@@ -163,6 +173,8 @@ TURNS = [
     ("card withdrawn", record(("card", "Save it"), ("nwani", "drop it"), ("withdraw", "cmsg_Saveit"),
                               ("reply", "Dropped.")), False),
     ("open card, turn posted nothing", record(("card", "Save it"), ("nwani", "thanks")), False),
+    ("a helper's report mid-turn doesn't reset the turn",
+     record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer"), ("note", "report")), True),
     ("refused card doesn't count as posted",
      record(("nwani", "hi"), ("reply", "here"), ("refused card", "Save it")), False),
     ("refused card doesn't count as ending on a card",
@@ -170,20 +182,26 @@ TURNS = [
 ]
 
 def reviewed(*events):
-    """A thread record for review-check: "nwani" starts a turn, "review" or "background review" runs the
-    reviewer, "failed review" runs it and errors, "other helper" runs a different helper."""
+    """A thread record for review-check: "nwani" starts a turn, "review" runs the reviewer and gets its
+    report, "background review" only launches it, "report back" is the launched reviewer's report
+    arriving, "failed review" errors, "other helper" runs a different helper."""
     lines = []
     for n, kind in enumerate(events):
         if kind == "nwani":
-            lines.append({"type": "user", "message": {"content": "a question"}})
+            lines.append({"type": "user", "message": {"content": "<wake>a question</wake>"}})
             continue
-        args = {"subagent_type": "Explore" if kind == "other helper" else "reviewer",
-                "prompt": "draft", "run_in_background": kind == "background review"}
+        if kind in ("report back", "named report back"):
+            sender = {"from": "review-1", "senderTaskId": "a1"} if kind.startswith("named") else {"from": "a1"}
+            lines.append({"type": "user", "isMeta": True, "origin": dict(handback=True, **sender),
+                          "message": {"content": "Another Claude session sent a message"}})
+            continue
+        args = {"subagent_type": "Explore" if kind == "other helper" else "reviewer", "prompt": "draft"}
+        text = "Async agent launched successfully.\nagentId: a1" if kind == "background review" else "Verdict: PASS"
         lines.append({"type": "assistant", "message": {"content": [
             {"type": "tool_use", "id": "toolu_%d" % n, "name": "Agent", "input": args}]}})
         lines.append({"type": "user", "message": {"content": [
             {"type": "tool_result", "tool_use_id": "toolu_%d" % n, "is_error": kind == "failed review",
-             "content": "Verdict: PASS"}]}})
+             "content": [{"type": "text", "text": text}]}]}})
     f = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
     f.write("\n".join(json.dumps(l) for l in lines))
     f.close()
@@ -197,7 +215,12 @@ REVIEWS = [
     ("long reply, no review", LONG, reviewed("nwani"), True),
     ("long reply, reviewed this turn", LONG, reviewed("nwani", "review"), False),
     ("long reply, reviewed last turn only", LONG, reviewed("nwani", "review", "nwani"), True),
-    ("long reply, review ran in the background", LONG, reviewed("nwani", "background review"), True),
+    ("long reply, background review not back yet", LONG, reviewed("nwani", "background review"), True),
+    ("long reply, background review came back", LONG, reviewed("nwani", "background review", "report back"), False),
+    ("long reply, named background review came back", LONG,
+     reviewed("nwani", "background review", "named report back"), False),
+    ("long reply, a report back from an earlier turn", LONG,
+     reviewed("nwani", "background review", "nwani", "report back"), True),
     ("long reply, review failed", LONG, reviewed("nwani", "failed review"), True),
     ("long reply, a different helper ran", LONG, reviewed("nwani", "other helper"), True),
 ]
