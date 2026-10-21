@@ -40,7 +40,8 @@ def record(*events):
             lines.append({"type": "user", "isMeta": True, "message": {"content": value}})
             continue
         name = {"card": "mcp__hearthbot__ask_decision", "reply": "mcp__hearthbot__reply",
-                "withdraw": "mcp__hearthbot__close_decision", "refused card": "mcp__hearthbot__ask_decision"}[kind]
+                "withdraw": "mcp__hearthbot__close_decision", "refused card": "mcp__hearthbot__ask_decision",
+                "new card": "mcp__hearthbot__request_decision", "new reply": "mcp__hearthbot__post_message"}[kind]
         args = {"message_id": value} if kind == "withdraw" else {"question": value} if "card" in kind else {"text": value}
         lines.append({"type": "assistant", "message": {"content": [
             {"type": "tool_use", "id": tid, "name": name, "input": args}]}})
@@ -126,6 +127,13 @@ ROOT = pathlib.Path(tempfile.mkdtemp())
 (ROOT / "projects" / "plantagram").mkdir(parents=True)
 (ROOT / "projects" / "plantagram" / "learnings.md").write_text(
     "# Learnings\n\n- TPS One dosage: 5 ml per gallon (source: label, confirmed 2026-10-19)\n")
+SEVERAL = pathlib.Path(tempfile.mkdtemp())
+(SEVERAL / "claude").mkdir()
+(SEVERAL / "claude" / "CLAUDE.md").write_text("# Rules\n\n- Ask every question on a decision card.\n")
+(SEVERAL / "claude" / "learnings.md").write_text("# Learnings\n\n- Pothos light: bright indirect (source: tag)\n")
+(SEVERAL / "notes").mkdir()
+(SEVERAL / "notes" / "learnings.md").write_text("- Pothos water: weekly (source: none)\n")
+
 LOOKUPS = [
     ("what's the dosage for tps one", "TPS One dosage"),
     ("Is there a rule about questions in replies", "decision card"),
@@ -133,8 +141,8 @@ LOOKUPS = [
 ]
 
 
-def looked_up(message):
-    env = dict(os.environ, CLAUDE_PROJECT_DIR=str(ROOT))
+def looked_up(message, root=ROOT):
+    env = dict(os.environ, CLAUDE_PROJECT_DIR=str(root))
     out = run("lookup.py", {"prompt": '<wake><message trigger="true">%s</message></wake>' % message}, env)
     return out["hookSpecificOutput"]["additionalContext"] if out else None
 
@@ -175,6 +183,10 @@ TURNS = [
     ("open card, turn posted nothing", record(("card", "Save it"), ("nwani", "thanks")), False),
     ("a helper's report mid-turn doesn't reset the turn",
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer"), ("note", "report")), True),
+    ("newer tool names: open card, turn ends on a reply",
+     record(("new card", "Save it"), ("nwani", "a question"), ("new reply", "an answer")), True),
+    ("newer tool names: turn ends on a card",
+     record(("nwani", "hi"), ("new reply", "here"), ("new card", "Save it")), False),
     ("refused card doesn't count as posted",
      record(("nwani", "hi"), ("reply", "here"), ("refused card", "Save it")), False),
     ("refused card doesn't count as ending on a card",
@@ -195,7 +207,8 @@ def reviewed(*events):
             lines.append({"type": "user", "isMeta": True, "origin": dict(handback=True, **sender),
                           "message": {"content": "Another Claude session sent a message"}})
             continue
-        args = {"subagent_type": "Explore" if kind == "other helper" else "reviewer", "prompt": "draft"}
+        kind_name = {"other helper": "Explore", "plugin review": "house-rules:reviewer"}.get(kind, "reviewer")
+        args = {"subagent_type": kind_name, "prompt": "draft"}
         text = "Async agent launched successfully.\nagentId: a1" if kind == "background review" else "Verdict: PASS"
         lines.append({"type": "assistant", "message": {"content": [
             {"type": "tool_use", "id": "toolu_%d" % n, "name": "Agent", "input": args}]}})
@@ -223,6 +236,7 @@ REVIEWS = [
      reviewed("nwani", "background review", "nwani", "report back"), True),
     ("long reply, review failed", LONG, reviewed("nwani", "failed review"), True),
     ("long reply, a different helper ran", LONG, reviewed("nwani", "other helper"), True),
+    ("long reply, reviewed by the plugin's helper", LONG, reviewed("nwani", "plugin review"), False),
 ]
 
 
@@ -238,6 +252,9 @@ for text, want in REPLIES:
 for text, transcript, want in CITES:
     if reply_refused(text, transcript) != want:
         failures.append("reply-check citation, expected %s: %r" % ("refused" if want else "allowed", text))
+got = looked_up("how much light does pothos need", SEVERAL)
+if not got or "claude/learnings.md:3" not in got or "Pothos water" in got:
+    failures.append("lookup, expected only the repo's line when the thread starts above its repos, got %r" % got)
 for message, want in LOOKUPS:
     got = looked_up(message)
     if (want is None and got) or (want and (not got or want not in got)):
@@ -260,7 +277,7 @@ for name, text, path, want in REVIEWS:
         failures.append("review-check, expected %s: %s" % ("refused" if want else "allowed", name))
 if stopped(TURNS[2][1], again=True):
     failures.append("open-cards, expected allowed: second stop in a row")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 1
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))

@@ -9,9 +9,10 @@ import json
 import re
 import sys
 
-ASK = "mcp__hearthbot__ask_decision"
+# Older threads name the tools reply and ask_decision, newer ones post_message and request_decision.
+ASK = {"mcp__hearthbot__ask_decision", "mcp__hearthbot__request_decision"}
 CLOSE = "mcp__hearthbot__close_decision"
-REPLY = "mcp__hearthbot__reply"
+REPLY = {"mcp__hearthbot__reply", "mcp__hearthbot__post_message"}
 CARD_ID = re.compile(r'"message_id"\s*:\s*"(cmsg_\w+)"')
 ANSWERED = re.compile(r"decision_id=(cmsg_\w+)")
 
@@ -41,7 +42,7 @@ def read_record(path):
                     if block.get("type") != "tool_use":
                         continue
                     name, args = block.get("name"), block.get("input") or {}
-                    if name in (ASK, REPLY):
+                    if name in ASK | REPLY:
                         calls[block.get("id")] = (name, args.get("question", ""))
                     elif name == CLOSE and args.get("message_id"):
                         closed.add(args["message_id"])
@@ -60,10 +61,10 @@ def read_record(path):
                             and not block.get("is_error"):
                         name, question = calls[block["tool_use_id"]]
                         found = CARD_ID.search(result_text(block))
-                        if name == ASK and found:
+                        if name in ASK and found:
                             posted[found.group(1)] = question
                             turn.append("card")
-                        elif name == REPLY:
+                        elif name in REPLY:
                             turn.append("reply")
     return [q for card, q in posted.items() if card not in closed], turn
 

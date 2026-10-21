@@ -17,7 +17,7 @@ Answer each of these:
 3. **Missing pieces.** What information is missing or incomplete, and does that change the answer? If it does, the draft must say so plainly, or not give the answer at all.
 4. **Confidence.** Is anything stated more confidently than the evidence supports?
 5. **The obvious problem.** Would a sharp person reading this spot something wrong right away? Look for it.
-6. **Known mistakes.** Go through every item in `checklists/review.md` and check the draft against each one.
+6. **Known mistakes.** Go through every item in `checklists/review.md` and check the draft against each one. It's in the nogbu/claude repo folder, which is either this thread's working folder or the `claude` folder inside it. If you can't find it, say so at the top of your report.
 
 Reply in this form:
 

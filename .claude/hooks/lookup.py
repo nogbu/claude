@@ -31,14 +31,21 @@ def words(text):
             if len(w) >= 3 and w not in STOP}
 
 
-def matches(root, text):
+def folders(start):
+    """The folder the thread started in, plus each repo right under it, since a project with
+    several repos starts in the folder above them."""
+    return [start] + sorted(p for p in start.iterdir() if p.is_dir() and (p / "CLAUDE.md").is_file())
+
+
+def matches(start, text):
     terms = words(text)
     lines = []
-    for pattern in FILES:
-        for path in sorted(root.glob(pattern)):
-            for n, line in enumerate(path.read_text(errors="replace").splitlines(), 1):
-                if line.strip() and not line.startswith("#"):
-                    lines.append((path.relative_to(root), n, line.strip(), words(line)))
+    for root in folders(start):
+        for pattern in FILES:
+            for path in sorted(root.glob(pattern)):
+                for n, line in enumerate(path.read_text(errors="replace").splitlines(), 1):
+                    if line.strip() and not line.startswith("#"):
+                        lines.append((path.relative_to(start), n, line.strip(), words(line)))
     # A word found on few lines counts for more than one found on many.
     spread = {t: sum(1 for l in lines if t in l[3]) for t in terms}
     scored = []

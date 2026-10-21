@@ -167,7 +167,11 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Open-cards check | Turns that end without bringing back an unanswered card |
 | Review check | Replies longer than 40 words that the reviewer didn't check first |
 
-**When it goes wrong:** hooks only work when the `nogbu/claude` repo is the only repo in a project. If it's not, they silently don't run.
+**Where they come from:** project threads don't run a repo's own hooks or helpers ([Projects docs](https://code.claude.com/docs/en/claude-projects#what-threads-pick-up-from-your-repositories)). So the checks and the reviewer come as one plugin, house-rules, built from this repo, which keeps the master copy.
+
+**What each project needs:** the `nogbu/claude` repo in its repositories, for the rules and learnings. Whether the plugin also has to be turned on in each project, or reaches every project on its own, is still being tested.
+
+**When it goes wrong:** if a check should have stopped something and didn't, the plugin may be missing or out of date. Say so, and Claude checks which.
 
 ---
 
