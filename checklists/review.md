@@ -13,3 +13,4 @@ When Nwani catches a mistake the reviewer missed, add its kind here. Don't add t
 7. **Missing the basic, well-known options.** Before recommending, check that the standard approaches were considered. [Dozens of speed ideas, none of them running tasks in parallel.]
 8. **Treating silence or a change of subject as a yes.** Only Nwani's answer counts as approval. [Saved a change after the subject changed.]
 9. **Narrowing a general problem to the example given.** When Nwani describes a problem with an example, the fix must cover the whole kind of problem. [Built a fix for data comparisons when the problem was every kind of answer, 2026-10-20.]
+10. **A list that skips whole kinds of what was asked for.** Before calling a list done, name the main kinds the answer should cover and check each one. [Listed stores that carry a brand, mostly department stores, and left out most online-only, flash-sale and resale stores, 2026-10-22.]
