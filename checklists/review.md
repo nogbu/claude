@@ -13,3 +13,4 @@ When Nwani catches a mistake the reviewer missed, add its kind here. Don't add t
 7. **Missing the basic, well-known options.** Before recommending, check that the standard approaches were considered. [Dozens of speed ideas, none of them running tasks in parallel.]
 8. **Treating silence or a change of subject as a yes.** Only Nwani's answer counts as approval. [Saved a change after the subject changed.]
 9. **Narrowing a general problem to the example given.** When Nwani describes a problem with an example, the fix must cover the whole kind of problem. [Built a fix for data comparisons when the problem was every kind of answer, 2026-10-20.]
+10. **Inventing an exception to a standing rule.** An answer about one case doesn't create a new rule for others. Apply the rule as Nwani stated it, and ask before carving anything out. [After "is austyns a word", plurals were dropped for every name and fit word, 2026-10-22.]
