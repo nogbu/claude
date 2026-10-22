@@ -169,7 +169,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **Where they come from:** project threads don't run a repo's own hooks or helpers ([Projects docs](https://code.claude.com/docs/en/claude-projects#what-threads-pick-up-from-your-repositories)). So the checks and the reviewer come as one plugin, house-rules, built from this repo, which keeps the master copy.
 
-**What each project needs:** the `nogbu/claude` repo in its repositories, for the rules and learnings. Whether the plugin also has to be turned on in each project, or reaches every project on its own, is still being tested.
+**What each project needs:** the `nogbu/claude` repo in its repositories, for the rules and learnings. The checks only act in threads that have that repo, so a project without it isn't affected. Whether the plugin also has to be turned on in each project, or reaches every project on its own, is still being tested.
 
 **When it goes wrong:** if a check should have stopped something and didn't, the plugin may be missing or out of date. Say so, and Claude checks which.
 

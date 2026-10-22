@@ -23,13 +23,23 @@ README = """# house-rules
 Nwani's automatic checks for Claude in claude.ai project threads, plus the reviewer helper.
 Before Claude sends a reply or a decision card, the checks look for the mistakes listed in the
 nogbu/claude repo's MANUAL.md under Automatic checks, and send Claude back to fix them. The
-reviewer helper checks longer answers before they are sent. The checks only run in cloud threads.
+reviewer helper checks longer answers before they are sent. The checks only run in cloud threads
+that have the nogbu/claude repo, where the rules they enforce are written.
+"""
+# Each hook runs through this. Outside cloud threads, or in a thread without the nogbu/claude repo,
+# the rules aren't loaded, so a check would block Claude without it knowing why. It stays off there.
+RUN = """#!/bin/bash
+[ "$CLAUDE_CODE_REMOTE" = true ] || exit 0
+start="${CLAUDE_PROJECT_DIR:-$PWD}"
+for checklist in "$start/checklists/review.md" "$start"/*/checklists/review.md; do
+  [ -f "$checklist" ] && exec python3 "$(dirname "$0")/$1"
+done
+exit 0
 """
 
 
 def command(script):
-    # Hooks run only in cloud threads, where python3 is always installed. On a computer they do nothing.
-    return '[ "$CLAUDE_CODE_REMOTE" = true ] || exit 0; python3 "${CLAUDE_PLUGIN_ROOT}/hooks/%s"' % script
+    return 'bash "${CLAUDE_PLUGIN_ROOT}/hooks/run.sh" %s' % script
 
 
 def plugin_hooks():
@@ -52,6 +62,7 @@ def build(out):
         "hooks/hooks.json": json.dumps(plugin_hooks(), indent=2),
         "agents/reviewer.md": (REPO / ".claude" / "agents" / "reviewer.md").read_text(),
         "README.md": README,
+        "hooks/run.sh": RUN,
     }
     for script in sorted((REPO / ".claude" / "hooks").glob("*.py")):
         if script.name != "test_hooks.py":
