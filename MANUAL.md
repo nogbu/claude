@@ -171,7 +171,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **What each project needs:** the `nogbu/claude` repo in its repositories, for the rules and learnings. The checks only act in threads that have that repo, so a project without it isn't affected. The plugin is on your claude.ai account, and this project's threads picked it up from there with no project setting (tested 2026-10-23). Other projects should get it the same way, but that hasn't been tested yet.
 
-**When a check changes:** Claude rebuilds the plugin file from this repo and sends it to you. You upload it on your [Plugins page](https://claude.ai/customize/plugins), under Add, then Upload plugin. New threads get the new version. What an upload with the same name does to the old copy hasn't been tested yet.
+**When a check changes:** Claude rebuilds the plugin file from this repo and sends it to you. You upload it on your [Plugins page](https://claude.ai/customize/plugins), under Add, then Upload plugin. New threads should then get the new version, but what an upload with the same name does to the old copy hasn't been tested yet.
 
 **When it goes wrong:** if a check should have stopped something and didn't, the plugin may be missing or out of date. Say so, and Claude checks which.
 
