@@ -13,3 +13,4 @@ When Nwani catches a mistake the reviewer missed, add its kind here. Don't add t
 7. **Missing the basic, well-known options.** Before recommending, check that the standard approaches were considered. [Dozens of speed ideas, none of them running tasks in parallel.]
 8. **Treating silence or a change of subject as a yes.** Only Nwani's answer counts as approval. [Saved a change after the subject changed.]
 9. **Narrowing a general problem to the example given.** When Nwani describes a problem with an example, the fix must cover the whole kind of problem. [Built a fix for data comparisons when the problem was every kind of answer, 2026-10-20.]
+10. **Overstating.** A word like nothing or never must be literally true. If the real claim is narrower, say the narrower thing. [Said claude.ai runs nothing from a repo in project threads, when Claude runs repo scripts there itself, 2026-10-22.]
