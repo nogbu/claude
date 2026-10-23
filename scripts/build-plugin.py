@@ -3,8 +3,8 @@
 for Nwani to add on claude.ai (MANUAL.md, Automatic checks).
 
 Project threads start with the repo's own settings switched off, so .claude/settings.json alone
-never runs the checks there. Plugins added in Project settings load into each new cloud thread
-(Projects docs). Whether a plugin's checks run there is still being tested. The plugin's
+never runs the checks there. A plugin uploaded to Nwani's account loads in new threads, and its
+checks run there (tested 2026-10-23 in this project). The plugin's
 hooks are read from .claude/settings.json, so the two can't drift apart.
 
 Run: python3 scripts/build-plugin.py OUTPUT_FOLDER
