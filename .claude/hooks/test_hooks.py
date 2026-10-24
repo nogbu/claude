@@ -2,6 +2,7 @@
 """Runs each hook the way the hook runner does and checks every verdict.
 Run: python3 .claude/hooks/test_hooks.py"""
 import json
+import re
 import os
 import pathlib
 import subprocess
@@ -277,7 +278,16 @@ for name, text, path, want in REVIEWS:
         failures.append("review-check, expected %s: %s" % ("refused" if want else "allowed", name))
 if stopped(TURNS[2][1], again=True):
     failures.append("open-cards, expected allowed: second stop in a row")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2
+# Edits of a sent message: the matcher must cover both names, and an edit naming its text "body" is still read.
+matchers = [g["matcher"] for g in json.loads((HOOKS.parent / "settings.json").read_text())["hooks"]["PreToolUse"]
+            if "reply-check.py" in json.dumps(g)]
+for name in ("reply", "post_message", "update_message", "edit_message"):
+    if not any(re.fullmatch(m, "mcp__hearthbot__" + name) for m in matchers):
+        failures.append("settings, expected the reply checks to match mcp__hearthbot__" + name)
+out = run("reply-check.py", {"tool_input": {"message_id": "cmsg_1", "body": "Done; saved."}})
+if not (out and out["hookSpecificOutput"]["permissionDecision"] == "deny"):
+    failures.append("reply-check, expected refused: an edit whose text is called body")
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 5
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))

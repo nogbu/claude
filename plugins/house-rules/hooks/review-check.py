@@ -58,7 +58,8 @@ def reviewed_this_turn(transcript_path):
 
 def main():
     hook = json.load(sys.stdin)
-    text = (hook.get("tool_input") or {}).get("text") or ""
+    args = hook.get("tool_input") or {}
+    text = args.get("text") or args.get("body") or ""  # edits may call it "body"
     if len(text.split()) <= SHORT or not hook.get("transcript_path"):
         return
     if not reviewed_this_turn(hook["transcript_path"]):

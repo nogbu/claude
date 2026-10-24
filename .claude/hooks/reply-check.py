@@ -94,7 +94,9 @@ def problem(text, transcript_path=None):
 
 def main():
     hook = json.load(sys.stdin)
-    reason = problem((hook.get("tool_input") or {}).get("text") or "", hook.get("transcript_path"))
+    # Edits of a sent message go through here too, and may name the new text "body".
+    args = hook.get("tool_input") or {}
+    reason = problem(args.get("text") or args.get("body") or "", hook.get("transcript_path"))
     if reason:
         print(json.dumps({"hookSpecificOutput": {
             "hookEventName": "PreToolUse",

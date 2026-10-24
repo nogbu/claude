@@ -161,11 +161,11 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Check | What it stops |
 |---|---|
 | Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
-| Reply check | Replies that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
+| Reply check | Replies, and edits of sent replies, that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
 | Open-cards check | Turns that end without bringing back an unanswered card |
-| Review check | Replies longer than 40 words that the reviewer didn't check first |
+| Review check | Replies and edits longer than 40 words that the reviewer didn't check first |
 
 **Where they come from:** project threads don't run a repo's own hooks or helpers ([Projects docs](https://code.claude.com/docs/en/claude-projects#what-threads-pick-up-from-your-repositories)). So the checks and the reviewer come as one plugin, house-rules, built from this repo, which keeps the master copy.
 

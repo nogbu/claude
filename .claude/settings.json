@@ -2,7 +2,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "mcp__hearthbot__reply|mcp__hearthbot__post_message",
+        "matcher": "mcp__hearthbot__reply|mcp__hearthbot__post_message|mcp__hearthbot__update_message|mcp__hearthbot__edit_message",
         "hooks": [
           {
             "type": "command",
