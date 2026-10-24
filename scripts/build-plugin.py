@@ -7,13 +7,16 @@ never runs the checks there. A plugin uploaded to Nwani's account loads in new t
 checks run there (tested 2026-10-23 in this project). The plugin's
 hooks are read from .claude/settings.json, so the two can't drift apart.
 
-Run: python3 scripts/build-plugin.py OUTPUT_FOLDER
+Run: python3 scripts/build-plugin.py OUTPUT_FOLDER   (a folder and a .plugin file to upload)
+     python3 scripts/build-plugin.py --repo          (the copy in plugins/ that the repo's catalog lists)
+
+The plugin has no version number, so a copy added from the repo's catalog follows its commits
+(plugin docs, Release a new version). A GitHub Action reruns --repo on every change to main.
 """
 import json
 import pathlib
 import re
 import shutil
-import subprocess
 import sys
 import zipfile
 
@@ -52,12 +55,10 @@ def plugin_hooks():
     return {"hooks": hooks}
 
 
-def build(out):
-    commits = subprocess.run(["git", "-C", str(REPO), "rev-list", "--count", "HEAD"],
-                             capture_output=True, text=True, check=True).stdout.strip()
+def build(out, packed=True):
     files = {
         ".claude-plugin/plugin.json": json.dumps({
-            "name": NAME, "version": "0.1.%s" % commits,
+            "name": NAME,
             "description": "Nwani's automatic checks and reviewer helper for Claude in project threads.",
         }, indent=2),
         "hooks/hooks.json": json.dumps(plugin_hooks(), indent=2),
@@ -73,6 +74,8 @@ def build(out):
     for path, text in files.items():
         (folder / path).parent.mkdir(parents=True, exist_ok=True)
         (folder / path).write_text(text)
+    if not packed:
+        return folder, None
     target = pathlib.Path(out) / (NAME + ".plugin")
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
         for path in sorted(files):
@@ -81,6 +84,9 @@ def build(out):
 
 
 if __name__ == "__main__":
-    folder, target = build(sys.argv[1])
-    print("folder:", folder)
-    print("plugin:", target)
+    if sys.argv[1] == "--repo":
+        print("folder:", build(REPO / "plugins", packed=False)[0])
+    else:
+        folder, target = build(sys.argv[1])
+        print("folder:", folder)
+        print("plugin:", target)

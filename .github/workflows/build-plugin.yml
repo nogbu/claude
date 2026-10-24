@@ -1,0 +1,24 @@
+# Rebuilds plugins/house-rules from .claude/ on every change to main, so the copy that the
+# repo's catalog lists can't fall behind the checks (MANUAL.md, Automatic checks).
+name: Build plugin
+on:
+  push:
+    branches: [main]
+    paths: [".claude/**", "scripts/build-plugin.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/build-plugin.py --repo
+      - name: Commit the rebuilt copy if it changed
+        run: |
+          git add plugins
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Rebuild the house-rules plugin from .claude"
+          git push

@@ -1,0 +1,14 @@
+{
+  "name": "nogbu-claude",
+  "description": "Nwani's house rules for Claude, built from this repo.",
+  "owner": {
+    "name": "Nwani"
+  },
+  "plugins": [
+    {
+      "name": "house-rules",
+      "source": "./plugins/house-rules",
+      "description": "Nwani's automatic checks and reviewer helper for Claude in project threads."
+    }
+  ]
+}
