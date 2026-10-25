@@ -23,7 +23,7 @@ import os, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PLANTS = '/mnt/project-files/views/collection.md'
-LIBS = 'numpy shapely trimesh mapbox_earcut manifold3d matplotlib'
+LIBS = 'numpy scipy shapely trimesh mapbox_earcut manifold3d matplotlib'
 
 
 def species_of():
