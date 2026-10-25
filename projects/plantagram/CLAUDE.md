@@ -25,6 +25,7 @@ Each name always means what follows.
 
 - Water conditioner: API Tap Water Conditioner is always 3 drops per gallon of base or tap water, in every formula and process, 0.9× API's current chloramine rate (inventory); a smaller batch is rounded up to a whole drop, so ½ gallon gets 2 (2026-10-02, 2026-10-08, 3 drops at my request 2026-10-18). Rounding up puts small batches above API's rate: ½ gallon runs 1.2× and 16 oz (1 drop) 2.4× *(Claude's arithmetic)*.
 - Root Boost: Root Boost's orchid rate, 2 mL per gallon, is the anthurium rate. Formulas that include TPS One cut it to 1 mL per gallon, because the two overlap (2026-10-25).
+- Root Boost exception: putes keeps its root-rot dose, 3 mL per ½ gallon (6 mL per gallon), including when its day-7 batch refills after the monthly flush (2026-10-25).
 
 ## Sources
 
