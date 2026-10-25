@@ -25,7 +25,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 
 - Settled facts go in learnings files, one per line, with where each came from and when it was confirmed: `learnings.md` for facts every project shares, `projects/[name]/learnings.md` for one project's.
 - A hook searches the rules and learnings files for the words in each of Nwani's messages and shows the matching lines before Claude answers. Check them before answering.
-- A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
+- A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A recipe's ingredient table instead names one source on the line just under the table (2026-10-25). A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
 
 ## Review before answering
 
