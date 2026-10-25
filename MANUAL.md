@@ -161,6 +161,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Check | What it stops |
 |---|---|
 | Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
+| Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /[plant] and /print |
 | Reply check | Replies, and edits of sent replies, that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
