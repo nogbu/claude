@@ -10,3 +10,4 @@ Each name always means what follows.
 - "Pron": my 1:1 pumice/Fluval Stratum mix.
 - "Base water": my ZeroWater-filtered tap water.
 - "Nutes", "putes" and "flutes" (2026-10-08): the recipes in those docs.
+- "Flush" or "monthly flush": the Monthly flush in nutes; the weekly watering is a "flood" (2026-10-03).
