@@ -7,3 +7,4 @@ Started fresh on 2026-10-25. Rules get added here as Nwani settles them.
 ## Recipes
 
 - Recipe ingredients go in a table (2026-10-25).
+- Descriptor words like diced, minced or sliced are part of the ingredient (2026-10-25).
