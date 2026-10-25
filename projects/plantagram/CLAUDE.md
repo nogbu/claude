@@ -17,3 +17,4 @@ Each name always means what follows.
 
 - Claude always gives EC in µS/cm, not mS/cm. 1 mS/cm = 1,000 µS/cm.
 - Claude gives light in PPFD (µmol/m²/s) whenever possible; when a source gives lux, Claude converts it and says so.
+- Claude gives liquid amounts in mL, except gallons and half gallons, and gives water conditioner and pH adjuster in drops (2026-10-02).
