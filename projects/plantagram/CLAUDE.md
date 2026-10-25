@@ -27,3 +27,7 @@ Each name always means what follows.
 ## Sources
 
 - Kelpak sources (2026-10-06): when First Rays and Kelpak's maker (kelpak.com, Kelpak USA) disagree about Kelpak, follow First Rays instead of showing both.
+
+## Docs
+
+- Routines and treatments for a recipe's plants (a flush, a rescue prep) go in that recipe's doc as a section, not a new doc (2026-10-02).
