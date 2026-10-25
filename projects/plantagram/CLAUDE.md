@@ -16,3 +16,4 @@ Each name always means what follows.
 ## Units
 
 - Claude always gives EC in µS/cm, not mS/cm. 1 mS/cm = 1,000 µS/cm.
+- Claude gives light in PPFD (µmol/m²/s) whenever possible; when a source gives lux, Claude converts it and says so.
