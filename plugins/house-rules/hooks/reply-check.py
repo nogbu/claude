@@ -7,6 +7,7 @@ After code, quoted lines, text in quotation marks and links are set aside, a rep
 - it has a semicolon
 - a "Still open:" line isn't followed by bullets
 - a line states a number with a unit but names no source: a link, a file:line, "source:" or "unverified"
+  (a recipe table's rows, one with an "Ingredient" column, are covered by one source line just under it)
 - it cites a file:line from a file that wasn't opened in this turn
 """
 import json
@@ -31,6 +32,7 @@ CITATION = re.compile(r"([\w./-]+\.\w+):\d+")
 TYPED = re.compile(r"^[\s*_]*Typed answer:")
 STILL_OPEN = re.compile(r"^[\s*_]*Still open:[*_]*(.*)$")
 BULLET = re.compile(r"^\s*[-*•]\s")
+TABLE_ROW = re.compile(r"^\s*\|")
 
 
 def opened_this_turn(transcript_path):
@@ -58,7 +60,22 @@ def problem(text, transcript_path=None):
     plain = text
     for pattern in QUOTED:
         plain = pattern.sub(" ", plain)
-    for line in plain.splitlines():
+    plain_lines = plain.splitlines()
+    covered = set()  # recipe table rows whose source is the line under the table
+    i = 0
+    while i < len(plain_lines):
+        if not TABLE_ROW.match(plain_lines[i]):
+            i += 1
+            continue
+        start = i
+        while i < len(plain_lines) and TABLE_ROW.match(plain_lines[i]):
+            i += 1
+        after = next((l for l in plain_lines[i:] if l.strip()), "")
+        if "ingredient" in plain_lines[start].lower() and SOURCE.search(after):
+            covered.update(range(start, i))
+    for n, line in enumerate(plain_lines):
+        if n in covered:
+            continue
         if UNIT.search(line) and not SOURCE.search(line):
             return ("A number with a unit names its source on the same line: a learnings line, a link, "
                     "a file:line, \"source:\" or \"unverified\" (CLAUDE.md, Check before answering). Found: "

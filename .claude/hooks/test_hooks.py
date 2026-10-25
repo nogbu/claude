@@ -100,6 +100,11 @@ REPLIES = [
     ("98% of it came from the cache.", True),
     ("You said \"5 ml\" earlier.", False),
     ("Pick 2 to 4 options, 1 in 5 threads.", False),
+    # One source line just under a recipe table covers its rows
+    ("| Amount | Ingredient |\n| --- | --- |\n| 2 tbsp | Cumin |\n\nSource: your steps", False),
+    ("| Amount | Ingredient |\n| --- | --- |\n| 2 tbsp | Cumin |\n\nServe hot.\n\nSource: your steps", True),
+    ("| Amount | Ingredient |\n| --- | --- |\n| 2 tbsp | Cumin |", True),
+    ("| Product | Rate |\n| --- | --- |\n| TPS One | 5 ml |\n\nSource: label", True),
 ]
 
 # Citing a file:line needs that file opened since Nwani's last message
