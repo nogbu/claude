@@ -32,3 +32,7 @@ Each name always means what follows.
 
 - Routines and treatments for a recipe's plants (a flush, a rescue prep) go in that recipe's doc as a section, not a new doc (2026-10-02).
 - Recipe doses show in a five-column table (Order, Product, Rate per [batch size], EC after adding (µS/cm), Basis), in chat too, even in summaries (2026-10-08).
+
+## Collection thread
+
+- The collection thread (2026-10-14) keeps collection.md accurate, tracks inflo counts and prints plant tags; collection.md's rules give its commands.
