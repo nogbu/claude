@@ -23,3 +23,7 @@ Each name always means what follows.
 ## Dosing
 
 - Water conditioner: API Tap Water Conditioner is always 3 drops per gallon of base or tap water, in every recipe and process, 0.9× API's current chloramine rate (inventory); a smaller batch is rounded up to a whole drop, so ½ gallon gets 2 (2026-10-02, 2026-10-08, 3 drops at my request 2026-10-18). Rounding up puts small batches above API's rate: ½ gallon runs 1.2× and 16 oz (1 drop) 2.4× *(Claude's arithmetic)*.
+
+## Sources
+
+- Kelpak sources (2026-10-06): when First Rays and Kelpak's maker (kelpak.com, Kelpak USA) disagree about Kelpak, follow First Rays instead of showing both.
