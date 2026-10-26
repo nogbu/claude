@@ -18,6 +18,23 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 ---
 
+## Permathreads
+
+**What it's for:** keeping one thread per product, like "rails", "chili" or "collection", that you can always send things to by name.
+
+**How you use it:**
+- In a thread, say "make this a permathread". Once a project has permathreads, you can also ask in its project chat for a new one. Claude never decides it for you.
+- After that, anything about it that you post in the project chat goes to that thread.
+- Close it whenever you like. It also closes on its own after a week with no activity. Either way, the next message about it starts a new thread with the same name.
+
+**What you'll see:** the thread keeps its name. A new instance has exactly the same title as the last one.
+
+**Good to know:** what a permathread needs to remember lives in a file in Project Files, so a new instance picks up where the last one stopped. The first time you say it in a project, that project's instructions get a short Permathreads section, which the project chat reads.
+
+**What's behind it:** the project chat can't read this repo, so the list of permathreads lives in each project's instructions. The thread asks the project chat to add its title when you say the words. The rules are in CLAUDE.md, Permathreads.
+
+---
+
 ## Answering Claude (Answer by click)
 
 **What it's for:** letting you do everything with the mouse.
