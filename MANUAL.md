@@ -18,6 +18,24 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 ---
 
+## Permathreads
+
+**What it's for:** keeping one thread per product, like "rails", "chili" or "collection", that you can always send things to by name.
+
+**How you use it:**
+- In a thread, say "make this a permathread". Once a project has permathreads, you can also ask in its project chat for a new one. Claude never decides it for you.
+- Claude confirms the name on a card first, with a recommendation. That name is the title the thread keeps.
+- After that, anything about it that you post in the project chat goes to that thread.
+- Close it whenever you like. It also closes on its own after a week with no activity. Either way, the next message about it starts a new thread with the same name.
+
+**What you'll see:** the thread keeps its name. A new instance has exactly the same title as the last one.
+
+**Good to know:** what a permathread needs to remember lives in a file in Project Files, so a new instance picks up where the last one stopped. The first time you say it in a project, that project's instructions get a short Permathreads section, which the project chat reads.
+
+**What's behind it:** the project chat can't read this repo, so the list of permathreads lives in each project's instructions. The thread asks the project chat to add its title when you say the words. The rules are in CLAUDE.md, Permathreads.
+
+---
+
 ## Answering Claude (Answer by click)
 
 **What it's for:** letting you do everything with the mouse.
@@ -95,11 +113,12 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **What you'll see:**
 - Any number with a unit, like a dosage, size, time or temperature, comes with its source: a learnings line, a link, or the word "unverified".
+- A recipe's ingredient table has one source line just under it instead of a source on every row.
 - If Claude says "unverified", treat it as a guess.
 
 **When it goes wrong:** if Claude gets a fact wrong that's in the learnings, say so. The lookup should have shown it. The likely cause is that the fact uses different words than your message. Adding the word you used to that line fixes it.
 
-**What's behind it:** every time you send a message, a check searches the rules and learnings for the words in it and shows Claude the matching lines before it answers. A second check stops any reply with a number and unit but no source. It also stops a reply that points to a file Claude didn't actually open.
+**What's behind it:** every time you send a message, a check searches the rules and learnings for the words in it and shows Claude the matching lines before it answers. A second check stops any reply with a number and unit but no source. It counts a source line just under a recipe table, one with an Ingredient column, as covering the table's rows. It also stops a reply that points to a file Claude didn't actually open.
 
 ---
 
@@ -161,6 +180,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Check | What it stops |
 |---|---|
 | Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
+| Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /[plant] and /print |
 | Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |

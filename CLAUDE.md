@@ -17,6 +17,20 @@ Nwani should be able to do everything by mouse.
 - The reply just before each card ends with a "Still open:" line listing the rest of the queue, newest first.
 - A hook stops Claude from ending a turn without a card while any card is still open.
 
+## Permathreads
+
+- A permathread is a thread Nwani made one, by saying "make this a permathread" in it or by asking for a new one. Only Nwani makes one. Claude never treats a thread as one because its topic looks ongoing (2026-10-26).
+- When Nwani makes a thread a permathread, Claude always confirms its name first, on a card with a recommended name (2026-10-26). A thread the coordinator started as a new permathread under a name Nwani already confirmed skips the card. The thread then sets its title to the confirmed name and asks the coordinator with `message_coordinator`, attaching Nwani's messages, to add its exact title and what it's for to the Permathreads list in the project instructions. If the instructions have no such list yet, the thread sends the text below for the coordinator to add, with the line filled in.
+- After that, a permathread never renames or resolves itself, because its title is how the coordinator finds it. It can still close without Claude (learnings.md, Idle threads), and then the next message about it starts a new instance with the same title.
+- Anything the next instance would need goes in a file in Project Files as it happens, not only in the thread.
+
+The project-instructions text (the coordinator can't read this repo, so it gets the words themselves):
+
+> Permathreads: threads I made permathreads, one per line, by exact title and what each is for.
+> - [title]: [what it's for]
+>
+> A message that belongs to a permathread goes word for word to the open thread with that exact title. If none is open, start a new thread with exactly that title and send it there. Add a line only when I ask, here or in a thread whose request has my message attached, and remove one only when I say so. Confirm the exact name with me before starting a permathread I asked for here or adding a line, unless the thread's request says I already confirmed it on a card.
+
 ## Lists are bulleted
 
 A list of three or more things goes one item per line as bullets, never strung together in a sentence. A hook refuses a reply with a semicolon, or with a "Still open:" line that isn't followed by bullets.
@@ -25,7 +39,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 
 - Settled facts go in learnings files, one per line, with where each came from and when it was confirmed: `learnings.md` for facts every project shares, `projects/[name]/learnings.md` for one project's.
 - A hook searches the rules and learnings files for the words in each of Nwani's messages and shows the matching lines before Claude answers. Check them before answering.
-- A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
+- A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A recipe's ingredient table instead names one source on the line just under the table (2026-10-25). A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
 
 ## Review before answering
 
