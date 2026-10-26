@@ -37,6 +37,9 @@ def record(*events):
         if kind == "nwani":
             lines.append({"type": "user", "message": {"content": value}})
             continue
+        if kind == "tap mid-turn":
+            lines.append({"type": "attachment", "attachment": {"type": "queued_command", "prompt": value}})
+            continue
         if kind == "note":
             lines.append({"type": "user", "isMeta": True, "message": {"content": value}})
             continue
@@ -232,6 +235,9 @@ TURNS = [
      record(("new card", "Save it"), ("nwani", "a question"), ("new reply", "an answer")), True),
     ("newer tool names: turn ends on a card",
      record(("nwani", "hi"), ("new reply", "here"), ("new card", "Save it")), False),
+    ("card answered by a tap that arrived mid-turn",
+     record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"),
+            ("tap mid-turn", "Chose Save. decision_id=cmsg_Saveit"), ("reply", "Saved.")), False),
     ("refused card doesn't count as posted",
      record(("nwani", "hi"), ("reply", "here"), ("refused card", "Save it")), False),
     ("refused card doesn't count as ending on a card",

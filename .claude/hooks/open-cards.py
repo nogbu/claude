@@ -37,7 +37,11 @@ def read_record(path):
             except ValueError:
                 continue
             content = (entry.get("message") or {}).get("content")
-            if entry.get("type") == "assistant" and isinstance(content, list):
+            attached = entry.get("attachment") or {}
+            if entry.get("type") == "attachment" and attached.get("type") == "queued_command":
+                # A tap that arrives while Claude is mid-turn is recorded this way, not as a message.
+                closed.update(ANSWERED.findall(str(attached.get("prompt", ""))))
+            elif entry.get("type") == "assistant" and isinstance(content, list):
                 for block in content:
                     if block.get("type") != "tool_use":
                         continue
