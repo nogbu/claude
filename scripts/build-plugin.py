@@ -81,19 +81,24 @@ def build(out, packed=True):
     return folder, pack(out, files, folder)
 
 
+def same(target, files):
+    with zipfile.ZipFile(target) as z:
+        return sorted(z.namelist()) == sorted(files) and \
+            all(z.read(path).decode() == text for path, text in files.items())
+
+
 def pack(out, files, folder):
-    """Names the file by its build date, so Nwani can tell uploads apart. A second build the same day
-    with different contents gets the next letter, like house-rules-2026-10-26b.plugin. The name inside,
-    from plugin.json, stays house-rules."""
-    date = datetime.date.today().isoformat()
+    """Names the file by its build date (UTC), so Nwani can tell uploads apart. A second, different
+    build the same day gets the next letter, like house-rules-2026-10-26b.plugin, and a build with
+    nothing changed keeps the file it already has. The name inside, from plugin.json, stays house-rules."""
+    for target in sorted(pathlib.Path(out).glob(NAME + "-*.plugin")):
+        if same(target, files):
+            return target
+    date = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
     for letter in [""] + list("bcdefghijklmnopqrstuvwxyz"):
         target = pathlib.Path(out) / ("%s-%s%s.plugin" % (NAME, date, letter))
         if not target.exists():
             break
-        with zipfile.ZipFile(target) as z:
-            if sorted(z.namelist()) == sorted(files) and \
-                    all(z.read(path).decode() == text for path, text in files.items()):
-                return target  # the same build is already there
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
         for path in sorted(files):
             z.write(folder / path, path)
