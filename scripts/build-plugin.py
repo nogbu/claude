@@ -7,12 +7,14 @@ never runs the checks there. A plugin uploaded to Nwani's account loads in new t
 checks run there (tested 2026-10-23 in this project). The plugin's
 hooks are read from .claude/settings.json, so the two can't drift apart.
 
-Run: python3 scripts/build-plugin.py OUTPUT_FOLDER   (a folder and a .plugin file to upload)
+Run: python3 scripts/build-plugin.py OUTPUT_FOLDER   (a folder and a .plugin file to upload, named by
+                                                      its build date, like house-rules-2026-10-26.plugin)
      python3 scripts/build-plugin.py --repo          (the copy in plugins/ that the repo's catalog lists)
 
 The plugin has no version number, so a copy added from the repo's catalog follows its commits
 (plugin docs, Release a new version). A GitHub Action reruns --repo on every change to main.
 """
+import datetime
 import json
 import pathlib
 import re
@@ -76,11 +78,26 @@ def build(out, packed=True):
         (folder / path).write_text(text)
     if not packed:
         return folder, None
-    target = pathlib.Path(out) / (NAME + ".plugin")
+    return folder, pack(out, files, folder)
+
+
+def pack(out, files, folder):
+    """Names the file by its build date, so Nwani can tell uploads apart. A second build the same day
+    with different contents gets the next letter, like house-rules-2026-10-26b.plugin. The name inside,
+    from plugin.json, stays house-rules."""
+    date = datetime.date.today().isoformat()
+    for letter in [""] + list("bcdefghijklmnopqrstuvwxyz"):
+        target = pathlib.Path(out) / ("%s-%s%s.plugin" % (NAME, date, letter))
+        if not target.exists():
+            break
+        with zipfile.ZipFile(target) as z:
+            if sorted(z.namelist()) == sorted(files) and \
+                    all(z.read(path).decode() == text for path, text in files.items()):
+                return target  # the same build is already there
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
         for path in sorted(files):
             z.write(folder / path, path)
-    return folder, target
+    return target
 
 
 if __name__ == "__main__":
