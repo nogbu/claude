@@ -19,7 +19,8 @@ NAME matches a row's Name ignoring case and trailing punctuation. The hook acts 
                        (/rules-check) and matches no row prints the no-match note instead
   /confirm [plants]    (one, or several split by commas, "and" or lines) tells the thread to run confirm (Confirmed = today unless already set) and reply only "[names] confirmed" plus any already confirmed
                        (2026-10-14)
-  /remove [plants]     (split as /confirm's are) tells the thread to run remove and reply only "[names] moved to the graveyard"
+  /remove [plants]     (split as /confirm's are) tells the thread to run remove and reply only "[names] moved to the graveyard";
+                       a name that matches no row moves nothing until I pick the plant on a card
                        (my words 2026-10-26: the graveyard lists plants that died and are no longer in my collection)
   /print [plant]       writes a one-plant list and tells the thread to run plantTags' tags.py on it
   /print list          my next message is a list of plants, one per line (or the lines after /print list in the
@@ -297,7 +298,10 @@ def hook():
         dead = [buried(p) for p, r in zip(parts, rows) if not r] if cmd == "remove" else []
         bad = [p.strip() for p, r in zip(parts, rows) if not r and not (cmd == "remove" and buried(p))]
         gone = ", ".join(f"{d[1][0]} (removed {d[1][-1]})" for d in dead if d)
-        if bad:
+        if bad and cmd == "remove":  # a move out of the collection never acts on a guessed row (2026-10-26)
+            print(f"Hook (collection.md rules): {', '.join(repr(b) for b in bad)} matched no row exactly. Move nothing: "
+                  "ask on a card which plant was meant, with the closest rows (projects/plantagram/nomenclature.md) as options.")
+        elif bad:
             print(f"Hook (collection.md rules): {', '.join(repr(b) for b in bad)} matched no row exactly. {MISS}")
         elif not any(rows):
             print(f"Hook (collection.md rules): already in the graveyard: {gone}. Reply with that and change nothing.")
