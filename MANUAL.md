@@ -191,7 +191,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **What each project needs:** the `nogbu/claude` repo in its repositories, for the rules and learnings. The checks only act in threads that have that repo, so a project without it isn't affected. The plugin is on your claude.ai account, and this project's threads picked it up from there with no project setting (tested 2026-10-23). Other projects should get it the same way, but that hasn't been tested yet.
 
-**When a check changes:** saving the change to this repo also rebuilds the plugin's copy in it, through a GitHub Action, a small job GitHub runs on every change. But threads only got the copy you uploaded, not the one from this repo (tested 2026-10-24). So after each change Claude attaches a new plugin file, and you replace the old upload on your [Plugins page](https://claude.ai/customize/plugins). A new thread then confirms the change arrived. Doing this, new threads got the new copy on 2026-10-26.
+**When a check changes:** saving the change to this repo also rebuilds the plugin's copy in it, through a GitHub Action, a small job GitHub runs on every change. But threads only got the copy you uploaded, not the one from this repo (tested 2026-10-24). So after each change Claude attaches a new plugin file, numbered by revision like house-rules-r2.plugin, and you replace the old upload on your [Plugins page](https://claude.ai/customize/plugins). A new thread then confirms the change arrived. Doing this, new threads got the new copy on 2026-10-26.
 
 **When it goes wrong:** if a check should have stopped something and didn't, the plugin may be missing or out of date. Say so, and Claude checks which.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds house-rules.plugin: the automatic checks and the reviewer helper as one plugin file
+"""Builds house-rules-rN.plugin: the automatic checks and the reviewer helper as one plugin file
 for Nwani to add on claude.ai (MANUAL.md, Automatic checks).
 
 Project threads start with the repo's own settings switched off, so .claude/settings.json alone
