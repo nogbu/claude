@@ -40,7 +40,8 @@ def shown(hook):
         return [(args.get("text") or args.get("body") or "", False)], ""
     card = args.get("input") or {}
     heading = "\n".join(str(w) for w in (args.get("text"), card.get("title"), card.get("summary")) if w)
-    if args.get("family") == "visualize":
+    # Newer threads have no family field, so a drawn widget is known by its widget_code.
+    if args.get("family") == "visualize" or isinstance(card.get("widget_code"), str):
         parts = [(args.get("text") or "", False), (card.get("title") or "", False),
                  (drawn_words(card.get("widget_code") or ""), False)]
     else:
