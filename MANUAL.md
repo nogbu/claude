@@ -24,6 +24,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **How you use it:**
 - In a thread, say "make this a permathread". Once a project has permathreads, you can also ask in its project chat for a new one. Claude never decides it for you.
+- Claude confirms the name on a card first, with a recommendation. That name is the title the thread keeps.
 - After that, anything about it that you post in the project chat goes to that thread.
 - Close it whenever you like. It also closes on its own after a week with no activity. Either way, the next message about it starts a new thread with the same name.
 
