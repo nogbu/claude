@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """PreToolUse hook on thread replies (CLAUDE.md, Answer by click, Lists are bulleted and
-Check before answering).
+Check before answering). Widgets are checked too, by the words they show (shown_text.py).
 
 After code, quoted lines, text in quotation marks and links are set aside, a reply is refused when:
-- a line has a "?" and doesn't start with "Typed answer:"
+- a line has a "?" and doesn't start with "Typed answer:" (message drafts for other people may ask)
 - it has a semicolon
 - a "Still open:" line isn't followed by bullets
 - a line states a number with a unit but names no source: a link, a file:line, "source:" or "unverified"
@@ -12,6 +12,8 @@ After code, quoted lines, text in quotation marks and links are set aside, a rep
 import json
 import re
 import sys
+
+from shown_text import shown
 
 IGNORED = [
     re.compile(r"```.*?```", re.S),          # code blocks
@@ -54,7 +56,7 @@ def opened_this_turn(transcript_path):
     return " ".join(seen)
 
 
-def problem(text, transcript_path=None):
+def problem(text, transcript_path=None, questions_ok=False):
     plain = text
     for pattern in QUOTED:
         plain = pattern.sub(" ", plain)
@@ -74,7 +76,7 @@ def problem(text, transcript_path=None):
         text = pattern.sub(" ", text)
     lines = text.splitlines()
     for line in lines:
-        if "?" in line and not TYPED.match(line):
+        if "?" in line and not TYPED.match(line) and not questions_ok:
             return ("Questions go on a decision card, not in a reply (CLAUDE.md, Answer by click). "
                     "Found: \"%s\". If only Nwani's own words can answer it, put it on its own line "
                     "starting \"Typed answer:\"." % line.strip()[:120])
@@ -94,9 +96,8 @@ def problem(text, transcript_path=None):
 
 def main():
     hook = json.load(sys.stdin)
-    # Edits of a sent message go through here too, and may name the new text "body".
-    args = hook.get("tool_input") or {}
-    reason = problem(args.get("text") or args.get("body") or "", hook.get("transcript_path"))
+    text, questions_ok = shown(hook)
+    reason = problem(text, hook.get("transcript_path"), questions_ok)
     if reason:
         print(json.dumps({"hookSpecificOutput": {
             "hookEventName": "PreToolUse",

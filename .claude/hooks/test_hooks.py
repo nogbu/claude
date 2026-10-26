@@ -102,6 +102,37 @@ REPLIES = [
     ("Pick 2 to 4 options, 1 in 5 threads.", False),
 ]
 
+# Widgets are checked by the words they show, not their drawing code
+DRAWN = ('<style>.a{fill:red;stroke:blue}</style><svg><text class="t">%s</text></svg>'
+         '<script>let x = 1; if (x) { go(); }</script>')
+WIDGETS = [
+    ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Week one"}}, False),
+    ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Ready?"}}, True),
+    ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Salt &amp; pepper"}}, False),
+    ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Fast; cheap"}}, True),
+    ({"family": "card", "widget": "comparison_card_display_v0", "text": "Two options.",
+      "input": {"summary": "Two options", "products": [{"name": "A", "url": "https://x.com/a?b=1;c",
+                                                        "attributes": [{"label": "Speed", "value": "fast; cheap"}]}]}}, True),
+    ({"family": "card", "widget": "comparison_card_display_v0", "text": "Two options.",
+      "input": {"summary": "Two options", "products": [{"name": "A", "url": "https://x.com/a?b=1;c",
+                                                        "attributes": [{"label": "Speed", "value": True}]}]}}, False),
+    ({"family": "card", "widget": "message_compose_v1", "text": "A draft.",
+      "input": {"kind": "email", "to": "a@x.com; b@x.com", "variants": [{"label": "Ask", "body": "Are you free Tuesday?"}]}}, False),
+    ({"family": "card", "widget": "message_compose_v1", "text": "A draft.",
+      "input": {"kind": "email", "variants": [{"label": "Ask", "body": "Hi; are you free"}]}}, True),
+    ({"family": "card", "widget": "writing_draft_v0", "text": "A draft.", "input": {"body": "Should we go?"}}, True),
+    ({"family": "card", "widget": "step_card_display_v0", "text": "Steps. Ready?", "input": {"summary": "Steps"}}, True),
+    ({"family": "card", "widget": "recipe_display_v0", "text": "A recipe.",
+      "input": {"title": "Rice", "ingredients": [{"id": "0001", "name": "rice", "amount": 200, "unit": "g"}],
+                "steps": [{"id": "1", "title": "Cook", "content": "Simmer for 15 min."}]}}, True),
+]
+
+
+def widget_refused(args, hook="reply-check.py"):
+    out = run(hook, {"tool_name": "mcp__hearthbot__post_widget", "tool_input": args, "transcript_path": None})
+    return bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+
+
 # Citing a file:line needs that file opened since Nwani's last message
 OPENED = record(("nwani", "what's the dose"))
 with open(OPENED, "a") as f:
@@ -278,16 +309,28 @@ for name, text, path, want in REVIEWS:
         failures.append("review-check, expected %s: %s" % ("refused" if want else "allowed", name))
 if stopped(TURNS[2][1], again=True):
     failures.append("open-cards, expected allowed: second stop in a row")
+for args, want in WIDGETS:
+    if widget_refused(args) != want:
+        failures.append("reply-check widget, expected %s: %r" % ("refused" if want else "allowed", args))
+LONG_WIDGET = {"family": "card", "widget": "writing_draft_v0", "text": "A draft.", "input": {"body": LONG}}
+out = run("review-check.py", {"tool_name": "mcp__hearthbot__post_widget", "tool_input": LONG_WIDGET,
+                              "transcript_path": reviewed("nwani")})
+if not (out and out["hookSpecificOutput"]["permissionDecision"] == "deny"):
+    failures.append("review-check, expected refused: a long widget with no review")
+out = run("review-check.py", {"tool_name": "mcp__hearthbot__post_widget", "tool_input": LONG_WIDGET,
+                              "transcript_path": reviewed("nwani", "review")})
+if out:
+    failures.append("review-check, expected allowed: a long widget reviewed this turn")
 # Edits of a sent message: the matcher must cover both names, and an edit naming its text "body" is still read.
 matchers = [g["matcher"] for g in json.loads((HOOKS.parent / "settings.json").read_text())["hooks"]["PreToolUse"]
             if "reply-check.py" in json.dumps(g)]
-for name in ("reply", "post_message", "update_message", "edit_message"):
+for name in ("reply", "post_message", "update_message", "edit_message", "post_widget"):
     if not any(re.fullmatch(m, "mcp__hearthbot__" + name) for m in matchers):
         failures.append("settings, expected the reply checks to match mcp__hearthbot__" + name)
 out = run("reply-check.py", {"tool_input": {"message_id": "cmsg_1", "body": "Done; saved."}})
 if not (out and out["hookSpecificOutput"]["permissionDecision"] == "deny"):
     failures.append("reply-check, expected refused: an edit whose text is called body")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 5
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
