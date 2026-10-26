@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Builds house-rules.plugin: the automatic checks and the reviewer helper as one plugin file
+"""Builds house-rules-rN.plugin: the automatic checks and the reviewer helper as one plugin file
 for Nwani to add on claude.ai (MANUAL.md, Automatic checks).
 
 Project threads start with the repo's own settings switched off, so .claude/settings.json alone
@@ -7,7 +7,8 @@ never runs the checks there. A plugin uploaded to Nwani's account loads in new t
 checks run there (tested 2026-10-23 in this project). The plugin's
 hooks are read from .claude/settings.json, so the two can't drift apart.
 
-Run: python3 scripts/build-plugin.py OUTPUT_FOLDER   (a folder and a .plugin file to upload)
+Run: python3 scripts/build-plugin.py OUTPUT_FOLDER   (a folder and a .plugin file to upload, named by
+                                                      its revision, like house-rules-r1.plugin)
      python3 scripts/build-plugin.py --repo          (the copy in plugins/ that the repo's catalog lists)
 
 The plugin has no version number, so a copy added from the repo's catalog follows its commits
@@ -76,11 +77,31 @@ def build(out, packed=True):
         (folder / path).write_text(text)
     if not packed:
         return folder, None
-    target = pathlib.Path(out) / (NAME + ".plugin")
+    return folder, pack(out, files, folder)
+
+
+def same(target, files):
+    with zipfile.ZipFile(target) as z:
+        return sorted(z.namelist()) == sorted(files) and \
+            all(z.read(path).decode() == text for path, text in files.items())
+
+
+def pack(out, files, folder):
+    """Names the file by its revision, so Nwani can tell uploads apart: one more than the highest
+    revision already in the folder, like house-rules-r2.plugin. A build with nothing new keeps the file
+    it already has. The name inside, from plugin.json, stays house-rules."""
+    revisions = {}
+    for target in pathlib.Path(out).glob(NAME + "-r*.plugin"):
+        m = re.fullmatch(re.escape(NAME) + r"-r(\d+)\.plugin", target.name)
+        if m:
+            if same(target, files):
+                return target
+            revisions[int(m.group(1))] = target
+    target = pathlib.Path(out) / ("%s-r%d.plugin" % (NAME, max(revisions, default=0) + 1))
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
         for path in sorted(files):
             z.write(folder / path, path)
-    return folder, target
+    return target
 
 
 if __name__ == "__main__":

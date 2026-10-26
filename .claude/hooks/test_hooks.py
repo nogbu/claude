@@ -37,6 +37,9 @@ def record(*events):
         if kind == "nwani":
             lines.append({"type": "user", "message": {"content": value}})
             continue
+        if kind == "tap mid-turn":
+            lines.append({"type": "attachment", "attachment": {"type": "queued_command", "prompt": value}})
+            continue
         if kind == "note":
             lines.append({"type": "user", "isMeta": True, "message": {"content": value}})
             continue
@@ -107,6 +110,45 @@ REPLIES = [
     ("| Product | Rate |\n| --- | --- |\n| TPS One | 5 ml |\n\nSource: label", True),
 ]
 
+# Widgets are checked by the words they show, not their drawing code
+DRAWN = ('<style>.a{fill:red;stroke:blue}</style><svg><text class="t">%s</text></svg>'
+         '<script>let x = 1; if (x) { go(); }</script>')
+WIDGETS = [
+    ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Week one"}}, False),
+    ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Ready?"}}, True),
+    ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Salt &amp; pepper"}}, False),
+    ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Fast; cheap"}}, True),
+    ({"family": "card", "widget": "comparison_card_display_v0", "text": "Two options.",
+      "input": {"summary": "Two options", "products": [{"name": "A", "url": "https://x.com/a?b=1;c",
+                                                        "attributes": [{"label": "Speed", "value": "fast; cheap"}]}]}}, True),
+    ({"family": "card", "widget": "comparison_card_display_v0", "text": "Two options.",
+      "input": {"summary": "Two options", "products": [{"name": "A", "url": "https://x.com/a?b=1;c",
+                                                        "attributes": [{"label": "Speed", "value": True}]}]}}, False),
+    ({"family": "card", "widget": "message_compose_v1", "text": "A draft.",
+      "input": {"kind": "email", "to": "a@x.com; b@x.com", "variants": [{"label": "Ask", "body": "Are you free Tuesday?"}]}}, False),
+    ({"family": "card", "widget": "message_compose_v1", "text": "A draft.",
+      "input": {"kind": "email", "variants": [{"label": "Ask", "body": "Hi; are you free"}]}}, True),
+    ({"family": "card", "widget": "message_compose_v1", "text": "Which one should I send?",
+      "input": {"kind": "email", "variants": [{"label": "Ask", "body": "Are you free Tuesday?"}]}}, True),
+    ({"family": "card", "widget": "writing_draft_v0", "text": "A draft.", "input": {"body": "Should we go?"}}, True),
+    ({"family": "visualize", "text": "Sales by crop.", "input": {"title": "Sales",
+      "widget_code": "<svg><text>Rice 40%</text><text>Beans 60%</text></svg>"}}, True),
+    ({"family": "visualize", "text": "Sales by crop, source: sales.csv.", "input": {"title": "Sales",
+      "widget_code": "<svg><text>Rice 40%</text><text>Beans 60%</text></svg>"}}, False),
+    ({"family": "card", "widget": "chart_display_v0", "text": "Weekly sales.",
+      "input": {"title": "Sales (unverified)", "series": [{"name": "Rice 40%", "values": [1, 2]}], "style": "bar"}}, False),
+    ({"family": "card", "widget": "step_card_display_v0", "text": "Steps. Ready?", "input": {"summary": "Steps"}}, True),
+    ({"family": "card", "widget": "recipe_display_v0", "text": "A recipe.",
+      "input": {"title": "Rice", "ingredients": [{"id": "0001", "name": "rice", "amount": 200, "unit": "g"}],
+                "steps": [{"id": "1", "title": "Cook", "content": "Simmer for 15 min."}]}}, True),
+]
+
+
+def widget_refused(args, hook="reply-check.py"):
+    out = run(hook, {"tool_name": "mcp__hearthbot__post_widget", "tool_input": args, "transcript_path": None})
+    return bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+
+
 # Citing a file:line needs that file opened since Nwani's last message
 OPENED = record(("nwani", "what's the dose"))
 with open(OPENED, "a") as f:
@@ -118,7 +160,15 @@ with open(OPENED_THEN_NOTE, "a") as f:
         {"type": "tool_use", "id": "t1", "name": "Read", "input": {"file_path": "/repo/learnings.md"}}]}}))
     f.write("\n" + json.dumps({"type": "user", "isMeta": True, "message": {"content": "a helper's report"}}))
 
+OPENED_THEN_NWANI = record(("nwani", "what's the dose"))
+with open(OPENED_THEN_NWANI, "a") as f:
+    f.write("\n" + json.dumps({"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "id": "t1", "name": "Read", "input": {"file_path": "/repo/learnings.md"}}]}}))
+    f.write("\n" + json.dumps({"type": "attachment", "attachment": {"type": "queued_command",
+                                "prompt": '<wake><message from="human">and the other one</message></wake>'}}))
+
 CITES = [
+    ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED_THEN_NWANI, True),
     ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED_THEN_NOTE, False),
     ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED, False),
     ("TPS One: 5 ml per gallon (projects/plantagram/learnings.md:3).", OPENED, False),
@@ -193,6 +243,17 @@ TURNS = [
      record(("new card", "Save it"), ("nwani", "a question"), ("new reply", "an answer")), True),
     ("newer tool names: turn ends on a card",
      record(("nwani", "hi"), ("new reply", "here"), ("new card", "Save it")), False),
+    ("card answered by a tap that arrived mid-turn",
+     record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"),
+            ("tap mid-turn", '<wake><message from="human">Chose Save</message><system-note>decision_id=cmsg_Saveit'
+                             '</system-note></wake>'), ("reply", "Saved.")), False),
+    ("a helper's mid-turn report quoting a card's id doesn't answer it",
+     record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"),
+            ("tap mid-turn", '<agent-message from="a1">It said decision_id=cmsg_Saveit</agent-message>'),
+            ("reply", "Saved.")), True),
+    ("Nwani's mid-turn message starts a new turn",
+     record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"), ("card", "Save it again"),
+            ("tap mid-turn", '<wake><message from="human">one more thing</message></wake>'), ("reply", "ok")), True),
     ("refused card doesn't count as posted",
      record(("nwani", "hi"), ("reply", "here"), ("refused card", "Save it")), False),
     ("refused card doesn't count as ending on a card",
@@ -207,6 +268,10 @@ def reviewed(*events):
     for n, kind in enumerate(events):
         if kind == "nwani":
             lines.append({"type": "user", "message": {"content": "<wake>a question</wake>"}})
+            continue
+        if kind == "nwani mid-turn":
+            lines.append({"type": "attachment", "attachment": {"type": "queued_command",
+                          "prompt": '<wake><message from="human">one more thing</message></wake>'}})
             continue
         if kind in ("report back", "named report back"):
             sender = {"from": "review-1", "senderTaskId": "a1"} if kind.startswith("named") else {"from": "a1"}
@@ -243,6 +308,8 @@ REVIEWS = [
     ("long reply, review failed", LONG, reviewed("nwani", "failed review"), True),
     ("long reply, a different helper ran", LONG, reviewed("nwani", "other helper"), True),
     ("long reply, reviewed by the plugin's helper", LONG, reviewed("nwani", "plugin review"), False),
+    ("long reply, reviewed before Nwani's mid-turn message", LONG, reviewed("nwani", "review", "nwani mid-turn"), True),
+    ("long reply, reviewed after Nwani's mid-turn message", LONG, reviewed("nwani", "nwani mid-turn", "review"), False),
 ]
 
 
@@ -283,16 +350,28 @@ for name, text, path, want in REVIEWS:
         failures.append("review-check, expected %s: %s" % ("refused" if want else "allowed", name))
 if stopped(TURNS[2][1], again=True):
     failures.append("open-cards, expected allowed: second stop in a row")
+for args, want in WIDGETS:
+    if widget_refused(args) != want:
+        failures.append("reply-check widget, expected %s: %r" % ("refused" if want else "allowed", args))
+LONG_WIDGET = {"family": "card", "widget": "writing_draft_v0", "text": "A draft.", "input": {"body": LONG}}
+out = run("review-check.py", {"tool_name": "mcp__hearthbot__post_widget", "tool_input": LONG_WIDGET,
+                              "transcript_path": reviewed("nwani")})
+if not (out and out["hookSpecificOutput"]["permissionDecision"] == "deny"):
+    failures.append("review-check, expected refused: a long widget with no review")
+out = run("review-check.py", {"tool_name": "mcp__hearthbot__post_widget", "tool_input": LONG_WIDGET,
+                              "transcript_path": reviewed("nwani", "review")})
+if out:
+    failures.append("review-check, expected allowed: a long widget reviewed this turn")
 # Edits of a sent message: the matcher must cover both names, and an edit naming its text "body" is still read.
 matchers = [g["matcher"] for g in json.loads((HOOKS.parent / "settings.json").read_text())["hooks"]["PreToolUse"]
             if "reply-check.py" in json.dumps(g)]
-for name in ("reply", "post_message", "update_message", "edit_message"):
+for name in ("reply", "post_message", "update_message", "edit_message", "post_widget"):
     if not any(re.fullmatch(m, "mcp__hearthbot__" + name) for m in matchers):
         failures.append("settings, expected the reply checks to match mcp__hearthbot__" + name)
 out = run("reply-check.py", {"tool_input": {"message_id": "cmsg_1", "body": "Done; saved."}})
 if not (out and out["hookSpecificOutput"]["permissionDecision"] == "deny"):
     failures.append("reply-check, expected refused: an edit whose text is called body")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 5
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))

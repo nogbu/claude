@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """PreToolUse hook on thread replies (CLAUDE.md, Review before answering).
 
-Refuses a reply longer than a short acknowledgment unless the reviewer helper ran and finished
+Refuses a reply, edit or widget longer than a short acknowledgment unless the reviewer helper ran and finished
 since Nwani's last message.
 """
 import json
 import re
 import sys
+
+from nwani import queued_message
+from shown_text import shown
 
 SHORT = 40  # words; a reply this long or shorter is an acknowledgment and skips review
 AGENT_ID = re.compile(r"agentId: (\w+)")
@@ -35,7 +38,7 @@ def reviewed_this_turn(transcript_path):
                 origin = entry.get("origin") or {}
                 if origin.get("handback") and (origin.get("senderTaskId") or origin.get("from")) in waiting:
                     done = True
-            elif entry.get("type") == "user" and isinstance(content, str):
+            elif (entry.get("type") == "user" and isinstance(content, str)) or queued_message(entry):
                 asked, waiting, done = set(), set(), False
             elif entry.get("type") == "assistant" and isinstance(content, list):
                 for block in content:
@@ -58,8 +61,7 @@ def reviewed_this_turn(transcript_path):
 
 def main():
     hook = json.load(sys.stdin)
-    args = hook.get("tool_input") or {}
-    text = args.get("text") or args.get("body") or ""  # edits may call it "body"
+    text = "\n".join(part for part, _ in shown(hook)[0])
     if len(text.split()) <= SHORT or not hook.get("transcript_path"):
         return
     if not reviewed_this_turn(hook["transcript_path"]):
