@@ -15,6 +15,7 @@ import json
 import re
 import sys
 
+from nwani import queued_message
 from shown_text import shown
 
 IGNORED = [
@@ -48,7 +49,7 @@ def opened_this_turn(transcript_path):
                 content = (entry.get("message") or {}).get("content")
                 if entry.get("type") == "user" and entry.get("isMeta"):
                     continue  # harness notes, like a helper's report, aren't Nwani's messages
-                if entry.get("type") == "user" and isinstance(content, str):
+                if (entry.get("type") == "user" and isinstance(content, str)) or queued_message(entry):
                     seen = []
                 elif entry.get("type") == "assistant" and isinstance(content, list):
                     for block in content:

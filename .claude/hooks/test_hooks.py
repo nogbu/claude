@@ -160,7 +160,15 @@ with open(OPENED_THEN_NOTE, "a") as f:
         {"type": "tool_use", "id": "t1", "name": "Read", "input": {"file_path": "/repo/learnings.md"}}]}}))
     f.write("\n" + json.dumps({"type": "user", "isMeta": True, "message": {"content": "a helper's report"}}))
 
+OPENED_THEN_NWANI = record(("nwani", "what's the dose"))
+with open(OPENED_THEN_NWANI, "a") as f:
+    f.write("\n" + json.dumps({"type": "assistant", "message": {"content": [
+        {"type": "tool_use", "id": "t1", "name": "Read", "input": {"file_path": "/repo/learnings.md"}}]}}))
+    f.write("\n" + json.dumps({"type": "attachment", "attachment": {"type": "queued_command",
+                                "prompt": '<wake><message from="human">and the other one</message></wake>'}}))
+
 CITES = [
+    ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED_THEN_NWANI, True),
     ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED_THEN_NOTE, False),
     ("TPS One: 5 ml per gallon (learnings.md:3).", OPENED, False),
     ("TPS One: 5 ml per gallon (projects/plantagram/learnings.md:3).", OPENED, False),
@@ -237,7 +245,15 @@ TURNS = [
      record(("nwani", "hi"), ("new reply", "here"), ("new card", "Save it")), False),
     ("card answered by a tap that arrived mid-turn",
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"),
-            ("tap mid-turn", "Chose Save. decision_id=cmsg_Saveit"), ("reply", "Saved.")), False),
+            ("tap mid-turn", '<wake><message from="human">Chose Save</message><system-note>decision_id=cmsg_Saveit'
+                             '</system-note></wake>'), ("reply", "Saved.")), False),
+    ("a helper's mid-turn report quoting a card's id doesn't answer it",
+     record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"),
+            ("tap mid-turn", '<agent-message from="a1">It said decision_id=cmsg_Saveit</agent-message>'),
+            ("reply", "Saved.")), True),
+    ("Nwani's mid-turn message starts a new turn",
+     record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"), ("card", "Save it again"),
+            ("tap mid-turn", '<wake><message from="human">one more thing</message></wake>'), ("reply", "ok")), True),
     ("refused card doesn't count as posted",
      record(("nwani", "hi"), ("reply", "here"), ("refused card", "Save it")), False),
     ("refused card doesn't count as ending on a card",
@@ -252,6 +268,10 @@ def reviewed(*events):
     for n, kind in enumerate(events):
         if kind == "nwani":
             lines.append({"type": "user", "message": {"content": "<wake>a question</wake>"}})
+            continue
+        if kind == "nwani mid-turn":
+            lines.append({"type": "attachment", "attachment": {"type": "queued_command",
+                          "prompt": '<wake><message from="human">one more thing</message></wake>'}})
             continue
         if kind in ("report back", "named report back"):
             sender = {"from": "review-1", "senderTaskId": "a1"} if kind.startswith("named") else {"from": "a1"}
@@ -288,6 +308,8 @@ REVIEWS = [
     ("long reply, review failed", LONG, reviewed("nwani", "failed review"), True),
     ("long reply, a different helper ran", LONG, reviewed("nwani", "other helper"), True),
     ("long reply, reviewed by the plugin's helper", LONG, reviewed("nwani", "plugin review"), False),
+    ("long reply, reviewed before Nwani's mid-turn message", LONG, reviewed("nwani", "review", "nwani mid-turn"), True),
+    ("long reply, reviewed after Nwani's mid-turn message", LONG, reviewed("nwani", "nwani mid-turn", "review"), False),
 ]
 
 

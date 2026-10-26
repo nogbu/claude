@@ -9,6 +9,8 @@ import json
 import re
 import sys
 
+from nwani import queued_message
+
 # Older threads name the tools reply and ask_decision, newer ones post_message and request_decision.
 ASK = {"mcp__hearthbot__ask_decision", "mcp__hearthbot__request_decision"}
 CLOSE = "mcp__hearthbot__close_decision"
@@ -37,10 +39,10 @@ def read_record(path):
             except ValueError:
                 continue
             content = (entry.get("message") or {}).get("content")
-            attached = entry.get("attachment") or {}
-            if entry.get("type") == "attachment" and attached.get("type") == "queued_command":
-                # A tap that arrives while Claude is mid-turn is recorded this way, not as a message.
-                closed.update(ANSWERED.findall(str(attached.get("prompt", ""))))
+            queued = queued_message(entry)
+            if queued:
+                closed.update(ANSWERED.findall(queued))
+                turn = []
             elif entry.get("type") == "assistant" and isinstance(content, list):
                 for block in content:
                     if block.get("type") != "tool_use":

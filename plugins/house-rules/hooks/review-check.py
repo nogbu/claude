@@ -8,6 +8,7 @@ import json
 import re
 import sys
 
+from nwani import queued_message
 from shown_text import shown
 
 SHORT = 40  # words; a reply this long or shorter is an acknowledgment and skips review
@@ -37,7 +38,7 @@ def reviewed_this_turn(transcript_path):
                 origin = entry.get("origin") or {}
                 if origin.get("handback") and (origin.get("senderTaskId") or origin.get("from")) in waiting:
                     done = True
-            elif entry.get("type") == "user" and isinstance(content, str):
+            elif (entry.get("type") == "user" and isinstance(content, str)) or queued_message(entry):
                 asked, waiting, done = set(), set(), False
             elif entry.get("type") == "assistant" and isinstance(content, list):
                 for block in content:
