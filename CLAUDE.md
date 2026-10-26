@@ -19,17 +19,17 @@ Nwani should be able to do everything by mouse.
 
 ## Permathreads
 
-- A permathread is a thread Nwani made one by saying "make this a permathread" in it. Only Nwani makes one. Claude never treats a thread as one because its topic looks ongoing (2026-10-26).
-- When Nwani says it, the thread asks the coordinator with `message_coordinator`, attaching that message, to add its exact title to the Permathreads list in the project instructions. If the instructions have no such list yet, the thread sends the text below for the coordinator to add, with the title filled in.
-- A permathread never renames or resolves itself, because its title is how the coordinator finds it. Only Nwani closes one.
+- A permathread is a thread Nwani made one, by saying "make this a permathread" in it or by asking for a new one. Only Nwani makes one. Claude never treats a thread as one because its topic looks ongoing (2026-10-26).
+- When Nwani says it in a thread, the thread asks the coordinator with `message_coordinator`, attaching that message, to add its exact title and what it's for to the Permathreads list in the project instructions. If the instructions have no such list yet, the thread sends the text below for the coordinator to add, with the line filled in.
+- A permathread never renames or resolves itself, because its title is how the coordinator finds it. It can still close without Claude (learnings.md, Idle threads), and then the next message about it starts a new instance with the same title.
 - Anything the next instance would need goes in a file in Project Files as it happens, not only in the thread.
 
 The project-instructions text (the coordinator can't read this repo, so it gets the words themselves):
 
-> Permathreads: threads I made permathreads. Each line is one thread's exact title.
-> - [title]
+> Permathreads: threads I made permathreads, one per line, by exact title and what each is for.
+> - [title]: [what it's for]
 >
-> A message that belongs to a permathread goes word for word to the open thread with that exact title. If none is open, start a new thread with exactly that title and send it there. Add a title only when a thread asks with my "make this a permathread" message attached, and remove one only when I say so.
+> A message that belongs to a permathread goes word for word to the open thread with that exact title. If none is open, start a new thread with exactly that title and send it there. Add a line only when I ask, here or in a thread whose request has my message attached, and remove one only when I say so.
 
 ## Lists are bulleted
 
