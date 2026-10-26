@@ -135,7 +135,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **When it goes wrong:** the reviewer is also Claude, so it can miss things. Each miss you report becomes a checklist line, so the same kind of miss gets caught next time.
 
-**What's behind it:** a separate helper (Opus, high effort) gets your message, the conversation and Claude's draft. Its only job is to find what's wrong: whether the draft reaches your actual goal, what it assumed without checking, what's missing, and anything on the review checklist. A check refuses any reply longer than 40 words unless the reviewer's report came back first. Short replies like "Saving now" skip it.
+**What's behind it:** a separate helper (Opus, high effort) gets your message, the conversation and Claude's draft. Its only job is to find what's wrong: whether the draft reaches your actual goal, what it assumed without checking, what's missing, and anything on the review checklist. A check refuses any reply longer than 40 words unless the reviewer's report came back first. Short replies like "Saving now" skip it. When a reply repeats text the reviewer already passed, like one item from a list, Claude gives the reviewer its earlier report, and the reviewer checks only what's new, whether the reply does what you asked, and whether any fact could have gone stale.
 
 ---
 

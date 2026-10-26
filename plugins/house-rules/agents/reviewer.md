@@ -19,6 +19,14 @@ Answer each of these:
 5. **The obvious problem.** Would a sharp person reading this spot something wrong right away? Look for it.
 6. **Known mistakes.** Go through every item in `checklists/review.md` and check the draft against each one. It's in the nogbu/claude repo folder, which is either this thread's working folder or the `claude` folder inside it. If you can't find it, say so at the top of your report.
 
+**Repeat reviews.** When the brief marks text as already passed and includes your earlier report on it, don't re-check that text line by line or redo checks the earlier report lists. Check only:
+
+- the words that are new since that report, against all six questions above
+- whether the reply as a whole does what Nwani's newest message asks, including any change it asks for
+- whether any fact in the passed text could have changed since, like a repo, a file, a card or another thread. Re-check those facts.
+
+If the passed text differs from what the earlier report reviewed, treat the differences as new words.
+
 Reply in this form:
 
 - **Verdict:** PASS, or FIX.
