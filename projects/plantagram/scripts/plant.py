@@ -218,9 +218,12 @@ def print_run(lines, label):
 
 
 HEADCOUNT = "Hook (collection.md rules): headcount. "
-ROUTE = ("Hook (collection.md rules): if this thread isn't the collection thread the project instructions link, "
-         "skip the step below: send my message word for word to that thread's session (list_threads) "
-         "with message_thread, and reply only 'Sent to [collection](#[its thread id])'.\n")
+ROUTE = ("Hook (collection.md rules): if this thread isn't the collection thread the project instructions name "
+         "(by exact title in their Permathreads list, or by link until that list exists; CLAUDE.md, Permathreads, 2026-10-26), "
+         "skip the step below: send my message word for word to the open thread with that title (list_threads) "
+         "with message_thread, and reply only 'Sent to [collection](#[its thread id])'. If none is open, ask the coordinator "
+         "with message_coordinator, my message attached, to start a new thread with exactly that title and send it there, "
+         "and reply only 'Asked for a new collection thread'.\n")
 
 
 def hook():
