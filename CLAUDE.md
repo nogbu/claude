@@ -29,7 +29,7 @@ The project-instructions text (the coordinator can't read this repo, so it gets 
 > Permathreads: threads I made permathreads, one per line, by exact title and what each is for.
 > - [title]: [what it's for]
 >
-> A message that belongs to a permathread goes word for word to the open thread with that exact title. If none is open, start a new thread with exactly that title and send it there. Add a line only when I ask, here or in a thread whose request has my message attached, and remove one only when I say so. Confirm the exact name with me before starting a new permathread or adding a line, unless the thread's request says I already confirmed it on a card.
+> A message that belongs to a permathread goes word for word to the open thread with that exact title. If none is open, start a new thread with exactly that title and send it there. Add a line only when I ask, here or in a thread whose request has my message attached, and remove one only when I say so. Confirm the exact name with me before starting a permathread I asked for here or adding a line, unless the thread's request says I already confirmed it on a card.
 
 ## Lists are bulleted
 
