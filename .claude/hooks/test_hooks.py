@@ -116,6 +116,9 @@ DRAWN = ('<style>.a{fill:red;stroke:blue}</style><svg><text class="t">%s</text><
 WIDGETS = [
     ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Week one"}}, False),
     ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Ready?"}}, True),
+    ({"widget": "show_widget", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Week one"}}, False),
+    ({"widget": "show_widget", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Fast; cheap"}}, True),
+    ({"widget": "step_card_display_v0", "text": "Steps; test.", "input": {"summary": "Test"}}, True),
     ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Salt &amp; pepper"}}, False),
     ({"family": "visualize", "text": "A chart.", "input": {"title": "Plan", "widget_code": DRAWN % "Fast; cheap"}}, True),
     ({"family": "card", "widget": "comparison_card_display_v0", "text": "Two options.",
