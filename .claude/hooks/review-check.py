@@ -60,7 +60,7 @@ def reviewed_this_turn(transcript_path):
 
 def main():
     hook = json.load(sys.stdin)
-    text = shown(hook)[0]
+    text = "\n".join(part for part, _ in shown(hook)[0])
     if len(text.split()) <= SHORT or not hook.get("transcript_path"):
         return
     if not reviewed_this_turn(hook["transcript_path"]):

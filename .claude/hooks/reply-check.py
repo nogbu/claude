@@ -4,6 +4,7 @@ Check before answering). Widgets are checked too, by the words they show (shown_
 
 After code, quoted lines, text in quotation marks and links are set aside, a reply is refused when:
 - a line has a "?" and doesn't start with "Typed answer:" (message drafts for other people may ask)
+- in a widget, a source in its stand-in line, title or summary covers every number in it, like a chart's labels
 - it has a semicolon
 - a "Still open:" line isn't followed by bullets
 - a line states a number with a unit but names no source: a link, a file:line, "source:" or "unverified"
@@ -56,12 +57,12 @@ def opened_this_turn(transcript_path):
     return " ".join(seen)
 
 
-def problem(text, transcript_path=None, questions_ok=False):
+def problem(text, transcript_path=None, questions_ok=False, sourced=False):
     plain = text
     for pattern in QUOTED:
         plain = pattern.sub(" ", plain)
     for line in plain.splitlines():
-        if UNIT.search(line) and not SOURCE.search(line):
+        if UNIT.search(line) and not SOURCE.search(line) and not sourced:
             return ("A number with a unit names its source on the same line: a learnings line, a link, "
                     "a file:line, \"source:\" or \"unverified\" (CLAUDE.md, Check before answering). Found: "
                     "\"%s\"." % line.strip()[:120])
@@ -96,8 +97,9 @@ def problem(text, transcript_path=None, questions_ok=False):
 
 def main():
     hook = json.load(sys.stdin)
-    text, questions_ok = shown(hook)
-    reason = problem(text, hook.get("transcript_path"), questions_ok)
+    parts, heading = shown(hook)
+    sourced = bool(SOURCE.search(heading))
+    reason = next(filter(None, (problem(text, hook.get("transcript_path"), ok, sourced) for text, ok in parts)), None)
     if reason:
         print(json.dumps({"hookSpecificOutput": {
             "hookEventName": "PreToolUse",
