@@ -67,7 +67,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 - Once the tangent is settled, Claude brings back the newest unanswered question on a fresh card. When you answer it, Claude brings back the next newest, and so on until nothing is left.
 - To get rid of a question, answer it, or say to drop it.
 
-**What you'll see:** the message just above each card ends with a **Still open:** list of everything else waiting, newest first.
+**What you'll see:** when a topic is settled and Claude moves on to the next open question, the message just above that card ends with a **Still open:** list of everything else waiting, newest first. Messages in the middle of a topic leave it out.
 
 **When it goes wrong:** if a turn ends without bringing back an open question, say so. The check below should have caught it.
 

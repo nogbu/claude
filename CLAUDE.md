@@ -15,7 +15,7 @@ Nwani should be able to do everything by mouse.
 
 - Every question Claude asks stays open until Nwani answers it or says to drop it.
 - When Nwani goes off on a tangent, follow it. Once the tangent is settled, re-ask the newest open question on a fresh card, then the next newest, until none are left.
-- The reply just before each card ends with a "Still open:" line listing the rest of the queue, newest first.
+- The "Still open:" list is for switching topics. When the current topic is settled and Claude moves on to the next open question, the reply just before that card ends with a "Still open:" line listing the rest of the queue, newest first. Replies in the middle of a topic leave it out (2026-10-26).
 - A hook stops Claude from ending a turn without a card while any card is still open.
 
 ## Permathreads

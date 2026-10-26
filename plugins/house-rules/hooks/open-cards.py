@@ -84,8 +84,9 @@ def main():
         print(json.dumps({"decision": "block", "reason": (
             "A card is still open, so this turn has to end on a card (CLAUDE.md, Open questions, "
             "newest first). Unless this turn already asked a new question, re-ask the newest open "
-            "card: withdraw it with close_decision, send a reply ending with a \"Still open:\" "
-            "bullet list of the rest, then post it again. Newest open card: \"%s\"" % open_cards[-1])}))
+            "card: withdraw it with close_decision, send a reply, then post it again. End that reply "
+            "with a \"Still open:\" bullet list of the rest only if the current topic is settled. "
+            "Newest open card: \"%s\"" % open_cards[-1])}))
 
 
 if __name__ == "__main__":
