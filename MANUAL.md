@@ -43,6 +43,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 **How you use it:**
 - When Claude needs a decision, it shows a **card** with 2 to 4 buttons. One is marked as Claude's recommendation. Click one.
 - You can always type instead, with details: "yes but don't save it" or "no, change x to y". Claude does exactly what you write, nothing more.
+- If a request could mean more than one thing, or doesn't say what to do, Claude asks on a card before doing anything on it.
 - If Claude needs something only you can describe, it says **Typed answer:** before the question, so you know a click won't do.
 - Files come as attachments and links you can click.
 - Everything you need to decide is in the message just above the card. The card itself only has the question and the buttons.
