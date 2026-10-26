@@ -5,6 +5,8 @@
   python3 projects/plantagram/scripts/plant.py increment NAME   add 1 to its Inflos, set As Of to today (US Eastern),
                                                                  print the new row as show does; collection.md is in Project Files, so nothing to commit
   python3 projects/plantagram/scripts/plant.py confirm NAME...  set each unconfirmed one's Confirmed to today (US Eastern), one quoted NAME per plant
+  python3 projects/plantagram/scripts/plant.py remove NAME...   move each one's row from collection.md to graveyard.md, with Removed set to
+                                                                 today (US Eastern), one quoted NAME per plant
   python3 projects/plantagram/scripts/plant.py hook            UserPromptSubmit hook (prompt-submit.sh), hook JSON on stdin
 
 NAME matches a row's Name ignoring case and trailing punctuation. The hook acts only in plantagram threads
@@ -17,6 +19,8 @@ NAME matches a row's Name ignoring case and trailing punctuation. The hook acts 
                        (/rules-check) and matches no row prints the no-match note instead
   /confirm [plants]    (one, or several split by commas, "and" or lines) tells the thread to run confirm (Confirmed = today unless already set) and reply only "[names] confirmed" plus any already confirmed
                        (2026-10-14)
+  /remove [plants]     (split as /confirm's are) tells the thread to run remove and reply only "[names] moved to the graveyard"
+                       (my words 2026-10-26: the graveyard lists plants that died and are no longer in my collection)
   /print [plant]       writes a one-plant list and tells the thread to run plantTags' tags.py on it
   /print list          my next message is a list of plants, one per line (or the lines after /print list in the
                        same message): the same, for the whole list
@@ -30,6 +34,7 @@ from zoneinfo import ZoneInfo
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PLANTS = os.environ.get("COLLECTION_FILE", "/mnt/project-files/views/collection.md")
+GRAVEYARD = os.environ.get("GRAVEYARD_FILE", "/mnt/project-files/views/graveyard.md")
 LIST = os.path.join(HERE, "list.py")
 TAGS = os.path.join(HERE, "../tags/tags.py")
 NOMENCLATURE = os.path.join(HERE, "../nomenclature.md")
@@ -133,6 +138,37 @@ def confirm(name):
         return
     today = datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d")
     subprocess.run([sys.executable, LIST, "set", PLANTS, row[0], f"Confirmed={today}"], check=True)
+
+
+def buried(name):
+    """(columns, row) for the graveyard.md row whose Name is name, ignoring case, or None."""
+    if not os.path.exists(GRAVEYARD):
+        return None
+    lines = open(GRAVEYARD, encoding="utf-8").read().split("\n")
+    start = next((i for i, l in enumerate(lines) if l.startswith("| Name")), None)
+    if start is None:
+        return None
+    cols, rows = [c.strip() for c in lines[start].strip().strip("|").split("|")], []
+    for l in lines[start + 2:]:
+        if not l.startswith("|"):
+            break
+        rows.append([c.strip() for c in l.strip().strip("|").split("|")])
+    row = next((r for r in rows if key(r[0]) == key(ALIASES.get(key(name), name))), None)
+    return (cols, row) if row else None
+
+
+def remove(name):
+    """Move the plant's row to graveyard.md (added there first, so a failure never loses it), Removed = today."""
+    cols, row = find(name)
+    if not row:
+        dead = buried(name)
+        sys.exit(f"plant.py: {dead[1][0]} is already in the graveyard (removed {dead[1][-1]})" if dead
+                 else f"plant.py: no plant named '{name}' in collection.md")
+    today = datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d")
+    subprocess.run([sys.executable, LIST, "add", GRAVEYARD, row[0]] + [f"{c}={v}" for c, v in zip(cols[1:], row[1:])]
+                   + [f"Removed={today}"], check=True, stdout=subprocess.DEVNULL)
+    subprocess.run([sys.executable, LIST, "remove", PLANTS, row[0]], check=True, stdout=subprocess.DEVNULL)
+    print(f"moved to the graveyard: {row[0]} ({today})")
 
 
 def message(prompt):
@@ -252,18 +288,26 @@ def hook():
             print("Hook (collection.md rules): /print list. Ask me for the list of plants, one per line; "
                   "the hook reads my next message as that list.")
         return
-    m = re.fullmatch(r"/confirm\s+(.+)", text, re.I | re.S)
+    m = re.fullmatch(r"/(confirm|remove)\s+(.+)", text, re.I | re.S)
     if m:  # one plant, or several split by commas, "and" or lines
-        cols, row = find(m.group(1))
-        parts = [m.group(1)] if row else [p for p in re.split(r"\s*(?:,|\band\b|\n)\s*", m.group(1)) if p.strip()]
+        cmd, arg = m.group(1).lower(), m.group(2)
+        cols, row = find(arg)
+        parts = [arg] if row else [p for p in re.split(r"\s*(?:,|\band\b|\n)\s*", arg) if p.strip()]
         rows = [find(p)[1] for p in parts]
-        if all(rows):
-            names = " ".join(f'"{r[0]}"' for r in rows)
-            print(f"Hook (collection.md rules): run python3 projects/plantagram/scripts/plant.py confirm {names}, "
-                  "and reply only '[Names] confirmed', e.g. 'Wack Magic and Madripoor confirmed', adding any it prints as already confirmed and when.")
-        else:
-            bad = [p.strip() for p, r in zip(parts, rows) if not r]
+        dead = [buried(p) for p, r in zip(parts, rows) if not r] if cmd == "remove" else []
+        bad = [p.strip() for p, r in zip(parts, rows) if not r and not (cmd == "remove" and buried(p))]
+        gone = ", ".join(f"{d[1][0]} (removed {d[1][-1]})" for d in dead if d)
+        if bad:
             print(f"Hook (collection.md rules): {', '.join(repr(b) for b in bad)} matched no row exactly. {MISS}")
+        elif not any(rows):
+            print(f"Hook (collection.md rules): already in the graveyard: {gone}. Reply with that and change nothing.")
+        else:
+            names = " ".join(f'"{r[0]}"' for r in rows if r)
+            print(f"Hook (collection.md rules): run python3 projects/plantagram/scripts/plant.py {cmd} {names}, " + (
+                "and reply only '[Names] confirmed', e.g. 'Wack Magic and Madripoor confirmed', adding any it prints as already confirmed and when."
+                if cmd == "confirm" else
+                "and reply only '[Names] moved to the graveyard', e.g. 'Wack Magic and Madripoor moved to the graveyard'"
+                + (f", adding that these were already there: {gone}." if gone else ".")))
         return
     m = re.fullmatch(r"/print\s+(.+)", text, re.I | re.S)
     if m:
@@ -294,11 +338,15 @@ def hook():
             print(f"Hook (collection.md rules): '{name.strip()}' matched no row exactly. {MISS}")
         return
     cols, row = find(text[1:])
+    dead = None if row else buried(text[1:])
     words = key(text[1:]) + " "  # a skill name can be followed by its arguments ("/code-review high")
     if row:
         print("Hook (collection.md rules): my message is a plant name; reply with its collection.md row as this table:\n"
               + fmt(cols, row))
-    elif words.strip() and words.split()[0] not in ("increment", "confirm", "print", "headcount") \
+    elif dead:
+        print("Hook (collection.md rules): my message names a plant in the graveyard (graveyard.md); reply with its row as this table:\n"
+              + fmt(*dead))
+    elif words.strip() and words.split()[0] not in ("increment", "confirm", "remove", "print", "headcount") \
             and not any(words.startswith(s + " ") for s in skills(data.get("transcript_path", ""))):
         print(f"Hook (collection.md rules): '{text[1:].strip()}' matched no row exactly. {MISS}")
 
@@ -320,5 +368,8 @@ if __name__ == "__main__":
     elif cmd == "confirm" and args:
         for a in args:  # each argument is one plant (quote multi-word names)
             confirm(a)
+    elif cmd == "remove" and args:
+        for a in args:
+            remove(a)
     else:
         sys.exit(__doc__)
