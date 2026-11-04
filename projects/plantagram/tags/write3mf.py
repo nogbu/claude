@@ -161,6 +161,11 @@ def _guard(objs, settings, cli=False):
     return settings
 
 
+def attr(text):
+    """text made safe inside an XML attribute: a name like "bvep & rocksteady" broke model_settings.config (2026-11-04)."""
+    return str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+
+
 def write(path, objs, settings, layer_gcode=None, plate_name=None, thumbnails=True, cli=False, plates=None, bed=256.0):
     """Write an Orca 2.4.2 3mf. layer_gcode: [(top_z, gcode)] for the layer slider (the command-line
     slicer drops these; put must-keep G-code in the printer's layer-change G-code instead). cli: a copy for
@@ -190,13 +195,13 @@ def write(path, objs, settings, layer_gcode=None, plate_name=None, thumbnails=Tr
                       '      <metadata key="extruder" value="%d"/>\n%s      <metadata key="source_file" value="%s.3mf"/>\n'
                       '      <metadata key="source_object_id" value="%d"/>\n      <metadata key="source_volume_id" value="%d"/>\n'
                       '      <mesh_stat edges_fixed="0" degenerate_facets="0" facets_removed="0" facets_reversed="0" backwards_edges="0"/>\n'
-                      '    </part>' % (mid, p.name or (o.name if len(o.parts) == 1 else "%s part %d" % (o.name, j + 1)),
+                      '    </part>' % (mid, attr(p.name or (o.name if len(o.parts) == 1 else "%s part %d" % (o.name, j + 1))),
                                        p.extruder, "".join('      <metadata key="%s" value="%s"/>\n' % kv for kv in p.settings), stem, k, j))
             mid += 1
         comps.append('  <object id="%d" p:UUID="%s" type="model">\n   <components>\n%s\n   </components>\n  </object>'
                      % (oid, u("obj%d" % oid), "\n".join(oc)))
         cfg.append('  <object id="%d">\n    <metadata key="name" value="%s"/>\n    <metadata key="extruder" value="1"/>\n%s%s\n  </object>'
-                   % (oid, o.name, "".join('    <metadata key="%s" value="%s"/>\n' % kv for kv in o.settings), "\n".join(pc)))
+                   % (oid, attr(o.name), "".join('    <metadata key="%s" value="%s"/>\n' % kv for kv in o.settings), "\n".join(pc)))
         n = plate_of[k]; dx, dy = (n % cols) * stride, -(n // cols) * stride
         for i, a in enumerate(o.at or [(c[0], c[1])]):
             tr = _turn(a[0] + dx, a[1] + dy, zc, a[2] if len(a) > 2 else 0.0)
