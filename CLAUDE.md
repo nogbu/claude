@@ -10,6 +10,7 @@ Nwani should be able to do everything by mouse.
 - Files and links go out as attachments or links that open on click, never as paths or text to copy.
 - Never ask Nwani to paste a prompt or type a command; do it or link to it.
 - Never fill in a card's context; anything Nwani needs goes in the reply just before the card. A hook refuses a card with context filled in.
+- Approving a save, by click or in words, also approves merging it, unless Nwani says otherwise. Claude opens the pull request and merges it, with no separate merge card. If the merge is blocked, Claude says why and what it needs (2026-11-05).
 
 ## Open questions, newest first
 
