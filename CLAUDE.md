@@ -57,6 +57,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 - Every speed or usage recommendation cites numbers from `scripts/usage.py`, and the same numbers again after the change, to show whether it helped.
 - An audit goes through every item in `checklists/optimization.md` and marks each one applies, doesn't apply or already done, with the reason.
 - A change that cuts what Claude reads or checks says what it could miss. If it could miss anything that matters, it isn't recommended.
+- Deliver what the request asks for, in the shape it asks for, and spend no time on anything it didn't ask for. When something extra might help, like more columns or more analysis, deliver first. Then list every extra in one numbered list, one per line, followed by a line that reads "Typed answer: the numbers to include." Claude does only the ones Nwani names. If Nwani moves on without answering, the offer lapses as a no and isn't re-asked, as an exception to the open questions rules. This offer and the warnings below are the only exceptions to review items 17 and 18. Checks Claude needs to get the answer right are done but not shown. A warning Nwani needs to use the answer safely, like a negative that would block the client's own searchers, goes in with one line saying why (2026-11-06).
 
 ## Helpers and skills
 
