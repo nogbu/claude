@@ -152,6 +152,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 **What you'll see:**
 - Every speed or cost recommendation comes with real numbers from the usage report, and the same numbers again after the change so you can see whether it helped.
 - Any change that would make Claude read or check less says what it could miss. If it could miss anything important, Claude doesn't recommend it.
+- Claude delivers what you asked for, in the shape you asked for. If extras might help, it lists them all in one numbered list after delivering. Tell it the numbers you want, and it does only those. Ignoring the list counts as no.
 
 **When it goes wrong:** if a recommendation has no numbers, or an obvious idea is missing, say so. The fix is to add the missing idea to the checklist so every later audit checks it.
 
