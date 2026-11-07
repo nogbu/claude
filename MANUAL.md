@@ -66,15 +66,15 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **How you use it:**
 - Ignore a card whenever you like and ask or say something else. Claude follows you.
-- Once the tangent is settled, Claude brings back the newest unanswered question on a fresh card. When you answer it, Claude brings back the next newest, and so on until nothing is left.
+- Only you say when a task or tangent is done. When Claude thinks it is, it asks you on a card. Once you say so, Claude brings back the newest unanswered question on a fresh card. When you answer it, Claude brings back the next newest, and so on until nothing is left.
 - To get rid of a question, answer it, or say to drop it.
 - Say "back burner this" (or "bb this", "bb", "bbt") to set the current topic and its questions aside without dropping them. Claude stops asking until you ask, or until it shows you the open questions list, like at the start of a thread with no immediate topic.
 
-**What you'll see:** when a topic is settled and Claude moves on to the next open question, the message just above that card ends with a **Still open:** list of everything else waiting, newest first. Messages in the middle of a topic leave it out.
+**What you'll see:** when you've said a topic is done and Claude moves on to the next open question, the message just above that card ends with a **Still open:** list of everything else waiting, newest first. Messages in the middle of a topic leave it out.
 
 **When it goes wrong:** if a turn ends without bringing back an open question, say so. The check below should have caught it.
 
-**What's behind it:** at the end of every turn, a check reads the thread's own record of cards. If any card is still unanswered and the turn didn't end on a card, Claude is stopped and told which one to bring back. It only stops a turn once, so it can't get stuck in a loop.
+**What's behind it:** at the end of every turn, a check reads the thread's own record of cards. If any card is still unanswered and the turn didn't end on a card, Claude is stopped. It's told to ask about the current task if you haven't said it's done, and otherwise which card to bring back. It only stops a turn once, so it can't get stuck in a loop.
 
 ---
 
