@@ -93,6 +93,19 @@ REPLIES = [
     ("Still open:\nThe usage script", True),
     ("Still open:", True),
     ("Saved. Nothing else is needed.", False),
+    # Lists strung through a sentence
+    ("Three are part of it: how a fixed draft gets checked again, retesting lighter repeat reviews, and whether cited files get reopened.", True),
+    ("- Setup questions 2, 5 and 6", True),
+    ("I add it in both copies, merge it, and send you the file.", True),
+    ("Pick red, green, or blue.", True),
+    ("Pick red, green or blue.", False),  # missed on purpose: the same shape as the next line
+    ("Yes, merged and uploaded.", False),
+    ("If it fails, Claude retries and stops.", False),
+    ("On Nov 7, 2026, and again on Nov 8.", False),
+    ("Unlike the reviewer, it runs on short replies too, and it blocks.", False),
+    ("It costs a third as much, but it opened no files and missed a list.", False),
+    ("Yes, that's fine.", False),
+    ("A list like \"a, b and c\" in quotes is shown, not used.", False),
     ("", False),
     # Numbers with units need a source
     ("TPS One: use 5 ml per gallon.", True),

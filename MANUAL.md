@@ -84,9 +84,9 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **What you'll see:** any list of three or more things is a bulleted list, one item per line, never strung together in a sentence.
 
-**When it goes wrong:** a list written with commas can still slip through. Point it out.
+**When it goes wrong:** some lists can still slip through, like one on a card, or one whose items are long clauses. The check can also stop a sentence that only looks like a list, like "After that, Nwani uploads it, and the test runs" or "Done, Nwani, and saved", which Claude then rewords. Point out either.
 
-**What's behind it:** a written rule, plus a check that stops any reply with a semicolon (the usual way Claude strings items together) or a "Still open:" line without bullets under it.
+**What's behind it:** a written rule, plus a check that stops any reply with a semicolon, with a list strung through a sentence as "a, b, and c" or "2, 5 and 6", or with a "Still open:" line without bullets under it. The reviewer looks for the rest, like "a, b and c" with no comma before "and", which the check can't tell from an ordinary sentence like "Yes, merged and uploaded".
 
 ---
 
@@ -188,7 +188,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
 | New-project check | Nothing. On a thread's first message, if the project has no rules and learnings folder yet, it reminds Claude to offer one on a Save card |
 | Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /remove, /[plant] and /print |
-| Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
+| Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, string a list through a sentence as "a, b, and c" or "2, 5 and 6", have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
 | Full-thread check | Nothing. When a thread already has 24 files and a file was skipped, it reminds Claude to hand over to a new thread with the same title and attach the file there |
