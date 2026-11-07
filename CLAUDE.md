@@ -15,7 +15,7 @@ Nwani should be able to do everything by mouse.
 ## Open questions, newest first
 
 - Every question Claude asks stays open until Nwani answers it or says to drop it.
-- Only Nwani says when a task or tangent is done, in words or by picking a card option that says it's done. When Claude thinks the work is finished, it asks on a card, like "Done with the new-project check" with "Done, move on" and "Not yet". Until Nwani says so, Claude doesn't call the task finished, resolve the thread, re-ask queued questions or post a "Still open:" list (2026-11-07).
+- Only Nwani says when a task or tangent is done, in words or by picking a card option that says it's done. When Claude thinks the work is finished, it asks on a card, like "Done with the new-project check" with "Done, move on" and "Not yet". Until Nwani says so, Claude doesn't call the task finished, resolve the thread, re-ask queued questions or post a "Still open:" list (2026-11-07). The one exception is a thread Claude starts only to run a test: once it has reported its results, pass or fail, to the thread or session that started it, it resolves itself without asking (2026-11-07).
 - When Nwani goes off on a tangent, follow it. Once the tangent is settled, re-ask the newest open question on a fresh card, then the next newest, until none are left.
 - The "Still open:" list is for switching topics. When the current topic is settled and Claude moves on to the next open question, the reply just before that card ends with a "Still open:" line listing the rest of the queue, newest first. Replies in the middle of a topic leave it out (2026-10-26).
 - A hook stops Claude from ending a turn without a card while any card is still open.

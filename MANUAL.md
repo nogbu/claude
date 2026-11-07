@@ -66,7 +66,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **How you use it:**
 - Ignore a card whenever you like and ask or say something else. Claude follows you.
-- Only you say when a task or tangent is done. When Claude thinks it is, it asks you on a card. Once you say so, Claude brings back the newest unanswered question on a fresh card. When you answer it, Claude brings back the next newest, and so on until nothing is left.
+- Only you say when a task or tangent is done. When Claude thinks it is, it asks you on a card. A thread Claude starts only to run a test is the exception: it closes itself once it has reported back. Once you say so, Claude brings back the newest unanswered question on a fresh card. When you answer it, Claude brings back the next newest, and so on until nothing is left.
 - To get rid of a question, answer it, or say to drop it.
 - Say "back burner this" (or "bb this", "bb", "bbt") to set the current topic and its questions aside without dropping them. Claude stops asking until you ask, or until it shows you the open questions list, like at the start of a thread with no immediate topic.
 
