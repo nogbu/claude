@@ -6,6 +6,7 @@ After code, quoted lines, text in quotation marks and links are set aside, a rep
 - a line has a "?" and doesn't start with "Typed answer:" (message drafts for other people may ask)
 - in a widget, a source in its stand-in line, title or summary covers every number in it, like a chart's labels
 - it has a semicolon
+- it strings three or more items through a sentence as "a, b, and c" or "2, 5 and 6" (a list goes on bullets)
 - a "Still open:" line isn't followed by bullets
 - a line states a number with a unit but names no source: a link, a file:line, "source:" or "unverified"
   (a recipe table's rows, one with an "Ingredient" column, are covered by one source line just under it)
@@ -37,6 +38,19 @@ TYPED = re.compile(r"^[\s*_]*Typed answer:")
 STILL_OPEN = re.compile(r"^[\s*_]*Still open:[*_]*(.*)$")
 BULLET = re.compile(r"^\s*[-*•]\s")
 TABLE_ROW = re.compile(r"^\s*\|")
+# Lists strung through a sentence, in two shapes that ordinary sentences rarely take:
+#   "a, b, and c" or "a, b, or c": a comma before "and"/"or", with a middle item of up to 6 words that
+#   holds no joining word, doesn't start with a pronoun and isn't a year ("Nov 7, 2026, and" passes)
+#   "2, 5 and 6": numbers, with or without the comma before "and"/"or"
+# "a, b and c" with words and no comma before "and" isn't caught, since "Yes, merged and uploaded"
+# looks the same. The reviewer looks for those (checklists/review.md).
+WORD = r"[\w'’/+-]+"
+JOINER = r"(?:and|or|but|then|so|which|who|that|while|because)\b"
+PRONOUN = r"(?:i|it|you|we|they|he|she|this|there)\b"
+ITEM_WORD = r"(?!%s)%s" % (JOINER, WORD)
+FIRST_WORD = r"(?!%s|%s|\d{4}\b)%s" % (JOINER, PRONOUN, WORD)
+INLINE_LIST = re.compile(r"%s,\s+%s(?:\s+%s){0,5},\s+(?:and|or)\s+%s|\b\d+,\s+\d+,?\s+(?:and|or)\s+\d+\b"
+                         % (WORD, FIRST_WORD, ITEM_WORD, WORD), re.I)
 
 
 def opened_this_turn(transcript_path):
@@ -103,6 +117,11 @@ def problem(text, transcript_path=None, questions_ok=False, sourced=False):
         if ";" in line:
             return ("No semicolons in replies (CLAUDE.md, Lists are bulleted). Found: \"%s\". "
                     "Put a list of three or more items on bullets, or split the sentence." % line.strip()[:120])
+    for line in lines:
+        found = INLINE_LIST.search(line)
+        if found:
+            return ("A list of three or more things goes on bullets, one per line, not strung through a "
+                    "sentence (CLAUDE.md, Lists are bulleted). Found: \"%s\"." % found.group(0)[:120])
     for i, line in enumerate(lines):
         m = STILL_OPEN.match(line)
         if m:
