@@ -39,7 +39,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "mcp__hearthbot__reply",
+        "matcher": "mcp__hearthbot__reply|mcp__hearthbot__post_message",
         "hooks": [
           {
             "type": "command",
