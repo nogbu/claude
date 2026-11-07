@@ -84,7 +84,8 @@ def main():
         print(json.dumps({"decision": "block", "reason": (
             "A card is still open, so this turn has to end on a card (CLAUDE.md, Open questions, "
             "newest first). Unless this turn already asked a new question: if Nwani hasn't said the "
-            "current task is done, end on a card about that task, like asking whether it's done. "
+            "current task is done, end on a card about that task, like asking whether it's done. A thread "
+            "started only to run a test reports its results and resolves itself instead. "
             "Only once Nwani has said so, re-ask the newest open card: withdraw it with close_decision, "
             "send a reply ending with a \"Still open:\" bullet list of the rest, then post it again. "
             "Newest open card: \"%s\"" % open_cards[-1])}))
