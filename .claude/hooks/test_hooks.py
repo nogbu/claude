@@ -281,7 +281,7 @@ def reviewed(*events):
             lines.append({"type": "user", "isMeta": True, "origin": dict(handback=True, **sender),
                           "message": {"content": "Another Claude session sent a message"}})
             continue
-        kind_name = {"other helper": "Explore", "plugin review": "house-rules:reviewer"}.get(kind, "reviewer")
+        kind_name = {"other helper": "Explore", "plugin review": "kernel:reviewer"}.get(kind, "reviewer")
         args = {"subagent_type": kind_name, "prompt": "draft"}
         text = "Async agent launched successfully.\nagentId: a1" if kind == "background review" else "Verdict: PASS"
         lines.append({"type": "assistant", "message": {"content": [

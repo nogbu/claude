@@ -42,7 +42,7 @@ def reviewed_this_turn(transcript_path):
                 asked, waiting, done = set(), set(), False
             elif entry.get("type") == "assistant" and isinstance(content, list):
                 for block in content:
-                    # The repo's own helper is "reviewer"; the plugin's copy is "house-rules:reviewer".
+                    # The repo's own helper is "reviewer"; the plugin's copy is "kernel:reviewer".
                     kind = str((block.get("input") or {}).get("subagent_type") or "")
                     if block.get("type") == "tool_use" and block.get("name") == "Agent" \
                             and kind.split(":")[-1] == "reviewer":
@@ -75,7 +75,7 @@ def main():
             "permissionDecision": "deny",
             "permissionDecisionReason": (
                 "This reply needs review first (CLAUDE.md, Review before answering). Run the reviewer "
-                "helper (subagent_type \"house-rules:reviewer\", or \"reviewer\" where the repo's own "
+                "helper (subagent_type \"kernel:reviewer\", or \"reviewer\" where the repo's own "
                 "helper loads) with Nwani's message, the "
                 "conversation around it and this draft, and wait for its report. Fix what it finds, or say it in "
                 "the reply."),

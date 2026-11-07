@@ -1,4 +1,4 @@
-# house-rules
+# kernel
 
 Nwani's automatic checks for Claude in claude.ai project threads, plus the reviewer helper.
 Before Claude sends a reply or a decision card, the checks look for the mistakes listed in the
