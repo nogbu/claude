@@ -16,6 +16,8 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **Good to know:** each thread starts fresh. It knows the rules and the files, but not what was said in other threads unless it goes and reads them.
 
+**A new project:** add the `nogbu/claude` repo to its repositories in the project's settings, or ask a thread to add it. The first thread there then offers, on a Save card, to create the project's own rules and learnings files. If the project needs only the shared rules, say so, and it's added to the list of projects without a folder so later threads don't ask. Behind it: the new-project check (2026-11-07).
+
 ---
 
 ## Permathreads
@@ -184,6 +186,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Check | What it stops |
 |---|---|
 | Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
+| New-project check | Nothing. On a thread's first message, if the project has no rules and learnings folder yet, it reminds Claude to offer one on a Save card |
 | Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /remove, /[plant] and /print |
 | Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
@@ -207,4 +210,3 @@ These are planned but not built. Each gets its own section here once it exists.
 - **Save check:** an automatic check that rules can only change after you click Save.
 - **Manual check:** an automatic check that refuses a rule or hook change unless this manual is updated too.
 - **Weekly audit:** an audit that runs on its own every week and brings you its top three findings on cards.
-- **Project folders:** each project (plantagram, 3dp and others) gets its own rules, separate from the shared ones.

@@ -59,6 +59,10 @@ A list of three or more things goes one item per line as bullets, never strung t
 - A change that cuts what Claude reads or checks says what it could miss. If it could miss anything that matters, it isn't recommended.
 - Deliver what the request asks for, in the shape it asks for, and spend no time on anything it didn't ask for. When something extra might help, like more columns or more analysis, deliver first. Then list every extra in one numbered list, one per line, followed by a line that reads "Typed answer: the numbers to include." Claude does only the ones Nwani names. If Nwani moves on without answering, the offer lapses as a no and isn't re-asked, as an exception to the open questions rules. This offer and the warnings below are the only exceptions to review items 17 and 18. Checks Claude needs to get the answer right are done but not shown. A warning Nwani needs to use the answer safely, like a negative that would block the client's own searchers, goes in with one line saying why (2026-11-06).
 
+## Projects
+
+- Each project except those in `projects/no-folder.md` has a `projects/[name]` folder with its own CLAUDE.md for its rules and learnings.md for its facts, starting like nosh's. A hook reads the project's name on a thread's first message, and when the folder is missing, Claude offers on a Save card to create it. If Nwani says the project needs none, Claude adds it to `projects/no-folder.md` (2026-11-07).
+
 ## Helpers and skills
 
 - Before creating a predefined helper or skill, ask Nwani on a card which model and effort level it should use, with a recommendation and the reason.

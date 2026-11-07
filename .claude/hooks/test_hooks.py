@@ -335,6 +335,25 @@ for message, want in LOOKUPS:
     got = looked_up(message)
     if (want is None and got) or (want and (not got or want not in got)):
         failures.append("lookup, expected %r for %r, got %r" % (want, message, got))
+# The new-project check, against a repo with one project folder and one project listed as needing none
+NEW = pathlib.Path(tempfile.mkdtemp())
+(NEW / "claude" / "checklists").mkdir(parents=True)
+(NEW / "claude" / "checklists" / "review.md").write_text("1. Check it.\n")
+(NEW / "claude" / "projects" / "nosh").mkdir(parents=True)
+(NEW / "claude" / "projects" / "no-folder.md").write_text("# None\n\n- admin: shared rules (2026-11-07)\n")
+FIRST = '<session-context nonce="1">\n## Where you are\n\nProject: "%s" (id: `chan_1`)\n</session-context nonce="1">\n<wake reason="spawn"><project id="chan_1" name="%s" type="project"><message trigger="true">hi</message></project></wake>'
+NEW_PROJECTS = [
+    (FIRST % ("3D Printing", "3D Printing"), "projects/3d-printing"),
+    (FIRST % ("nosh", "nosh"), None),
+    (FIRST % ("Nosh", "Nosh"), None),
+    (FIRST % ("admin", "admin"), None),
+    ('<wake reason="mention"><project id="chan_1" name="3dp" type="project"><message trigger="true">hi</message></project></wake>', None),
+]
+for prompt, want in NEW_PROJECTS:
+    out = run("new-project.py", {"prompt": prompt}, dict(os.environ, CLAUDE_PROJECT_DIR=str(NEW)))
+    got = out["hookSpecificOutput"]["additionalContext"] if out else None
+    if (want is None and got) or (want and (not got or want not in got)):
+        failures.append("new-project, expected %r, got %r" % (want, got))
 for args, want in HELPERS:
     if helper_refused(args) != want:
         failures.append("helper-check, expected %s: %r" % ("refused" if want else "allowed", args["file_path"]))
@@ -374,7 +393,7 @@ for name in ("reply", "post_message", "update_message", "edit_message", "post_wi
 out = run("reply-check.py", {"tool_input": {"message_id": "cmsg_1", "body": "Done; saved."}})
 if not (out and out["hookSpecificOutput"]["permissionDecision"] == "deny"):
     failures.append("reply-check, expected refused: an edit whose text is called body")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS)
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
