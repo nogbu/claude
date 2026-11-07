@@ -66,6 +66,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 - Ignore a card whenever you like and ask or say something else. Claude follows you.
 - Once the tangent is settled, Claude brings back the newest unanswered question on a fresh card. When you answer it, Claude brings back the next newest, and so on until nothing is left.
 - To get rid of a question, answer it, or say to drop it.
+- Say "back burner this" (or "bb this", "bb", "bbt") to set the current topic and its questions aside without dropping them. Claude stops asking until you ask, or until it shows you the open questions list, like at the start of a thread with no immediate topic.
 
 **What you'll see:** when a topic is settled and Claude moves on to the next open question, the message just above that card ends with a **Still open:** list of everything else waiting, newest first. Messages in the middle of a topic leave it out.
 
@@ -95,6 +96,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 - Claude shows you the exact change: the new wording, and what it replaces.
 - A card asks you to **Save**, **Change** or **Drop**.
 - Nothing is saved until you click Save or type it. Changing the subject is not a yes.
+- Saving also approves the merge, unless you say otherwise, like "save but don't merge". Claude opens the pull request and merges it, with no second card.
 
 **What you'll see:** after you save, a short note confirming what was saved.
 
@@ -135,7 +137,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **When it goes wrong:** the reviewer is also Claude, so it can miss things. Each miss you report becomes a checklist line, so the same kind of miss gets caught next time.
 
-**What's behind it:** a separate helper (Opus, high effort) gets your message, the conversation and Claude's draft. Its only job is to find what's wrong: whether the draft reaches your actual goal, what it assumed without checking, what's missing, and anything on the review checklist. A check refuses any reply longer than 40 words unless the reviewer's report came back first. Short replies like "Saving now" skip it.
+**What's behind it:** a separate helper (Opus, high effort) gets your message, the conversation and Claude's draft. Its only job is to find what's wrong: whether the draft reaches your actual goal, what it assumed without checking, what's missing, and anything on the review checklist. A check refuses any reply longer than 40 words unless the reviewer's report came back first. Short replies like "Saving now" skip it, and a table's | and --- marks don't count as words.
 
 ---
 
@@ -150,6 +152,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 **What you'll see:**
 - Every speed or cost recommendation comes with real numbers from the usage report, and the same numbers again after the change so you can see whether it helped.
 - Any change that would make Claude read or check less says what it could miss. If it could miss anything important, Claude doesn't recommend it.
+- Claude delivers what you asked for, in the shape you asked for. If extras might help, it lists them all in one numbered list after delivering. Tell it the numbers you want, and it does only those. Ignoring the list counts as no.
 
 **When it goes wrong:** if a recommendation has no numbers, or an obvious idea is missing, say so. The fix is to add the missing idea to the checklist so every later audit checks it.
 
@@ -181,7 +184,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Check | What it stops |
 |---|---|
 | Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
-| Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /[plant] and /print |
+| Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /remove, /[plant] and /print |
 | Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |

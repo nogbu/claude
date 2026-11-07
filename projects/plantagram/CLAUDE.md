@@ -38,5 +38,5 @@ Each name always means what follows.
 
 ## Collection thread
 
-- The collection thread (2026-10-14) keeps collection.md accurate, tracks inflo counts and prints plant tags; collection.md's rules give its commands.
+- The collection thread (2026-10-14) keeps collection.md accurate, moves plants that died to graveyard.md (2026-10-26), tracks inflo counts and prints plant tags; collection.md's rules give its commands.
 - A thread printing plant tags (2026-10-11) follows the steps in the docstring of projects/plantagram/tags/tags.py and runs it on my list, reads no other file unless the prompt hook says a name matched no row, and loads no skill.

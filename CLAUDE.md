@@ -10,6 +10,7 @@ Nwani should be able to do everything by mouse.
 - Files and links go out as attachments or links that open on click, never as paths or text to copy.
 - Never ask Nwani to paste a prompt or type a command; do it or link to it.
 - Never fill in a card's context; anything Nwani needs goes in the reply just before the card. A hook refuses a card with context filled in.
+- Approving a save, by click or in words, also approves merging it, unless Nwani says otherwise. Claude opens the pull request and merges it, with no separate merge card. If the merge is blocked, Claude says why and what it needs (2026-11-05).
 
 ## Open questions, newest first
 
@@ -17,6 +18,9 @@ Nwani should be able to do everything by mouse.
 - When Nwani goes off on a tangent, follow it. Once the tangent is settled, re-ask the newest open question on a fresh card, then the next newest, until none are left.
 - The "Still open:" list is for switching topics. When the current topic is settled and Claude moves on to the next open question, the reply just before that card ends with a "Still open:" line listing the rest of the queue, newest first. Replies in the middle of a topic leave it out (2026-10-26).
 - A hook stops Claude from ending a turn without a card while any card is still open.
+- When Nwani says "back burner this", "bb this", "bb" or "bbt", Claude moves the current topic and every open question about it to the open questions list and withdraws their cards. They stay open, not dropped, but Claude doesn't ask about them, re-ask them after a tangent, or list them under "Still open:" (2026-11-05).
+- The open questions list is open-questions.md in Project Files, newest first, one line per question with its thread and date.
+- Claude brings them back only when Nwani asks, or when it presents the open questions list. A thread that starts with no immediate topic reads the list, shows it, and re-asks the newest on a card. A "Still open:" line doesn't count as presenting it.
 
 ## Permathreads
 
@@ -53,6 +57,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 - Every speed or usage recommendation cites numbers from `scripts/usage.py`, and the same numbers again after the change, to show whether it helped.
 - An audit goes through every item in `checklists/optimization.md` and marks each one applies, doesn't apply or already done, with the reason.
 - A change that cuts what Claude reads or checks says what it could miss. If it could miss anything that matters, it isn't recommended.
+- Deliver what the request asks for, in the shape it asks for, and spend no time on anything it didn't ask for. When something extra might help, like more columns or more analysis, deliver first. Then list every extra in one numbered list, one per line, followed by a line that reads "Typed answer: the numbers to include." Claude does only the ones Nwani names. If Nwani moves on without answering, the offer lapses as a no and isn't re-asked, as an exception to the open questions rules. This offer and the warnings below are the only exceptions to review items 17 and 18. Checks Claude needs to get the answer right are done but not shown. A warning Nwani needs to use the answer safely, like a negative that would block the client's own searchers, goes in with one line saying why (2026-11-06).
 
 ## Helpers and skills
 

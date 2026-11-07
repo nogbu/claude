@@ -59,10 +59,15 @@ def reviewed_this_turn(transcript_path):
     return done
 
 
+def words(text):
+    """The words Nwani reads: a table's | and --- marks only draw the grid, so they don't count (my words 2026-10-27)."""
+    return [w for w in text.split() if not re.fullmatch(r"[|:\-]+", w)]
+
+
 def main():
     hook = json.load(sys.stdin)
     text = "\n".join(part for part, _ in shown(hook)[0])
-    if len(text.split()) <= SHORT or not hook.get("transcript_path"):
+    if len(words(text)) <= SHORT or not hook.get("transcript_path"):
         return
     if not reviewed_this_turn(hook["transcript_path"]):
         print(json.dumps({"hookSpecificOutput": {
