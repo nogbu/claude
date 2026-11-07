@@ -37,6 +37,18 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__hearthbot__reply",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/run.sh\" attach-limit.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
