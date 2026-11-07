@@ -135,11 +135,11 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **What you'll see:**
 - Answers that say plainly when the data can't support what you asked, instead of answering anyway.
-- Longer answers take a little more time, because a second Claude checks them first.
+- Longer answers take a little more time, because a second Claude checks them first, and a third checks again when the draft had to change.
 
 **When it goes wrong:** the reviewer is also Claude, so it can miss things. Each miss you report becomes a checklist line, so the same kind of miss gets caught next time.
 
-**What's behind it:** a separate helper (Opus, high effort) gets your message, the conversation and Claude's draft. Its only job is to find what's wrong: whether the draft reaches your actual goal, what it assumed without checking, what's missing, and anything on the review checklist. A check refuses any reply longer than 40 words unless the reviewer's report came back first. Short replies like "Saving now" skip it, and a table's | and --- marks don't count as words.
+**What's behind it:** a separate helper (Opus, high effort) gets your message, the conversation and Claude's draft. Its only job is to find what's wrong: whether the draft reaches your actual goal, what it assumed without checking, what's missing, and anything on the review checklist. A check refuses any reply longer than 40 words unless the reviewer's report came back first. Short replies like "Saving now" skip it, and a table's | and --- marks don't count as words. When Claude changes a draft because of the report, a fresh reviewer checks the changed draft once more, because in a small test asking the same reviewer again missed more (new-config/repeat-review-test/RESULTS.md in Project Files).
 
 ---
 
