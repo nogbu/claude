@@ -1,0 +1,329 @@
+{
+ "about": "My OrcaSlicer process settings (0.6mm Default Settings), started from the default process settings (Orca's stock \"0.30mm Standard @BBL X1C 0.6 nozzle\" preset)",
+ "notes": [
+  "These started as a copy of the OrcaSlicer default process settings for the \"0.30mm Standard @BBL X1C 0.6 nozzle\" profile, typed from screenshots; that copy was retired 2026-10-10, and lookup.py now pulls the defaults from Orca (orcadefaults.py).",
+  "\"Greyed out\" means OrcaSlicer is ignoring that setting under the current configuration (for example, support settings while support is disabled)."
+ ],
+ "settings": {
+  "Quality": {
+   "Layer height": {
+    "Layer height": "0.3 mm",
+    "First layer height": "0.3 mm"
+   },
+   "Line width": {
+    "Default": "0.62 mm",
+    "First layer": "0.62 mm",
+    "Outer wall": "0.62 mm",
+    "Inner wall": "0.62 mm",
+    "Top surface": "0.62 mm",
+    "Sparse infill": "0.62 mm",
+    "Internal solid infill": "0.62 mm",
+    "Support": "0.62 mm",
+    "Bridge": "100%"
+   },
+   "Seam": {
+    "Seam position": "Aligned",
+    "Staggered inner seams": "Off",
+    "Seam gap": "10%",
+    "Scarf joint seam (beta)": "None",
+    "Role base wipe speed": "On",
+    "Wipe speed": "80% (greyed out)",
+    "Wipe on loops": "Off",
+    "Wipe before external loop": "Off"
+   },
+   "Precision": {
+    "Slice gap closing radius": "0.049 mm",
+    "Resolution": "0.012 mm",
+    "Arc fitting": "On",
+    "X-Y hole compensation": "0 mm",
+    "X-Y contour compensation": "0 mm",
+    "Elephant foot compensation": "0.15 mm",
+    "Elephant foot compensation layers": "1 layer",
+    "Precise wall": "On",
+    "Precise Z height": "Off",
+    "Convert holes to polyholes": "Off"
+   },
+   "Ironing": {
+    "Ironing type": "No ironing"
+   },
+   "Wall generator": {
+    "Wall generator": "Arachne",
+    "Wall transitioning threshold angle": "10°",
+    "Wall transitioning filter margin": "25%",
+    "Wall transition length": "100%",
+    "Wall distribution count": "1",
+    "First layer minimum wall width": "85%",
+    "Minimum wall width": "50%",
+    "Minimum feature size": "50%",
+    "Minimum wall length": "0.5 mm"
+   },
+   "Walls and surfaces": {
+    "Walls printing order": "Inner/Outer",
+    "Print infill first": "Off",
+    "Wall loop direction": "Counterclockwise",
+    "Top surface flow ratio": "1",
+    "Bottom surface flow ratio": "1",
+    "Set other flow ratios": "Off",
+    "Only one wall on first layer": "Off",
+    "Only one wall on top surfaces": "On",
+    "One wall threshold": "300%",
+    "Avoid crossing walls": "On",
+    "Avoid crossing walls - Max detour length": "0 mm",
+    "Small area flow compensation (beta)": "Off"
+   },
+   "Bridging": {
+    "Bridge flow ratio": "1",
+    "Internal bridge flow ratio": "1",
+    "External bridge density": "100%",
+    "Internal bridge density": "100%",
+    "Thick external bridges": "Off",
+    "Thick internal bridges": "On",
+    "Extra bridge layers (beta)": "Disabled",
+    "Filter out small internal bridges": "Filter",
+    "Bridge counterbore holes": "None"
+   },
+   "Overhangs": {
+    "Detect overhang walls": "On",
+    "Make overhangs printable": "Off",
+    "Extra perimeters on overhangs": "Off",
+    "Reverse on even": "Off"
+   }
+  },
+  "Strength": {
+   "Walls": {
+    "Wall loops": "2",
+    "Alternate extra wall": "Off",
+    "Detect thin walls": "Off"
+   },
+   "Top/bottom shells": {
+    "Top shell layers": "3 layers",
+    "Top shell thickness": "0.8 mm",
+    "Top surface density": "100%",
+    "Top surface pattern": "Monotonic line",
+    "Bottom shell layers": "3 layers",
+    "Bottom shell thickness": "0 mm",
+    "Bottom surface density": "100%",
+    "Bottom surface pattern": "Monotonic",
+    "Top/Bottom solid infill/wall overlap": "25%"
+   },
+   "Infill": {
+    "Sparse infill density": "15%",
+    "Fill Multiline": "1",
+    "Sparse infill pattern": "Adaptive Cubic",
+    "Sparse infill direction": "45°",
+    "Sparse infill rotation template": "Empty",
+    "Maximum length of the infill anchor": "20 mm",
+    "Sparse infill anchor length": "400%",
+    "Internal solid infill pattern": "Monotonic",
+    "Solid infill direction": "45°",
+    "Solid infill rotation template": "Empty",
+    "Apply gap fill": "Nowhere",
+    "Filter out tiny gaps": "0 mm",
+    "Infill/wall overlap": "15%"
+   },
+   "Advanced": {
+    "Align infill direction to model": "Off",
+    "Insert solid layers": "Empty",
+    "External bridge infill direction": "0°",
+    "Internal bridge infill direction": "0°",
+    "Relative bridge angle": "Off",
+    "Minimum sparse infill threshold": "15 mm²",
+    "Infill combination": "Off",
+    "Detect narrow internal solid infills": "On",
+    "Ensure vertical shell thickness": "All"
+   }
+  },
+  "Speed": {
+   "First layer speed": {
+    "First layer": "35 mm/s",
+    "First layer infill": "55 mm/s",
+    "First layer travel speed": "100%",
+    "Number of slow layers": "0 layers"
+   },
+   "Other layers speed": {
+    "Outer wall": "120 mm/s",
+    "Inner wall": "150 mm/s",
+    "Small perimeters": "50%",
+    "Small perimeters threshold": "0 mm",
+    "Sparse infill": "100 mm/s",
+    "Internal solid infill": "150 mm/s",
+    "Top surface": "150 mm/s",
+    "Gap infill": "50 mm/s",
+    "Support": "150 mm/s",
+    "Support interface": "80 mm/s"
+   },
+   "Overhang speed": {
+    "Slow down for overhangs": "On",
+    "Slow down for curled perimeters": "Off",
+    "Overhang speed, 10%": "0 mm/s",
+    "Overhang speed, 25%": "50 mm/s",
+    "Overhang speed, 50%": "15 mm/s",
+    "Overhang speed, 75%": "10 mm/s",
+    "Bridge, external": "30 mm/s",
+    "Bridge, internal": "150%"
+   },
+   "Travel speed": {
+    "Travel": "500 mm/s"
+   },
+   "Acceleration": {
+    "Normal printing": "10000 mm/s²",
+    "Outer wall": "5000 mm/s²",
+    "Inner wall": "0 mm/s²",
+    "Bridge": "50%",
+    "Sparse infill": "100%",
+    "Internal solid infill": "100%",
+    "First layer": "500 mm/s²",
+    "First layer travel": "6000 mm/s²",
+    "Top surface": "2000 mm/s²",
+    "Travel": "10000 mm/s²"
+   },
+   "Jerk (XY)": {
+    "Default": "0 mm/s",
+    "Outer wall": "9 mm/s (greyed out)",
+    "Inner wall": "9 mm/s (greyed out)",
+    "Infill": "9 mm/s (greyed out)",
+    "Top surface": "9 mm/s (greyed out)",
+    "First layer": "9 mm/s (greyed out)",
+    "First layer travel": "100% (greyed out)",
+    "Travel": "12 mm/s (greyed out)"
+   },
+   "Advanced": {
+    "Extrusion rate smoothing": "0 mm³/s²"
+   }
+  },
+  "Support": {
+   "Support": {
+    "Enable support": "On",
+    "Type": "Tree (manual)",
+    "Style": "Default (Grid/Organic)",
+    "Threshold angle": "30° (greyed out)",
+    "Threshold overlap": "50% (not shown on screen with current support settings)",
+    "First layer density": "90%",
+    "First layer expansion": "2 mm",
+    "On build plate only": "Off",
+    "Support critical regions only": "Off (not shown on screen with current support settings)",
+    "Ignore small overhangs": "On"
+   },
+   "Raft": {
+    "Raft layers": "0 layers"
+   },
+   "Filament for Supports": {
+    "Support/raft base": "Default",
+    "Support/raft interface": "Filament 2 (Bambu Support For PLA/PETG)",
+    "Avoid interface filament for base": "On"
+   },
+   "Support ironing": {
+    "Ironing Support Interface": "Off"
+   },
+   "Advanced": {
+    "Top Z distance": "0 mm",
+    "Bottom Z distance": "0 mm",
+    "Support wall loops": "2",
+    "Base pattern": "Default",
+    "Base pattern spacing": "2.5 mm",
+    "Pattern angle": "0°",
+    "Top interface layers": "3 layers",
+    "Bottom interface layers": "2 layers",
+    "Interface pattern": "Rectilinear",
+    "Top interface spacing": "0 mm",
+    "Bottom interface spacing": "0.5 mm",
+    "Normal support expansion": "0 mm",
+    "Support/object XY distance": "0.35 mm",
+    "Support/object first layer gap": "0.2 mm",
+    "Max bridge length": "10 mm",
+    "Don't support bridges": "Off (not shown on screen with current support settings)"
+   },
+   "Tree supports": {
+    "Tip diameter": "0.8 mm",
+    "Tree support branch distance": "1 mm",
+    "Branch density": "30%",
+    "Tree support branch diameter": "2 mm",
+    "Branch diameter angle": "5°",
+    "Tree support branch angle": "45°",
+    "Preferred branch angle": "25°"
+   }
+  },
+  "Multimaterial": {
+   "Prime tower": {
+    "Enable": "On",
+    "Skip points": "On",
+    "Enable tower interface features": "Off",
+    "Internal ribs": "Off",
+    "Width": "35 mm",
+    "Prime volume": "45 mm³",
+    "Brim width": "3 mm",
+    "Infill gap": "150%",
+    "Wall type": "Rib",
+    "Extra rib length": "0 mm",
+    "Rib width": "8 mm",
+    "Fillet wall": "On"
+   },
+   "Filament for Features": {
+    "Outer walls": "Default",
+    "Inner walls": "Default",
+    "Infill": "Default",
+    "Internal solid infill": "Default",
+    "Top surface": "Default",
+    "Bottom surface": "Default",
+    "Wipe tower": "Default"
+   },
+   "Ooze prevention": {
+    "Enable": "Off (greyed out)"
+   },
+   "Flush options": {
+    "Flush into objects' infill": "Off",
+    "Flush into objects' support": "On"
+   },
+   "Advanced": {
+    "Use beam interlocking": "Off",
+    "Interface shells": "Off",
+    "Maximum width of a segmented region": "0 mm",
+    "Interlocking depth of a segmented region": "0 mm"
+   }
+  },
+  "Others": {
+   "Skirt": {
+    "Skirt loops": "2",
+    "Skirt type": "Combined",
+    "Skirt minimum extrusion length": "0 mm",
+    "Skirt distance": "10 mm",
+    "Skirt start point": "−135°",
+    "Skirt speed": "50 mm/s",
+    "Skirt height": "1 layer",
+    "Draft shield": "Disabled",
+    "Single loop after first layer": "Off"
+   },
+   "Brim": {
+    "Brim type": "No-brim",
+    "Brim width": "5 mm (greyed out)",
+    "Brim-object gap": "0.1 mm (greyed out)",
+    "Brim flow ratio": "1 (greyed out)",
+    "Brim follows compensated outline": "Off (greyed out)",
+    "Combine brims": "Off (greyed out)"
+   },
+   "Special mode": {
+    "Slicing Mode": "Regular",
+    "Print sequence": "By layer",
+    "Intra-layer order": "Default",
+    "Spiral vase": "Off",
+    "Timelapse": "Traditional"
+   },
+   "Fuzzy skin": {
+    "Fuzzy skin": "Disabled"
+   },
+   "G-code output": {
+    "Reduce infill retraction": "On",
+    "Verbose G-code": "Off",
+    "Label objects": "On",
+    "Exclude objects": "Off",
+    "Filename format": "`{input_filename_base}_{filament_type[0]}_{print_time}.gcode`"
+   },
+   "Change extrusion role G-code": {
+    "Change extrusion role G-code": "Empty"
+   },
+   "Post-processing Scripts": {
+    "Post-processing Scripts": "Empty"
+   }
+  }
+ }
+}

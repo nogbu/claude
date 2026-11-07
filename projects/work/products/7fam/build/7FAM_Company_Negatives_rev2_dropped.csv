@@ -1,0 +1,259 @@
+Negative keyword,Match,Company,Vertical,Relation to 7FAM,Why dropped,Terms blocked (rev1),Cost blocked (rev1)
+1971,Broad,Diesel,fashion/apparel,competitor,"Only term is 'diesel 1971', already blocked by Broad 'diesel'; a bare year is a common token and adds nothing. Revisit later.",1,0.0
+1978 d akemi,Phrase,Diesel,fashion/apparel,competitor,"Both its terms also contain 'd akemi', which the 'd akemi' Phrase row blocks; redundant.",2,0.0
+24 7,Phrase,24Seven Comfort Apparel,fashion/apparel,competitor,"Both terms (""24 7 jeans"", ""24 7 pants"") name 7FAM (""7"" shorthand) and read as size 24 + 7 jeans, as the sibling term ""size 24 seven jeans"" shows; the brand never spells itself ""24 7"". Blocking would cut 7FAM shoppers; zero cost, nothing to save.",2,0.0
+24 seven,Phrase,24Seven Comfort Apparel,fashion/apparel,competitor,"Top term ""size 24 seven jeans"" is a 7FAM shopper asking for size 24; both terms name 7FAM and cost nothing. The brand writes itself ""24Seven"" as one word, so this split spelling blocks 7FAM shoppers, not the brand.",2,0.0
+5 7,Phrase,Cinq à Sept,fashion/apparel,competitor,"All 3 terms read as height (5'7"") or 7FAM typos ('5 7 clothing', 'what length inseam for 5 7'), which are relevant shoppers.",3,0.0
+7 eleven,Phrase,"7-Eleven, Inc.",not fashion/apparel,unrelated business,"All 3 terms are '7 eleven ... jeans' searches, garbled 7FAM (Seven jeans) queries.",3,0.0
+7 groove,Phrase,none found,unsure,not an organization,"No organization found, so it does not belong on a company list; one term ($2.21) that may be a garbled 7FAM search.",1,2.21
+7 heaven,Phrase,Seventh Heaven,fashion/apparel,competitor,"Only a resale listing ties the name to a brand, which spells itself ""Seventh Heaven"" (own row if wanted); ""7 heaven jeans"" is one term at $0 that could be a garbled 7FAM search.",1,0.0
+7 level store,Phrase,none found,unsure,not an organization,"Unidentified; 2 terms at $0, both counted as naming 7FAM, so likely someone looking for a 7FAM store. Nothing to save by blocking.",2,0.0
+7 riding,Phrase,none found,unsure,not an organization,"""7 riding jeans"" reads as a 7FAM shopper wanting 7 jeans for riding; not an organization. One term, $5.22.",1,5.22
+7 show,Phrase,none found,unsure,not an organization,No organization found; one term ($3.68) that names 7FAM and may be a garbled 7FAM search.,1,3.68
+7 star,Phrase,none found,unsure,not an organization,"Unidentified; one term at $0 that names 7FAM. Nothing to save, and it may be a 7FAM shopper.",1,0.0
+7 street,Phrase,none found,unsure,not an organization,No organization found; one term ($3.28) that names 7FAM and may be a garbled 7FAM search.,1,3.28
+7 well blues,Phrase,none found,unsure,not an organization,"No organization found; one term ($1.44) that names 7FAM and may be a garbled ""7 for all"" search (inference).",1,1.44
+7 world,Phrase,none found,unsure,not an organization,No organization found; one term ($6.07) that names 7FAM and may be a garbled 7FAM search.,1,6.07
+7up,Broad,7UP (Keurig Dr Pepper),not fashion/apparel,unrelated business,Unseen variant with no evidence; soda searches never trigger denim ads.,0,0.0
+a.n.a,Broad,a.n.a (JCPenney private brand),fashion/apparel,competitor,"Unseen, no evidence; Google strips the periods so it adds nothing beyond the 'ana' row.",0,0.0
+ac,Broad,none found,unsure,unrelated business,"Not a company; one zero-cost term, and a broad 'ac' negative is too blunt for an unconfirmed string",1,0.0
+acne studio,Phrase,Acne Studios,fashion/apparel,competitor,Redundant: its 1 term ($10.08) is already blocked by 'acne' Broad.,1,10.08
+acne studios,Phrase,Acne Studios,fashion/apparel,competitor,Redundant: all 3 terms are already blocked by 'acne' Broad.,3,0.0
+ad,Broad,none found,not fashion/apparel,not an organization,"One of its three terms is '7 for all mankind ad', a 7FAM shopper search; the others are zero-cost and unconfirmed",3,0.0
+adriano goldschmied,Phrase,AG Jeans (AG Adriano Goldschmied),fashion/apparel,competitor,Redundant: all 5 terms are blocked by 'adriano' Broad.,5,0.0
+adriano goldsmith,Phrase,AG Jeans (AG Adriano Goldschmied),fashion/apparel,competitor,Redundant: its 1 term is blocked by 'adriano' Broad.,1,0.0
+aeg,Broad,none found,not fashion/apparel,unrelated business,"Unconfirmed string; one zero-cost term; the brands it may misspell (ae, ag) belong on their own rows",1,0.0
+affliction,Broad,Salvage (Affliction),fashion/apparel,competitor,Not seen in the report and a different brand name (Affliction) added without evidence; give it its own company entry if it appears.,0,0.0
+ah,Broad,none found,unsure,not an organization,Not a company; one zero-cost term; a broad 'ah' negative is too blunt for an unconfirmed string,1,0.0
+alloy apparel,Phrase,Alloy Apparel,fashion/apparel,competitor,"Redundant: the Broad 'alloy' row already blocks every search containing 'alloy', and it was never seen.",0,0.0
+amazing jean,Phrase,alice + olivia,fashion/apparel,competitor,"Only blocked term is 'alice and olivia amazing jean', already blocked by the 'alice and olivia' row; generic adjective phrase with no independent evidence.",1,0.0
+ami paris,Phrase,AMI Paris,fashion/apparel,competitor,Redundant: the Broad 'ami' row already blocks every search containing 'ami'; never seen.,0,0.0
+artizia,Broad,Aritzia,fashion/apparel,retailer not known to stock 7FAM,Misspelling not seen in the report; variant added without evidence. Revisit later.,0,0.0
+at,Broad,at (preposition),not fashion/apparel,not an organization,"12 of the 22 terms it would block name 7FAM (seven for all mankind jeans at macy's, seven jeans at nordstrom); a Broad negative on ""at"" would block 7FAM shoppers. Retailer names in those terms belong on their own rows (nordstrom, macy's, buckle, sam's).",22,19.36
+av,Broad,AV,unsure,not an organization,No organization or product identified; one term with zero cost and zero conversions. Not worth a negative until the search terms show what AV refers to; the Ava / Ava & Viv spellings would need their own rows if they appear.,1,0.0
+aventura,Broad,Aventura Mall,not fashion/apparel,unrelated business,"2 of 3 terms name 7 For All Mankind (shoppers looking for the 7FAM store at Aventura Mall), which the ads should reach. The remaining term ('ag jeans aventura mall') is competitor intent best blocked by an 'ag jeans' negative, not the mall name. Revisit later.",3,0.0
+banana republic factory,Phrase,Banana Republic,fashion/apparel,competitor,"Every term it blocks already contains 'banana republic', so it adds nothing beyond the Phrase row above; redundant.",6,0.0
+bananarepublic.com,Broad,Banana Republic,fashion/apparel,competitor,"Not seen in the report, and the brand's live site is bananarepublic.gap.com; variant added without evidence. 'banana' Broad already covers any such search. Revisit later.",0,0.0
+beau,Broad,Pistola Denim,fashion/apparel,competitor,Common first name; its only term (pistola beau nightfall) is already blocked by 'pistola'. Redundant; revisit if a bare 'beau jeans' term appears.,1,0.0
+bedford,Broad,Ralph Lauren Corporation,fashion/apparel,competitor,Place name; its only term ('bedford straight fit ralph lauren') is covered by the 'ralph lauren' row; redundant.,1,0.0
+bella,Broad,Quince,fashion/apparel,competitor,First name; 2 of 3 terms already caught by 'quince' and the third ('seven7 bella wide leg jeans') names a seven-brand search. No unique irrelevant volume.,3,0.0
+bitchin,Broad,MOTHER,fashion/apparel,competitor,All 3 terms contain 'mother' and are already blocked by the 'mother' row; a slang common word adds nothing but risk.,3,0.0
+bl,Broad,unknown,unsure,unrelated business,"Unconfirmed abbreviation, one term, zero cost and no conversions; nothing to block until a company is identified.",1,0.0
+boohoo man,Phrase,boohooMAN,fashion/apparel,competitor,Split-word variant not seen in the Aug 1 - Oct 7 search terms; add it when it appears (a future 'boohoo' Broad row for the parent brand would cover it anyway).,0,0.0
+breeze,Broad,"unknown (""The Breeze Luxe Trouser"")",unsure,unrelated business,"Owner could not be confirmed; one term, zero cost. Revisit if the term recurs.",1,0.0
+bubble,Broad,FRAME,fashion/apparel,competitor,"Everyday word; 2 of 3 terms contain 'frame' and are covered by the 'frame' Broad row, leaving only generic 'bubble jeans' ($0). Not worth a Broad everyday-word negative.",3,0.0
+buster,Broad,Diesel,fashion/apparel,competitor,"All 3 terms contain 'diesel' and are already blocked by it; 'buster' is an everyday word and name, so the row adds only risk. Revisit later.",3,0.0
+candle,Broad,FRAME,fashion/apparel,competitor,Everyday word; its only term ('frame the candle jeans') is already blocked by the 'frame' Broad row.,1,0.0
+cassie,Broad,Pistola Denim,fashion/apparel,competitor,Common first name; only term already blocked by 'pistola'. Redundant.,1,0.0
+channel 7,Phrase,Channel 7 (misspelling of Seven / 7 For All Mankind),fashion/apparel,7FAM-owned or affiliated,"The only term it blocks is counted as naming 7FAM, so the negative would block a 7FAM shopper; no organization is being named.",1,0.0
+christian dior,Phrase,Dior,fashion/apparel,competitor,Its only term ('christian dior jeans') is already blocked by Broad 'dior'; redundant.,1,0.0
+cinq à sept,Phrase,Cinq à Sept,fashion/apparel,competitor,Unseen accented variant; no evidence it is typed.,0,0.0
+citizens of,Phrase,Citizens of Humanity,fashion/apparel,competitor,Generic fragment fully covered by 'citizens' Broad in the same list (every 'citizens of ...' term contains 'citizens'); redundant.,505,136.43
+clara,Broad,clara (Portuguese for 'light'),not fashion/apparel,unrelated business,"Generic foreign-language word, not an organization or product; one term, zero cost.",1,0.0
+clift,Broad,Sid Mashburn,fashion/apparel,competitor,"Seen only inside 'sid mashburn clift jean', already covered by the mashburn rows; no brand-less evidence for a style-name row.",1,0.0
+cnd,Broad,none found,unsure,not an organization,"Unresolved abbreviation; one search term, no cost; put on the revisit list rather than negate an unknown.",1,0.0
+cosmic cowboy,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked by the 'mother' row; redundant.",1,0.0
+cosmic cowgirl,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; redundant.",1,0.0
+current elliot,Phrase,Current/Elliott,fashion/apparel,competitor,"Misspelling added without evidence: not seen in the report, zero cost.",0,0.0
+d squared,Phrase,Dsquared2,fashion/apparel,competitor,Unseen; no evidence. Revisit later.,0,0.0
+d&d,Broad,D&D Jeans,unsure,not an organization,"Unconfirmed label; one search term, no cost; revisit later if it recurs.",1,0.0
+d&g,Broad,Dolce & Gabbana,fashion/apparel,competitor,Unseen; no evidence; line discontinued in 2011. Revisit later.,0,0.0
+d93,Broad,none found,unsure,not an organization,"Unresolved code; one search term, no cost; revisit later.",1,0.0
+dakota,Broad,Pistola Denim,fashion/apparel,competitor,Common first name/place word; only term already blocked by 'pistola'; style not confirmed on the site. Redundant.,1,0.0
+dallas,Broad,"Dallas Bootcut Jean (Wrangler); Dallas, Texas",fashion/apparel,competitor,"4 of 6 blocked terms name 7FAM ('7 for all mankind dallas', 'seven jeans dallas'): shoppers looking for the Dallas store; blocking them costs more than the one Wrangler search saves.",6,9.78
+danielle guizio,Phrase,Danielle Guizio,fashion/apparel,competitor,"Redundant: Broad 'guizio' already blocks every query containing 'guizio', including the full name. Not seen.",0,0.0
+db,Broad,none found,unsure,not an organization,Ambiguous two-letter abbreviation with one zero-cost term; revisit later.,1,0.0
+dd ranch,Phrase,Double D Ranch,fashion/apparel,competitor,Unseen; no evidence. Revisit later.,0,0.0
+dear john jeans,Phrase,Dear John Denim,fashion/apparel,competitor,"Redundant with Phrase 'dear john', which already blocks any query containing that phrase; not seen.",0,0.0
+denizen,Broad,Denizen from Levi's,fashion/apparel,competitor,Not seen in the report and an everyday word; added without evidence.,0,0.0
+detroit denim,Phrase,Detroit Denim Co.,fashion/apparel,competitor,"Unseen variant with no search-term evidence, and the company is closing so volume will fade. Revisit later if it shows up.",0,0.0
+diesel.com,Broad,Diesel,fashion/apparel,competitor,Unseen; no evidence. Revisit later.,0,0.0
+division 7,Phrase,none found,unsure,not an organization,Unresolved; one zero-cost term and the '7' makes it a possible 7FAM mashup; revisit later.,1,0.0
+dlc,Broad,DL1961 (possible shorthand),unsure,competitor,"1 term, $0, none naming 7FAM; the token has no use in a 7FAM shopper's search, so negating it costs nothing. Unconfirmed, revisit.",1,0.0
+dolce,Broad,Dolce & Gabbana,fashion/apparel,competitor,Everyday word (also Dolce Vita shoes); both its terms are already blocked by the 'dolce and gabbana' Phrase row. Revisit later.,2,0.0
+dolce & gabbana,Phrase,Dolce & Gabbana,fashion/apparel,competitor,Unseen ampersand variant with no evidence; Google treats '&' inconsistently. Revisit later.,0,0.0
+dolly parton,Phrase,Dolly Parton,not fashion/apparel,not an organization,"Wikipedia re-read this turn: Lifetime Brands/Lodge cookware, Dollar General housewares, Duncan Hines food; no clothing line. Nordstrom blocks fetching, so the 'dolly parton jeans nordstrom' product is unconfirmed. A person, not a company, so outside this list's scope.",1,0.0
+double 7,Phrase,LA Double 7,unsure,unrelated business,"The single term counts as naming 7FAM ($2.81) and no denim brand 'Double 7' exists, so the negative would block a likely 7FAM shopper. Revisit later.",1,2.81
+double d ranch,Phrase,Double D Ranch,fashion/apparel,competitor,Already blocked by the 'double d' Phrase row; redundant.,1,0.0
+double rl,Phrase,Ralph Lauren Corporation,fashion/apparel,competitor,Its only term ('double rl jeans') is covered by the 'rl' Broad row; redundant.,1,0.0
+drew house,Phrase,drew house,fashion/apparel,competitor,Unseen and already blocked by Broad 'drew'; redundant.,0,0.0
+ebay.com,Broad,eBay,not fashion/apparel,marketplace or resale,Variant added without evidence: 0 terms in Aug 1 - Oct 7. Revisit if domain searches appear.,0,0.0
+echo,Broad,Echo (Dr. Denim / Etica style) and 7FAM 'Faded Echo' wash,fashion/apparel,7FAM product line,Broad 'echo' would block searches for 7FAM's own Faded Echo wash; the one competitor term costs $0. Not worth the risk; revisit later.,1,0.0
+ed,Broad,Ed Hardy,fashion/apparel,competitor,"Fragment, not the company; its 4 terms are AG Jeans searches, not Ed Hardy. A bare 'ed' also catches unrelated queries. Covered by the 'ed hardy' Phrase row.",4,0.0
+eg,Broad,EG (possibly Engineered Garments),unsure,unrelated business,"1 term, $0, none naming 7FAM; 'eg' does not appear in genuine 7FAM searches, so the negative is harmless. Unconfirmed, revisit.",1,0.0
+eighty seven,Phrase,Eighty Seven (unidentified),unsure,not an organization,Not an identifiable organization and the single term counts as naming 7FAM; $0 at stake. Revisit later.,1,0.0
+eleven,Broad,Eleven (7-Eleven / Eleven Paris confusion),unsure,not an organization,"9 terms, $5.13, 0 conversions; 6 count as naming 7FAM only because they contain '7 ... jeans', yet '7 eleven jeans' does not name 7FAM. Irrelevant searches far outnumber any relevant ones. Flag: if the client treats 'seven eleven' as a 7FAM garble, narrow to Exact 'eleven jeans'.",9,5.13
+elevens,Broad,Elevens (unidentified),unsure,not an organization,"Separate spelling, own row; 1 term, $0, none naming 7FAM. Harmless alongside 'eleven'. Revisit.",1,0.0
+express.com,Broad,Express,fashion/apparel,competitor,Variant added without evidence: 0 terms in the period. Revisit if domain searches appear.,0,0.0
+five four club,Phrase,"Five Four (Five Four Club, now Menlo Club)",fashion/apparel,competitor,No evidence (0 terms) and fully redundant: any search containing 'five four club' is already blocked by the 'five four' Phrase row.,0,0.0
+five star,Phrase,Wrangler Five Star Premium Denim,fashion/apparel,competitor,"Unseen variant with no evidence, and 'five star' is an everyday rating phrase (e.g. 'five star jeans review'); branded searches are covered by the Wrangler negative. Revisit if 'five star' terms appear.",0,0.0
+fivefour,Broad,"Five Four (Five Four Club, now Menlo Club)",fashion/apparel,competitor,Merged-word variant with no search-term evidence (0 terms); add only if it appears in a later report.,0,0.0
+flint & tinder,Phrase,Huckberry,fashion/apparel,retailer not known to stock 7FAM,"Variant added without evidence (0 terms); the brand writes 'and', not '&'.",0,0.0
+frame denim,Phrase,FRAME,fashion/apparel,competitor,Fully redundant: all 15 terms contain 'frame' and are blocked by the 'frame' Broad row on the same list.,15,0.0
+g label,Phrase,"goop (Goop, Inc.)",fashion/apparel,competitor,"Unseen, added without evidence, and goop.com now names its clothing line 'gwyn', so the name looks outdated (inference).",0,0.0
+gen 7,Phrase,Jen7 by 7 For All Mankind (misspelled),fashion/apparel,7FAM-owned or affiliated,Would block shoppers looking for 7FAM's Jen7 line; the only term it blocks is one the pass counted as a 7FAM term,1,6.17
+gen7,Broad,Jen7 by 7 For All Mankind (misspelled),fashion/apparel,7FAM-owned or affiliated,Same Jen7 misspelling as 'gen 7'; blocking it would turn away 7FAM shoppers,1,0.0
+gina,Broad,Generation Love,fashion/apparel,competitor,A first name whose only term is already blocked by the 'generation love' Phrase row; a Broad first-name negative adds risk with no added coverage.,1,0.0
+glow up,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; common idiom, redundant.",1,0.0
+half pipe,Phrase,MOTHER,fashion/apparel,competitor,"All 10 terms contain 'mother', already blocked by the 'mother' row; common phrase, redundant.",10,0.0
+har,Broad,none found,unsure,not an organization,"Not an identifiable organization or product; one search term, no cost. The real names (harlow, harper) are negated by their own rows.",1,0.0
+hardy,Broad,Ed Hardy,fashion/apparel,competitor,Fragment and common surname; its one term 'hardy clothes' is generic. Covered by the 'ed hardy' Phrase row.,1,0.0
+hiroshi kato,Phrase,KATO,fashion/apparel,competitor,Redundant: the 'kato' Broad negative already blocks 'hiroshi kato jeans'.,1,0.0
+hokey pokey,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; redundant.",1,0.0
+hot jean,Phrase,alice + olivia,fashion/apparel,competitor,Redundant with 'alice and olivia' (its only term); generic phrase with no independent evidence.,1,0.0
+howler bros,Phrase,Howler Brothers,fashion/apparel,competitor,Redundant with Broad 'howler'; 0 terms seen and the site styles the name only as Howler Brothers.,0,0.0
+howler brothers,Phrase,Howler Brothers,fashion/apparel,competitor,Redundant: Broad 'howler' already blocks every search containing 'howler'; 0 terms seen.,0,0.0
+hudson.com,Broad,Hudson Jeans,fashion/apparel,competitor,"0 terms; Broad 'hudson' already covers any search containing 'hudson', and hudson.com is not the brand's domain.",0,0.0
+hugoboss,Broad,HUGO BOSS,fashion/apparel,competitor,Merged-word variant added without evidence (0 terms).,0,0.0
+iconique,Broad,none found,unsure,not an organization,"Unconfirmed, but ""iconique straight leg jeans"" is not a 7FAM shopper search and the word appears in no 7FAM terms; harmless to negate. Revisit when research can continue.",1,0.0
+imc,Broad,none found,unsure,not an organization,"Unconfirmed; 1 term, no cost, no 7FAM terms. Negating it blocks nothing relevant. Revisit later.",1,0.0
+inc international concepts,Phrase,I.N.C. International Concepts,fashion/apparel,competitor,0 terms and fully covered by Phrase 'international concepts'.,0,0.0
+insta,Broad,"Meta Platforms, Inc. (Facebook, Instagram)",not fashion/apparel,unrelated business,"Unseen variant with no evidence, added for a row that is itself dropped.",0,0.0
+isabel marant etoile,Phrase,Isabel Marant,fashion/apparel,competitor,0 terms and fully covered by Broad 'marant' and Phrase 'isabel marant'.,0,0.0
+j lo,Phrase,J.Lo by Jennifer Lopez,fashion/apparel,competitor,Not seen in the Aug 1 to Oct 7 report (0 terms); variant added without evidence. Revisit if it appears.,0,0.0
+j21,Broad,none found,unsure,not an organization,"Unconfirmed but clearly not a 7FAM search; Broad on the single token also covers ""j21 eleven"". Revisit later.",1,0.0
+j21 eleven,Phrase,none found,unsure,not an organization,"Redundant: the Broad negative ""j21"" already blocks ""j21 eleven jeans"", and the phrase is unconfirmed as a name.",1,0.0
+john elliot,Phrase,John Elliott,fashion/apparel,competitor,Not seen in the report (0 terms); misspelling variant added without evidence. Revisit if it appears.,0,0.0
+jojo,Broad,Risen Jeans,fashion/apparel,competitor,"Its only term ('risen jojo jeans') is covered by 'risen'; JoJo is also a first name and other brands' name (JoJo Maman Bebe, JoJo Siwa), so the plain word has no unique evidence.",1,0.0
+josalyn,Broad,none found,unsure,not an organization,"Unconfirmed but ""josalyn denim snap pants"" is not a 7FAM search; 1 term, no cost. Harmless to negate; revisit later.",1,0.0
+junkin jo boutique,Phrase,Junkin Jo Boutique,fashion/apparel,retailer not known to stock 7FAM,Redundant: the 'junkin jo' Phrase negative already blocks this term.,1,0.0
+kait,Broad,none found,unsure,unrelated business,"Unconfirmed as any organization or product; one $0 term, no value in blocking it. Revisit if it recurs.",1,0.0
+kaley,Broad,PAIGE,fashion/apparel,competitor,"Unverified name; its only term is already blocked by paige and manhattan bootcut, so no independent evidence.",1,0.0
+katie,Broad,none found,unsure,unrelated business,Not confirmed as an organization or another company's style; one $0 term. Revisit later.,1,0.0
+kdf,Broad,none found,unsure,unrelated business,Unconfirmed as any organization; one $0 term. Revisit later.,1,0.0
+kinsley,Broad,Pistola Denim,fashion/apparel,competitor,First name; 'pistola kinsley flare jeans' is blocked by 'pistola' and 'rag and bone kinsley jeans' belongs to the rag & bone entry. Redundant here.,2,0.0
+kutfromthekloth.com,Broad,KUT from the Kloth,fashion/apparel,competitor,Unseen domain variant added without evidence; revisit if it appears in search terms.,0,0.0
+l'homme,Phrase,FRAME,fashion/apparel,competitor,Apostrophe variant with no search-term evidence (0 terms); add if it appears later.,0,0.0
+lauren jeans co,Phrase,Ralph Lauren Corporation,fashion/apparel,competitor,Its only term is covered by the 'lauren' Broad row; redundant.,1,0.0
+le frame,Phrase,FRAME,fashion/apparel,competitor,"Redundant with the 'frame' Broad row (1 term, 'le frame jeans', contains 'frame').",1,0.0
+lennon,Broad,Pistola Denim,fashion/apparel,competitor,Common name; only term already blocked by 'pistola'. Redundant.,1,0.0
+levi.com,Broad,Levi's (Levi Strauss & Co.),fashion/apparel,competitor,"Not seen in the report (the seen term was 'www levis com', already covered by 'levis'); variant without evidence, revisit later.",0,0.0
+lg,Broad,LG Electronics,not fashion/apparel,unrelated business,"""lg"" as a Broad negative would block 7FAM size searches (e.g. ""7 for all mankind tee lg""); the one ""lg jeans"" term cost $0, so the risk outweighs the gain.",1,0.0
+lily pulitzer,Phrase,Lilly Pulitzer,fashion/apparel,competitor,Misspelling not seen in the report; add when it appears.,0,0.0
+liv,Broad,Liv,unsure,not an organization,"Not an organization; a style name whose maker is unconfirmed; one term, $0 cost. Also a common first name (Liv) that could appear in 7FAM shopper searches.",1,0.0
+lmk,Broad,LMK,unsure,not an organization,"No organization identified; one term, $0 cost, no conversions. Not worth a negative.",1,0.0
+ln,Broad,LN,unsure,not an organization,"No organization identified; one term, $0 cost. Two-letter token too ambiguous to negate.",1,0.0
+loma,Broad,Loma,unsure,not an organization,"Not an organization; unconfirmed style name; one term, $0 cost.",1,0.0
+looker,Broad,MOTHER,fashion/apparel,competitor,"All 5 terms contain 'mother', already blocked; common word, redundant.",5,0.0
+low pro,Phrase,Low Pro,unsure,not an organization,"Generic fit term, not an organization; could match a low-rise shopper who would buy 7FAM; one term, $0 cost.",1,0.0
+lseven,Broad,lseven (typo of Seven / 7),fashion/apparel,7FAM product line,"Likely a 7FAM shopper's typo of ""seven jeans"" ($2.32 spent); negating it would block a 7FAM shopper.",1,2.32
+ltc,Broad,LTC,unsure,not an organization,"No organization confirmed; one term, $0 cost. If LTB is on the list it covers the real brand; the typo is not worth a row.",1,0.0
+ltj,Broad,LTJ,unsure,not an organization,"No organization confirmed; one term, $0 cost.",1,0.0
+luckybrand.com,Broad,Lucky Brand,fashion/apparel,competitor,Not seen as typed; the seen 'luckybrand com' is already covered by 'luckybrand' Broad. Revisit if the dotted form appears.,0,0.0
+luna,Broad,Quince,fashion/apparel,competitor,"Common word; 'quince luna jeans' is caught by 'quince' and 'luna flare jeans' (1 term, $0) is not tied to Quince. No evidence to justify a plain-word block.",2,0.0
+luu dan,Phrase,LU'U DAN,fashion/apparel,competitor,Merged spelling not seen in the report; revisit if it appears.,0,0.0
+m5,Broad,M5,unsure,not an organization,"Not a confirmed organization; two terms, $0 cost, no conversions.",2,0.0
+made 4 mankind,Phrase,Made 4 Mankind (variant of 7 For All Mankind),fashion/apparel,7FAM-owned or affiliated,A garbled version of the client's own name; would block 7FAM shoppers; matched 0 terms anyway.,0,0.0
+made for mankind,Phrase,Made for Mankind (variant of 7 For All Mankind),fashion/apparel,7FAM-owned or affiliated,"All 4 matched terms ($11.47) also name 7FAM (e.g. ""7 made for mankind""); the phrase comes from 7FAM shoppers and the negative would block them.",4,11.47
+malibu,Broad,Malibu (7 For All Mankind wash/style),fashion/apparel,7FAM product line,3 of 4 matched terms ($6.36) name 7FAM; negating it would block 7FAM shoppers searching a 7FAM wash.,4,6.36
+maribel,Broad,Maribel,unsure,not an organization,"Not a confirmed organization; one term, $0 cost.",1,0.0
+mariel,Broad,Mariel,unsure,not an organization,"Not a confirmed organization; one term, $0 cost.",1,0.0
+marlo,Broad,Marlo,unsure,not an organization,"Not a confirmed organization; one term, $0 cost. Research limited: the shared web-search budget for this turn was exhausted before this batch and retailer sites refused fetches.",1,0.0
+mars power,Phrase,Mars Power,unsure,competitor,Unseen split-word variant added without evidence for an unconfirmed label; revisit if it appears in search terms.,0,0.0
+matt,Broad,Mavi Jeans,fashion/apparel,competitor,Common first name whose only seen term ('mavi matt jeans men') is already blocked by 'mavi'; redundant and could block unrelated searches. Put on the revisit list.,1,0.0
+mica,Broad,SLVRLAKE,fashion/apparel,competitor,"Everyday word seen only with the brand ('slvrlake mica jeans'), already covered by 'slvrlake'; no brand-less evidence.",1,0.0
+mij,Broad,MIJ (made in Japan),not fashion/apparel,not an organization,"Generic abbreviation, not an organization; 7FAM sells Japanese-denim styles, so blocking it could cut relevant searches.",1,0.0
+milk tea,Phrase,Milk Tea (wash/color name),unsure,not an organization,"A color name, not an organization or brand; the style name 'meg' would be the right handle if the brand is identified.",1,0.0
+mint condition,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; common phrase, redundant.",1,0.0
+miumiu,Broad,"Prada S.p.A. (Prada, Miu Miu; Versace since Dec 2025)",fashion/apparel,competitor,Merged-word variant with no search-term evidence (0 terms). Revisit if it appears.,0,0.0
+mon frere,Phrase,Monfrère,fashion/apparel,competitor,"Unseen split-word variant without evidence; also the French phrase 'my brother', so not clearly a brand search. Revisit if it appears.",0,0.0
+mona,Broad,PAIGE,fashion/apparel,competitor,Unverified wash name; its only term (skyline skinny mona) is already blocked by skyline.,1,0.0
+motherdenim,Broad,MOTHER,fashion/apparel,competitor,Not seen (0 terms); variant added without evidence. Add 'motherdenim.com' if a domain search appears.,0,0.0
+motown,Broad,MOTHER,fashion/apparel,competitor,"Not verified as a MOTHER style or wash (U); 1 term, $0. Not a company or product name with evidence; put on the revisit list.",1,0.0
+nacho,Broad,MOTHER,fashion/apparel,competitor,"Both terms contain 'nacho double dip', which the Phrase row blocks; a bare food word is wider than needed.",2,0.0
+nip it in the bud,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; idiom, redundant.",1,0.0
+noli shop,Phrase,The Noli Shop,fashion/apparel,competitor,"Redundant: Broad 'noli' already blocks every query containing 'noli', including 'the noli shop pants'.",1,0.0
+og stretch,Phrase,OG Stretch (unidentified),unsure,not an organization,Not shown to be an organization or a specific brand's product; one zero-cost term.,1,0.0
+olivia's,Broad,Kimes Ranch,fashion/apparel,competitor,A plain first name; both seen terms contain 'kimes' and are already blocked by 'kimes' Broad; adds no coverage.,2,0.0
+olivias,Broad,Kimes Ranch,fashion/apparel,competitor,Plain first name; 'kimes olivias' is covered by 'kimes'; 'olivias jeans' is 1 term at $0 with unclear intent.,2,0.0
+one republic for all,Phrase,(garbled 7 For All Mankind),fashion/apparel,7FAM-owned or affiliated,Garbled form of the client's own name; blocks 0 terms and would block 7FAM shoppers if it matched.,0,0.0
+our republic for all,Phrase,(garbled 7 For All Mankind),fashion/apparel,7FAM-owned or affiliated,The searcher is looking for 7FAM; a negative would block a 7FAM shopper.,1,0.0
+paige's,Broad,PAIGE,fashion/apparel,competitor,Unseen variant added without evidence; the brand does not style itself with an apostrophe.,0,0.0
+palace,Broad,FRAME,fashion/apparel,competitor,Everyday word; its only term ('frame the palace jeans') is already blocked by the 'frame' Broad row.,1,0.0
+pantaloni torino,Phrase,PT Torino (Pantaloni Torino),fashion/apparel,competitor,Not seen in the Aug 1 - Oct 7 terms; variant added without evidence. Revisit if it appears.,0,0.0
+penny,Broad,Pistola Denim,fashion/apparel,competitor,Everyday word and first name; only term already blocked by 'pistola'. Redundant.,1,0.0
+pepe jeans,Phrase,Pepe Jeans London,fashion/apparel,competitor,Redundant: Broad 'pepe' already blocks every term containing 'pepe jeans'. Revisit if 'pepe' is later narrowed.,1,0.0
+philip plein,Phrase,Philipp Plein,fashion/apparel,competitor,Misspelling variant with no search-term evidence (0 terms). Put on the revisit list and add if it appears.,0,0.0
+pink blade xl colossus,Phrase,Jaded London,fashion/apparel,competitor,Colorway-specific phrase fully covered by Phrase 'xl colossus'.,1,0.0
+pipe dream,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; common phrase, redundant.",1,0.0
+polo ralph lauren,Phrase,Ralph Lauren Corporation,fashion/apparel,competitor,"Every one of its 5 terms contains 'ralph lauren', which the 'ralph lauren' Phrase row already blocks; redundant.",5,0.0
+ppd,Broad,none found,unsure,unrelated business,"Not shown to be an organization; 1 term, $0, no conversions. Revisit if it recurs.",1,0.0
+prsn,Broad,none found,unsure,unrelated business,"Not shown to be an organization; 1 term, $0. Revisit if it recurs.",1,0.0
+q2,Broad,none found,unsure,unrelated business,"Not shown to be an organization; 1 term, $0.",1,0.0
+quicksilver,Broad,Quiksilver,fashion/apparel,competitor,"Not seen in the terms; everyday word (mercury, Marvel character) added without evidence. Revisit if it appears.",0,0.0
+r3,Broad,none found,unsure,unrelated business,"Not shown to be an organization; 1 term, $0.",1,0.0
+ralph,Broad,Ralph Lauren Corporation,fashion/apparel,competitor,First name; 56 of its 57 terms are the same 'ralph lauren' searches the Phrase row already blocks. No unique volume to justify the plain word.,57,0.0
+ralphlauren,Broad,Ralph Lauren Corporation,fashion/apparel,competitor,Not seen in the terms; merged-word variant added without evidence. Revisit if it appears.,0,0.0
+rapture,Broad,FRAME,fashion/apparel,competitor,Its only term ('frame rapture') is already blocked by the 'frame' Broad row.,1,0.0
+rascal,Broad,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; common word, redundant.",1,0.0
+rax,Broad,none found,unsure,unrelated business,"Not shown to be an organization; 1 term, $0.",1,0.0
+rbd,Broad,none found,unsure,unrelated business,"Not shown to be an organization; 1 term, $0.",1,0.0
+rdl,Broad,none found,unsure,unrelated business,"Not shown to be an organization; 1 term, $0.",1,0.0
+reboot,Broad,FRAME,fashion/apparel,competitor,Everyday word; all 5 terms contain 'frame' and are blocked by the 'frame' Broad row.,5,0.0
+rerun,Broad,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; common word, redundant.",1,0.0
+rg,Broad,none found,unsure,unrelated business,"Not shown to be an organization; 1 term, $0.",1,0.0
+rick crane,Phrase,none found,unsure,unrelated business,"Not an organization, and its only term names 7FAM ('seven jeans'), so the negative would block a 7FAM shopper.",1,0.0
+rn 27002,Phrase,RN 27002 / CA 51217 (garment label registration numbers),unsure,unrelated business,"Label-number lookups are not shopping searches; 1 term, no cost. Keeping blocks only that lookup.",1,0.0
+rn 65199,Phrase,RN 65199 (garment label registration number),unsure,unrelated business,"Even if it is 7FAM's own RN, an RN lookup is a label-identification search, not a shopper; 2 terms, no cost, no conversions.",2,0.0
+roberto cavalli,Phrase,Roberto Cavalli,fashion/apparel,competitor,"All 3 of its terms contain 'cavalli', which the 'cavalli' Broad row already blocks; redundant.",3,0.0
+robins jean,Phrase,Robin's Jean,fashion/apparel,competitor,Not seen in the terms; variant added without evidence.,0,0.0
+robins jeans,Phrase,Robin's Jean,fashion/apparel,competitor,Not seen in the terms; variant added without evidence.,0,0.0
+rock & roll,Phrase,Rock & Roll Denim,fashion/apparel,competitor,Not seen; variant added without evidence.,0,0.0
+rock and roll cowgirl,Phrase,Rock & Roll Denim,fashion/apparel,competitor,"Not seen and already covered by the Phrase negative ""rock and roll"".",0,0.0
+rock republic,Phrase,Rock & Republic,fashion/apparel,competitor,Not seen in the Aug 1 - Oct 7 report; variant added without evidence. Add later if it appears.,0,0.0
+rockin' c,Phrase,Rockin C,fashion/apparel,competitor,Apostrophe variant not seen in the report; added without evidence.,0,0.0
+rocky mountain clothing,Phrase,Rocky Mountain Clothing Co.,fashion/apparel,competitor,"Not seen and already covered by the Phrase negative ""rocky mountain"".",0,0.0
+rogan nyc,Phrase,Rogan (Rogan NYC),fashion/apparel,competitor,"Not seen and already covered by the Broad negative ""rogan"".",0,0.0
+roger,Broad,Kimes Ranch,fashion/apparel,competitor,Plain first name; the one seen term 'kimes ranch roger' is already blocked by 'kimes'.,1,0.0
+roy roger's,Phrase,Roy (Roy Denim),fashion/apparel,competitor,"Not seen and already covered by the Broad negative ""roy"".",0,0.0
+roy rogers,Phrase,Roy (Roy Denim),fashion/apparel,competitor,"Not seen and already covered by the Broad negative ""roy"".",0,0.0
+royalty for me,Phrase,Royalty For Me,fashion/apparel,competitor,"Not seen and already covered by the Broad negative ""royalty"".",0,0.0
+rsa,Broad,RSA (unidentified; possibly Republic of South Africa),unsure,unrelated business,"Not a 7FAM term; 1 term, no 7FAM terms, no cost. Nothing suggests 7FAM shoppers use it.",1,0.0
+samsclub,Broad,"Sam's Club (Sam's West, Inc., Walmart)",not fashion/apparel,retailer not known to stock 7FAM,"Unseen variant with no evidence; if a domain negative is wanted later, the rule form is 'samsclub.com'.",0,0.0
+sandro paris,Phrase,"Sandro (Sandro Paris, SMCP)",fashion/apparel,competitor,Unseen and fully covered by 'sandro' Broad; variant without evidence.,0,0.0
+saturday,Broad,FRAME,fashion/apparel,competitor,Everyday word; its only term ('frame saturday jeans') is already blocked by the 'frame' Broad row.,1,0.0
+sd,Broad,SD (unidentified abbreviation),unsure,unrelated business,"Not a 7FAM term; 1 term, no 7FAM terms, no cost.",1,0.0
+series 7,Phrase,Series 7 (unidentified),not fashion/apparel,unrelated business,"A Phrase negative blocks only searches containing 'series 7', which 7FAM shoppers do not type; 1 term, no cost.",1,0.0
+seven heaven,Phrase,none found,unsure,not an organization,"Not an identified organization; its one term names 7FAM (the pass counted 'seven' as 7FAM), so a negative would block a likely 7FAM shopper. Revisit later.",1,0.0
+seven seas,Phrase,Seven Seas,not fashion/apparel,unrelated business,"Not a fashion organization; the one term (0 cost) is counted as naming 7FAM, so it would block a likely 7FAM shopper. Revisit later.",1,0.0
+seven titans,Phrase,none found,unsure,not an organization,"Unidentified; the term is counted as naming 7FAM, so a negative risks blocking a 7FAM shopper for no measurable gain. Revisit later.",1,0.0
+seven7.com,Broad,"Seven7 (Seven Licensing Company, LLC)",fashion/apparel,competitor,Not the brand's domain (it is seven7jeans.com) and no blocked terms; variant without evidence.,0,0.0
+seventh heaven,Phrase,7th Heaven,not fashion/apparel,unrelated business,"Zero terms, zero cost and no identified fashion company; 'seventh heaven jeans' would most likely be a mangled 7FAM search. Revisit later.",0,0.0
+seventy mochi,Phrase,Seventy + Mochi,fashion/apparel,competitor,Unseen variant with no evidence; add later if it appears in search terms.,0,0.0
+sh,Broad,SH,unsure,not an organization,"Three zero-cost terms, none naming 7FAM; the searcher is looking for a brand called SH, not 7FAM, and 'sh' rarely appears in genuine 7FAM queries. Mark for revisit once identified.",3,0.0
+silver jeans co,Phrase,Silver Jeans Co.,fashion/apparel,competitor,Redundant: Phrase 'silver jeans' already blocks 'silver jeans co'.,1,0.0
+silver tab,Phrase,Levi's (Levi Strauss & Co.),fashion/apparel,competitor,Split-word variant not seen in the report; revisit if it appears.,0,0.0
+sofia jeans,Phrase,Sofia Jeans by Sofia Vergara,fashion/apparel,competitor,No search-term evidence and fully covered by Broad 'sofia'.,0,0.0
+sop,Broad,none found,unsure,not an organization,Cannot be tied to any organization; one term with no cost. Put on the revisit list rather than adding an unexplained negative.,1,0.0
+spoke london,Phrase,SPOKE,fashion/apparel,competitor,No search-term evidence and fully covered by Broad 'spoke'.,0,0.0
+state & liberty,Phrase,State and Liberty,fashion/apparel,competitor,Ampersand variant added without search-term evidence; add back if it appears.,0,0.0
+stateside clothing,Phrase,Stateside,fashion/apparel,competitor,Never seen in the report and fully covered by 'stateside' Broad; variant added without evidence.,0,0.0
+strike gold jeans,Phrase,The Strike Gold,fashion/apparel,competitor,Unseen as its own query (the 1 term credited is 'the strike gold jeans') and fully covered by Phrase 'strike gold'.,1,0.0
+stroll,Broad,FRAME,fashion/apparel,competitor,Everyday word; its only term ('frame the stroll jeans') is already blocked by the 'frame' Broad row.,1,0.0
+superior,Broad,MOTHER,fashion/apparel,competitor,"Both terms contain 'mother', already blocked; common word, redundant.",2,0.0
+sv,Broad,none found,unsure,not an organization,Cannot be tied to any organization; one term with no cost. Revisit later.,1,0.0
+the gage,Phrase,Citizens of Humanity,fashion/apparel,competitor,Redundant with 'gage' Broad in the same list.,1,0.0
+the great china wall,Phrase,Great China Wall,fashion/apparel,competitor,Redundant: Phrase 'great china wall' already matches 'the great china wall'.,1,0.0
+the stiletto,Phrase,Current/Elliott,fashion/apparel,competitor,"Common-word phrase; its only seen term 'current elliott the stiletto' is already blocked by 'current elliott', and 'stiletto' could appear in generic styling searches. Redundant and risky.",1,0.0
+the vintage twin,Phrase,The Vintage Twin,fashion/apparel,marketplace or resale,Redundant: Phrase 'vintage twin' already blocks 'the vintage twin jeans' and any form without the article.,1,0.0
+tods,Broad,Tod's,fashion/apparel,competitor,Unseen apostrophe-less variant with no search-term evidence; revisit if 'tods' appears in later reports.,0,0.0
+top shop,Phrase,Topshop / Topman,fashion/apparel,competitor,Unseen split-word variant made of two everyday words; no evidence it is searched. Revisit if it appears.,0,0.0
+tucker nuck,Phrase,Tuckernuck,fashion/apparel,retailer not known to stock 7FAM,Split variant never seen in the Aug 1 - Oct 7 terms; add only if it appears (revisit later).,0,0.0
+tuckernuck.com,Broad,Tuckernuck,fashion/apparel,retailer not known to stock 7FAM,Domain variant never seen in terms; no evidence (revisit later).,0,0.0
+twenty four seven,Phrase,none found,unsure,not an organization,"Its only matching term also names 7FAM (""seven jeans"") and no company by this name was confirmed, so the negative would block a 7FAM shopper for no verified gain.",1,16.78
+twist,Broad,MOTHER,fashion/apparel,competitor,"All 36 terms are 'lemon twist' or 'bookie twist', blocked by 'lemon twist' Phrase and 'bookie' Broad; a bare common word is wider than needed.",36,5.13
+twp jeans,Phrase,TWP,fashion/apparel,competitor,Redundant: every search containing 'twp jeans' is already blocked by 'twp' Broad.,1,0.0
+under armour,Phrase,Under Armour,fashion/apparel,competitor,Redundant with 'armour' Broad and never seen in terms.,0,0.0
+untuck it,Phrase,UNTUCKit,fashion/apparel,competitor,Split variant never seen in terms; no evidence (revisit later).,0,0.0
+vertical,Broad,FRAME,fashion/apparel,competitor,Everyday word; both terms contain 'frame' and are blocked by the 'frame' Broad row.,2,0.0
+vf corp,Phrase,VF Corporation,fashion/apparel,unrelated business,"Short-form variant never seen in terms; volume is one query in two months, so add only if it appears (revisit later).",0,0.0
+vgs,Broad,none found,unsure,not an organization,Unconfirmed as any organization and the single term cost nothing; add it only if the term recurs with spend.,1,0.0
+vigossusa.com,Broad,Vigoss USA,fashion/apparel,competitor,Domain variant never seen in terms; no evidence (revisit later).,0,0.0
+virginia slim,Phrase,SLVRLAKE,fashion/apparel,competitor,"Seen only as 'slvrlake virginia slim', covered by 'slvrlake'; no brand-less evidence (and 'virginia slims' searches are cigarettes that would not trigger denim ads).",1,0.0
+vs,Broad,none found,not fashion/apparel,not an organization,"30 of the 42 terms it blocks name 7FAM; these are shoppers comparing 7FAM with rivals, exactly the traffic Brand Search should keep.",42,28.46
+we the animals,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; redundant.",1,0.0
+wild track,Phrase,MOTHER,fashion/apparel,competitor,"Only term contains 'mother', already blocked; redundant.",1,0.0
+wit & wisdom,Phrase,Wit & Wisdom,fashion/apparel,competitor,"Not seen in the report, and Google Ads treats '&' as 'and' in keyword matching, so 'wit and wisdom' already covers it (inference from Google Ads keyword symbol rules). Redundant variant.",0,0.0
+you tube,Phrase,"Google LLC (Google Search, YouTube)",not fashion/apparel,unrelated business,"Unseen variant added without evidence, and the base keyword is dropped.",0,0.0
+yves saint laurent,Phrase,Saint Laurent,fashion/apparel,competitor,"Not seen and already covered by the Phrase negative ""saint laurent"".",0,0.0
+z cavaricci,Phrase,Z. Cavaricci,fashion/apparel,competitor,Redundant: the Broad 'cavaricci' row already blocks any search containing 'z cavaricci'.,0,0.0

@@ -1,0 +1,30 @@
+{
+ "about": "My P1S 0.6 printer settings as differences from the default printer settings (Orca's stock \"Bambu Lab P1S 0.6 nozzle\" preset, pulled by orcadefaults.py); any setting not here matches the default",
+ "notes": [
+  "My printer settings are the default printer settings plus the differences below. Any setting not listed here matches the default. When I change a printer setting, it gets added here.",
+  "Rows added 2026-10-03 from the \"P1S 0.6mm\" preset saved in pa_test.3mf and mvs_test.3mf (2026-10-02) and in rfidSpring_settings_base.json, compared with Orca 2.4.2's \"Bambu Lab P1S 0.6 nozzle\" profile. When and why they were made isn't recorded.",
+  "Nozzle-type note: Orca's default printer settings also say Hardened steel (checked 2026-10-10). My nozzle is confirmed hardened steel, an upgrade over the stock stainless steel P1S nozzle, so it can print abrasive filaments such as PETG Carbon Fiber.",
+  "Machine start G-code: the default is summarized as \"Two 50 mm purges; big fan on for every filament; load line speed from 0.3 × 0.5; Textured PEI Z −0.04 mm\"; mine differs as stated.",
+  "Machine end G-code: the default is summarized as \"G1 E-0.8 F1800\"; mine differs as stated."
+ ],
+ "settings": {
+  "Basic information": {
+   "Accessory": {
+    "Nozzle type": "Hardened steel (confirmed)"
+   }
+  },
+  "Extruder": {
+   "Retraction": {
+    "Length": "1 mm",
+    "Retraction speed": "40 mm/s",
+    "Deretraction speed": "40 mm/s"
+   }
+  },
+  "Machine G-code": {
+   "": {
+    "Machine start G-code": "One 40 mm purge on 0.6 mm and larger nozzles; big fan (M106 P2 S100) on only for PLA, in both places; load line speed from the first layer's height × line width; Textured PEI Z −0.05 mm",
+    "Machine end G-code": "G1 E-1.0 F2400"
+   }
+  }
+ }
+}

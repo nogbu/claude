@@ -1,0 +1,8 @@
+#!/bin/bash
+# Commit message check (repo-edit skill, Saving): "[file]: [change] ([project])".
+first=$(head -1 "$1")
+projects=$(ls -d "$(git rev-parse --show-toplevel)"/projects/*/ | xargs -n1 basename | paste -sd'|')
+if ! echo "$first" | grep -qE "^[^:]+: .+ \(($projects)\)$"; then
+  echo "commit-msg: first line must be \"[file]: [change] ([project])\", ending in one of: ${projects//|/, }." >&2
+  echo "Got: $first" >&2; exit 1
+fi
