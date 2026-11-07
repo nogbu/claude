@@ -1,13 +1,13 @@
 {
   "name": "nogbu-claude",
-  "description": "Nwani's house rules for Claude, built from this repo.",
+  "description": "Nwani's kernel for Claude, built from this repo.",
   "owner": {
     "name": "Nwani"
   },
   "plugins": [
     {
-      "name": "house-rules",
-      "source": "./plugins/house-rules",
+      "name": "kernel",
+      "source": "./plugins/kernel",
       "description": "Nwani's automatic checks and reviewer helper for Claude in project threads."
     }
   ]

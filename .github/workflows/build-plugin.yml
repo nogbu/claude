@@ -1,4 +1,4 @@
-# Rebuilds plugins/house-rules from .claude/ on every change to main, so the copy that the
+# Rebuilds plugins/kernel from .claude/ on every change to main, so the copy that the
 # repo's catalog lists can't fall behind the checks (MANUAL.md, Automatic checks).
 name: Build plugin
 on:
@@ -20,5 +20,5 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Rebuild the house-rules plugin from .claude"
+          git commit -m "Rebuild the kernel plugin from .claude"
           git push
