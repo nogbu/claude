@@ -37,6 +37,18 @@
         ]
       }
     ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__hearthbot__reply",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/attach-limit.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [

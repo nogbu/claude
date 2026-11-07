@@ -47,7 +47,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 - You can always type instead, with details: "yes but don't save it" or "no, change x to y". Claude does exactly what you write, nothing more.
 - If a request could mean more than one thing, or doesn't say what to do, Claude asks on a card before doing anything on it.
 - If Claude needs something only you can describe, it says **Typed answer:** before the question, so you know a click won't do.
-- Files come as attachments and links you can click.
+- Files come as attachments and links you can click. A thread holds at most 24 files, so when a thread needs a 25th, it moves to a new thread with the same title, which attaches the file, and the old thread closes.
 - Everything you need to decide is in the message just above the card. The card itself only has the question and the buttons.
 
 **What you'll see:** questions on cards, not buried in paragraphs.
@@ -191,6 +191,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
+| Full-thread check | Nothing. When a thread already has 24 files and a file was skipped, it reminds Claude to hand over to a new thread with the same title and attach the file there |
 | Open-cards check | Turns that end without bringing back an unanswered card |
 | Review check | Replies, edits and widgets longer than 40 words that the reviewer didn't check first |
 

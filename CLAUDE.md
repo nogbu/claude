@@ -8,6 +8,7 @@ Nwani should be able to do everything by mouse.
 - When a request could mean more than one thing, or doesn't say what to do, ask on a card before acting. Do nothing on that part until I answer.
 - A question only Nwani's own words can answer goes on its own line in a reply, starting "Typed answer:".
 - Files and links go out as attachments or links that open on click, never as paths or text to copy.
+- A thread holds at most 24 attached files (learnings.md). When a thread needs to attach a 25th, it hands over without asking: it withdraws any open card, resolves itself, and asks the coordinator to start a new thread with exactly the same title, briefed with the task, the open questions and that card. The new thread attaches the file, and the old one posts a link to it. A permathread's new thread keeps the name Nwani confirmed, so it skips the name card and the Permathreads list. A hook reminds Claude when a file was skipped for this (2026-11-07).
 - Never ask Nwani to paste a prompt or type a command; do it or link to it.
 - Never fill in a card's context; anything Nwani needs goes in the reply just before the card. A hook refuses a card with context filled in.
 - Approving a save, by click or in words, also approves merging it, unless Nwani says otherwise. Claude opens the pull request and merges it, with no separate merge card. If the merge is blocked, Claude says why and what it needs (2026-11-05).
@@ -15,7 +16,7 @@ Nwani should be able to do everything by mouse.
 ## Open questions, newest first
 
 - Every question Claude asks stays open until Nwani answers it or says to drop it.
-- Only Nwani says when a task or tangent is done, in words or by picking a card option that says it's done. When Claude thinks the work is finished, it asks on a card, like "Done with the new-project check" with "Done, move on" and "Not yet". Until Nwani says so, Claude doesn't call the task finished, resolve the thread, re-ask queued questions or post a "Still open:" list (2026-11-07). The one exception is a thread Claude starts only to run a test: once it has reported its results, pass or fail, to the thread or session that started it, it resolves itself without asking (2026-11-07).
+- Only Nwani says when a task or tangent is done, in words or by picking a card option that says it's done. When Claude thinks the work is finished, it asks on a card, like "Done with the new-project check" with "Done, move on" and "Not yet". Until Nwani says so, Claude doesn't call the task finished, resolve the thread, re-ask queued questions or post a "Still open:" list (2026-11-07). The one exception is a thread Claude starts only to run a test: once it has reported its results, pass or fail, to the thread or session that started it, it resolves itself without asking (2026-11-07). A thread full of files also resolves itself when it hands over (Answer by click).
 - When Nwani goes off on a tangent, follow it. Once the tangent is settled, re-ask the newest open question on a fresh card, then the next newest, until none are left.
 - The "Still open:" list is for switching topics. When the current topic is settled and Claude moves on to the next open question, the reply just before that card ends with a "Still open:" line listing the rest of the queue, newest first. Replies in the middle of a topic leave it out (2026-10-26).
 - A hook stops Claude from ending a turn without a card while any card is still open.
@@ -27,7 +28,7 @@ Nwani should be able to do everything by mouse.
 
 - A permathread is a thread Nwani made one, by saying "make this a permathread" in it or by asking for a new one. Only Nwani makes one. Claude never treats a thread as one because its topic looks ongoing (2026-10-26).
 - When Nwani makes a thread a permathread, Claude always confirms its name first, on a card with a recommended name (2026-10-26). A thread the coordinator started as a new permathread under a name Nwani already confirmed skips the card. The thread then sets its title to the confirmed name and asks the coordinator with `message_coordinator`, attaching Nwani's messages, to add its exact title and what it's for to the Permathreads list in the project instructions. If the instructions have no such list yet, the thread sends the text below for the coordinator to add, with the line filled in.
-- After that, a permathread never renames or resolves itself, because its title is how the coordinator finds it. It can still close without Claude (learnings.md, Idle threads), and then the next message about it starts a new instance with the same title.
+- After that, a permathread never renames or resolves itself, because its title is how the coordinator finds it, except when it's full of files and hands over to a new thread with the same title (Answer by click). It can still close without Claude (learnings.md, Idle threads), and then the next message about it starts a new instance with the same title.
 - Anything the next instance would need goes in a file in Project Files as it happens, not only in the thread.
 
 The project-instructions text (the coordinator can't read this repo, so it gets the words themselves):

@@ -354,6 +354,17 @@ for prompt, want in NEW_PROJECTS:
     got = out["hookSpecificOutput"]["additionalContext"] if out else None
     if (want is None and got) or (want and (not got or want not in got)):
         failures.append("new-project, expected %r, got %r" % (want, got))
+FULL_REPLY = {"ok": True, "note": "attached_outputs_skipped_refs were not attached: the thread already has the maximum of 24 attached outputs.", "attached_outputs_skipped_refs": ["/mnt/project-files/kernel-plugin/kernel_rev3.plugin"]}
+ATTACHES = [
+    (FULL_REPLY, "kernel_rev3.plugin"),
+    (json.dumps(FULL_REPLY), "kernel_rev3.plugin"),
+    ({"message_id": "cmsg_1", "thread_id": "cmsg_2"}, None),
+]
+for response, want in ATTACHES:
+    out = run("attach-limit.py", {"tool_name": "mcp__hearthbot__reply", "tool_response": response})
+    got = out["hookSpecificOutput"]["additionalContext"] if out else None
+    if (want is None and got) or (want and (not got or want not in got)):
+        failures.append("attach-limit, expected %r, got %r" % (want, got))
 for args, want in HELPERS:
     if helper_refused(args) != want:
         failures.append("helper-check, expected %s: %r" % ("refused" if want else "allowed", args["file_path"]))
@@ -393,7 +404,7 @@ for name in ("reply", "post_message", "update_message", "edit_message", "post_wi
 out = run("reply-check.py", {"tool_input": {"message_id": "cmsg_1", "body": "Done; saved."}})
 if not (out and out["hookSpecificOutput"]["permissionDecision"] == "deny"):
     failures.append("reply-check, expected refused: an edit whose text is called body")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS)
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES)
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
