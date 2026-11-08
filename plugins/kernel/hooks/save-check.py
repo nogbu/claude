@@ -5,7 +5,8 @@ Refuses a save to main in nogbu/claude unless Nwani approved one since Claude's 
 merging a pull request, writing files straight to main through GitHub, or a git push to main.
 Approval is Nwani's newest message since that save being a tap on a card option that starts with
 "Save", or anything Nwani typed. The check can't read what typed words mean, so a typed message
-always passes, and it can't tell which change a tap was for.
+always passes, and it can't tell which change a tap was for. A push in the record is judged by the
+branch checked out now, so an old push that named no branch, or named HEAD, can be misread.
 """
 import json
 import re
@@ -20,8 +21,11 @@ WRITES = {"mcp__github__push_files", "mcp__github__create_or_update_file", "mcp_
 MERGE = "mcp__github__merge_pull_request"
 NWANI = re.compile(r'<message\b(?=[^>]*\btrigger="true")(?=[^>]*\bfrom="human")[^>]*>(.*?)</message>', re.S)
 TAP = re.compile(r'^Chose (?:&#34;|")(.*?)(?:&#34;|") on the decision card asking', re.S)
-PUSH = re.compile(r"\bgit\b(?:\s+-C\s+\S+)?\s+push\b[^|;&\n]*")
-PR_MERGE = re.compile(r"\bgh\s+pr\s+merge\b")
+# Only git run as a command counts, not the words "git push" inside a search or a quote.
+START = r"(?:^|[;&|(\n]|\bthen\b|\bdo\b)\s*"
+PUSH = re.compile(START + r"git\b(?:\s+-C\s+\S+)?\s+push\b[^|;&\n]*")
+PR_MERGE = re.compile(START + r"gh\s+pr\s+merge\b[^|;&\n]*")
+OTHER_REPO = re.compile(r"(?:-R|--repo)[\s=]+(\S+)")
 
 
 def ours(args):
@@ -38,8 +42,10 @@ def git(folder, *args):
 
 def pushes_to_main(command, cwd):
     """True if this shell command pushes to main in nogbu/claude, or might and can't be told apart."""
-    if PR_MERGE.search(command):
-        return True
+    for merge in PR_MERGE.finditer(command):
+        other = OTHER_REPO.search(merge.group(0))
+        if not other or other.group(1).strip("'\"").lower() == "nogbu/claude":
+            return True
     for push in PUSH.finditer(command):
         before = command[:push.start()]
         folder = cwd
@@ -49,6 +55,8 @@ def pushes_to_main(command, cwd):
         given = re.search(r"\bgit\s+-C\s+(\S+)", push.group(0))
         if given:
             folder = given.group(1)
+        if not git(folder, "rev-parse", "--git-dir"):
+            continue  # not a repo, so nothing gets pushed from there
         try:
             words = shlex.split(push.group(0))
         except ValueError:
@@ -57,21 +65,21 @@ def pushes_to_main(command, cwd):
         plain = [w for w in words if not w.startswith("-")]
         remote = plain[0] if plain else "origin"
         url = git(folder, "remote", "get-url", remote) or remote
-        if url and not REPO.search(url) and "/" in url:
+        if not REPO.search(url) and "/" in url:
             continue  # another repo
-        if not url:
-            return True
-        refs = plain[1:]
-        if refs:
-            if any(re.search(r"(?:^|:)(?:refs/heads/)?main$", r.lstrip("+")) for r in refs):
+        branch = git(folder, "rev-parse", "--abbrev-ref", "HEAD")
+        refs = [r.lstrip("+") for r in plain[1:]] or ["HEAD"]
+        for ref in refs:
+            target = ref.split(":")[-1] or ref.split(":")[0]
+            if target in ("HEAD", "@"):
+                target = branch
+            if re.fullmatch(r"(?:refs/heads/)?main", target):
                 return True
-        elif git(folder, "rev-parse", "--abbrev-ref", "HEAD") in ("main", ""):
-            return True
     return False
 
 
 def is_save(name, args, cwd):
-    if name == MERGE:
+    if name == MERGE:  # any merge in nogbu/claude, whatever its base branch
         return ours(args)
     if name in WRITES:
         return ours(args) and (args.get("branch") or "") == "main"

@@ -468,6 +468,12 @@ SAVES = [
     ("git push in another repo", {"name": "Bash", "input": {"command": "cd %s && git push origin main" % OTHER}}, saves(), False),
     ("git push to main after a Save tap", {"name": "Bash", "input": {"command": "cd %s && git push origin main" % OURS}}, saves(("nwani", TAPPED_SAVE)), False),
     ("other shell command", {"name": "Bash", "input": {"command": "git log main"}}, saves(), False),
+    ("search for the words git push", {"name": "Bash", "input": {"command": 'cd %s && grep -n "git push origin main" MANUAL.md' % OURS}}, saves(), False),
+    ("git push from a folder that isn't a repo", {"name": "Bash", "input": {"command": "cd /nonexistent && git push origin main"}}, saves(), False),
+    ("git push origin HEAD on main", {"name": "Bash", "input": {"command": "cd %s && git push -u origin HEAD" % OURS}}, saves(), True),
+    ("gh pr merge here", {"name": "Bash", "input": {"command": "gh pr merge 30 --squash"}}, saves(), True),
+    ("gh pr merge in another repo", {"name": "Bash", "input": {"command": "gh pr merge 5 -R someone/else"}}, saves(), False),
+    ("merge after a harmless command that mentions git push", MERGE, saves(("nwani", TAPPED_SAVE), ("save", {"name": "Bash", "input": {"command": 'grep "git push" x'}})), False),
 ]
 for name, call, path, want in SAVES:
     out = run("save-check.py", {"tool_name": call["name"], "tool_input": call["input"], "transcript_path": path, "cwd": OURS})
