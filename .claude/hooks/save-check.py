@@ -6,7 +6,7 @@ merging a pull request, writing files straight to main through GitHub, or a git 
 Approval is Nwani's newest message since that save being a tap on a card option that starts with
 "Save", or anything Nwani typed. The check can't read what typed words mean, so a typed message
 always passes, and it can't tell which change a tap was for. A push in the record is judged by the
-branch checked out now, so an old push that named no branch, or named HEAD, can be misread. A merge through gh api, or a push hidden inside a script, isn't seen.
+branch checked out now, so an old push that named no branch, or named HEAD, can be misread. A merge through gh api, or a push hidden inside a script or a quoted string, isn't seen.
 """
 import json
 import re
@@ -24,7 +24,10 @@ TAP = re.compile(r'^Chose (?:&#34;|")(.*?)(?:&#34;|") on the decision card askin
 # Only git run as a command counts, not the words "git push" inside a search or a quote.
 START = r"(?:^|[;&|(\n]|\bthen\b|\bdo\b)\s*"
 # Words that run the command after them, like timeout 60 or bash -c ", and git's own options.
-WRAP = r"(?:(?:timeout\s+\S+|env|sudo|nice|nohup|command|exec|\w+=\S*|(?:ba)?sh\s+-l?c)\s+)*[\"']?"
+WRAP = r"(?:(?:timeout\s+\S+|env|sudo|nice|nohup|command|exec|\w+=\S*)\s+)*(?:(?:ba)?sh\s+-l?c\s+[\"']?)?"
+# Quoted text that mentions a push or merge is masked first, unless it's the command a shell runs
+# (bash -c "..."), so a push written inside a string, a search or a test case isn't counted.
+QUOTED = re.compile(r"""(?<!-c )(?<!-lc )(["'])(?:\\.|(?!\1).)*?\1""", re.S)
 GIT_OPTS = r"(?:\s+(?:-[Cc]\s+\S+|--git-dir[=\s]\S+|--work-tree[=\s]\S+|--no-pager|-P))*"
 PUSH = re.compile(START + WRAP + r"git\b" + GIT_OPTS + r"\s+push\b[^|;&\n]*")
 PR_MERGE = re.compile(START + WRAP + r"gh\s+pr\s+merge\b[^|;&\n]*")
@@ -45,6 +48,7 @@ def git(folder, *args):
 
 def pushes_to_main(command, cwd):
     """True if this shell command pushes to main in nogbu/claude, or might and can't be told apart."""
+    command = QUOTED.sub(lambda q: '""' if re.search(r"push|merge", q.group(0)) else q.group(0), command)
     for merge in PR_MERGE.finditer(command):
         other = OTHER_REPO.search(merge.group(0))
         if not other or other.group(1).strip("'\"").lower() == "nogbu/claude":
@@ -54,10 +58,10 @@ def pushes_to_main(command, cwd):
         folder = cwd
         moved = re.findall(r"\bcd\s+(\S+)", before)
         if moved:
-            folder = moved[-1]
+            folder = moved[-1].strip("\"'")
         given = re.search(r"\s-C\s+(\S+)", push.group(0).split(" push")[0])
         if given:
-            folder = given.group(1)
+            folder = given.group(1).strip("\"'")
         if not git(folder, "rev-parse", "--git-dir"):
             continue  # not a repo, so nothing gets pushed from there
         try:

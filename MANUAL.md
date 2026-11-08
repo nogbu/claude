@@ -109,7 +109,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 - it can't tell which change a Save tap was for, so a different change merged before you write again gets through
 - it only covers saves Claude makes in threads that load the kernel plugin, not merges on the GitHub site
 - it judges a push in the record by the branch checked out now, so an old push that named no branch, or named HEAD, can be misread. That could refuse a save you approved, or let a second one through
-- a merge through gh api, or a push hidden inside a script, isn't seen
+- a merge through gh api, or a push hidden inside a script or a quoted string, isn't seen
 
 ---
 
