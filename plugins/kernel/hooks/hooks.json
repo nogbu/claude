@@ -35,6 +35,16 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "mcp__github__merge_pull_request|mcp__github__push_files|mcp__github__create_or_update_file|mcp__github__delete_file|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/run.sh\" save-check.py",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "PostToolUse": [

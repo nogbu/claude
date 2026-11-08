@@ -104,7 +104,12 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **Undoing a change:** ask Claude to undo it. Every save is kept in history, so any change can be reversed.
 
-**What's behind it:** today, Claude follows this as a written rule. An automatic check that enforces it is planned.
+**What's behind it:** the save check (2026-11-08). It refuses merging a pull request, or pushing or writing to main, in nogbu/claude unless your newest message since Claude's last save is a tap on an option that starts with Save, or something you typed. So every Save card's yes option starts with Save. What it can't catch:
+- a typed message always passes, because the check can't tell what your words mean
+- it can't tell which change a Save tap was for, so a different change merged before you write again gets through
+- it only covers saves Claude makes in threads that load the kernel plugin, not merges on the GitHub site
+- it judges a push in the record by the branch checked out now, so an old push that named no branch, or named HEAD, can be misread. That could refuse a save you approved, or let a second one through
+- a merge through gh api, or a push hidden inside a script or a quoted string, isn't seen
 
 ---
 
@@ -193,6 +198,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
 | Full-thread check | Nothing. When a thread already has 24 files and a file was skipped, it reminds Claude to hand over to a new thread with the same title and attach the file there |
 | Open-cards check | Turns that end without bringing back an unanswered card |
+| Save check | Merging a pull request, or pushing or writing to main, in nogbu/claude when your newest message since the last save isn't a tap on an option starting with Save or something you typed |
 | Review check | Replies, edits and widgets longer than 40 words that the reviewer didn't check first |
 
 **Where they come from:** project threads don't run a repo's own hooks or helpers ([Projects docs](https://code.claude.com/docs/en/claude-projects#what-threads-pick-up-from-your-repositories)). So the checks and the reviewer come as one plugin, kernel, built from this repo, which keeps the master copy.
@@ -208,6 +214,5 @@ How to use the systems we've built for working with Claude. Each section covers 
 ## Coming later
 
 These are planned but not built. Each gets its own section here once it exists.
-- **Save check:** an automatic check that rules can only change after you click Save.
 - **Manual check:** an automatic check that refuses a rule or hook change unless this manual is updated too.
 - **Weekly audit:** an audit that runs on its own every week and brings you its top three findings on cards.
