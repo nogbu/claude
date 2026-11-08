@@ -146,10 +146,16 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **What's behind it:** a separate helper (Opus, high effort) gets your message, the conversation and Claude's draft. Its only job is to find what's wrong: whether the draft reaches your actual goal, what it assumed without checking, what's missing, and anything on the review checklist. A check refuses any reply longer than 40 words unless the reviewer's report came back first. Short replies like "Saving now" skip it, and a table's | and --- marks don't count as words. When Claude changes a draft because of the report, a fresh reviewer checks the changed draft once more, because in a small test asking the same reviewer again missed more (new-config/repeat-review-test/RESULTS.md in Project Files).
 
-**The checked record (2026-11-08):** so reviewers don't verify the same facts again on every reply, each one records the facts it verified in a file, with the exact text that backs each, in review-record/checked.jsonl in Project Files (scripts/checked.py). Later reviewers, in any thread, trust a recorded fact without reopening its file, as long as the file still holds that exact text. When the text changes or goes, the fact is checked again. What it can't catch:
-- a recorded fact that was wrong to begin with, because the reviewer read the text wrong, stays trusted until its text changes
-- a fact whose text is unchanged but whose meaning changed because of text around it, like a line moved under a "Done" heading
-- facts from command output, web pages or the conversation aren't recorded, so those still get checked every time
+**The checked record (2026-11-08):** so reviewers don't verify the same facts again on every reply, each one records the facts it verified in a file in review-record/checked.jsonl in Project Files (scripts/checked.py). Later reviewers, in any thread, trust a recorded fact without reopening its file while what backs it is unchanged. In a code or settings file that's the whole file, so any edit to it means the fact is checked again. In a .md or .txt file it's the exact text quoted, so notes that grow don't make every fact stale. A recheck of a fixed draft doesn't use the facts its first review recorded, so it still looks with fresh eyes.
+
+What it could miss:
+- a fact a reviewer got wrong stays trusted, in every thread, until what backs it changes
+- in a .md or .txt file, a fact whose quoted text is unchanged but whose meaning changed because of text around it, like a line moved under a "Done" heading, or the same text appearing elsewhere in the file
+
+Where it saves nothing:
+- facts from command output, web pages or the conversation, which aren't recorded
+- the checklist, which every reviewer still reads, since it's what the draft is checked against
+- any file the draft relies on for a claim the record doesn't hold, since the reviewer opens that file anyway
 
 ---
 

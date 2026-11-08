@@ -52,7 +52,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 
 - Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer's report has come back since Nwani's last message.
 - When Claude changes a draft because of the first report, by fixing a finding or saying it plainly, a fresh reviewer given that report's findings checks the changed draft once before it goes out. Claude fixes or says plainly what that check finds, without a third check (2026-11-07).
-- Reviewers record each fact they verify in a file, with the exact text behind it, in the checked record (scripts/checked.py), and trust a recorded fact without rechecking it while its file still holds that text (2026-11-08).
+- Reviewers record each fact they verify in a file in the checked record (scripts/checked.py), and trust a recorded fact without rechecking it while what backs it is unchanged: the whole file for code and settings, the quoted text for .md and .txt files. A recheck's brief gives the first review's start time, so the recheck doesn't use the facts that review recorded (2026-11-08).
 - When Nwani catches a mistake the reviewer missed, add its kind to `checklists/review.md`, not the single example.
 
 ## Optimize
