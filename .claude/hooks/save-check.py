@@ -6,7 +6,7 @@ merging a pull request, writing files straight to main through GitHub, or a git 
 Approval is Nwani's newest message since that save being a tap on a card option that starts with
 "Save", or anything Nwani typed. The check can't read what typed words mean, so a typed message
 always passes, and it can't tell which change a tap was for. A push in the record is judged by the
-branch checked out now, so an old push that named no branch, or named HEAD, can be misread.
+branch checked out now, so an old push that named no branch, or named HEAD, can be misread. A merge through gh api, or a push hidden inside a script, isn't seen.
 """
 import json
 import re
@@ -23,8 +23,11 @@ NWANI = re.compile(r'<message\b(?=[^>]*\btrigger="true")(?=[^>]*\bfrom="human")[
 TAP = re.compile(r'^Chose (?:&#34;|")(.*?)(?:&#34;|") on the decision card asking', re.S)
 # Only git run as a command counts, not the words "git push" inside a search or a quote.
 START = r"(?:^|[;&|(\n]|\bthen\b|\bdo\b)\s*"
-PUSH = re.compile(START + r"git\b(?:\s+-C\s+\S+)?\s+push\b[^|;&\n]*")
-PR_MERGE = re.compile(START + r"gh\s+pr\s+merge\b[^|;&\n]*")
+# Words that run the command after them, like timeout 60 or bash -c ", and git's own options.
+WRAP = r"(?:(?:timeout\s+\S+|env|sudo|nice|nohup|command|exec|\w+=\S*|(?:ba)?sh\s+-l?c)\s+)*[\"']?"
+GIT_OPTS = r"(?:\s+(?:-[Cc]\s+\S+|--git-dir[=\s]\S+|--work-tree[=\s]\S+|--no-pager|-P))*"
+PUSH = re.compile(START + WRAP + r"git\b" + GIT_OPTS + r"\s+push\b[^|;&\n]*")
+PR_MERGE = re.compile(START + WRAP + r"gh\s+pr\s+merge\b[^|;&\n]*")
 OTHER_REPO = re.compile(r"(?:-R|--repo)[\s=]+(\S+)")
 
 
@@ -52,7 +55,7 @@ def pushes_to_main(command, cwd):
         moved = re.findall(r"\bcd\s+(\S+)", before)
         if moved:
             folder = moved[-1]
-        given = re.search(r"\bgit\s+-C\s+(\S+)", push.group(0))
+        given = re.search(r"\s-C\s+(\S+)", push.group(0).split(" push")[0])
         if given:
             folder = given.group(1)
         if not git(folder, "rev-parse", "--git-dir"):
@@ -62,11 +65,14 @@ def pushes_to_main(command, cwd):
         except ValueError:
             words = push.group(0).split()
         words = words[words.index("push") + 1:] if "push" in words else []
+        words = [w.strip("\"'") for w in words]
         plain = [w for w in words if not w.startswith("-")]
         remote = plain[0] if plain else "origin"
         url = git(folder, "remote", "get-url", remote) or remote
         if not REPO.search(url) and "/" in url:
             continue  # another repo
+        if "--all" in words or "--mirror" in words:
+            return True  # every branch, main among them
         branch = git(folder, "rev-parse", "--abbrev-ref", "HEAD")
         refs = [r.lstrip("+") for r in plain[1:]] or ["HEAD"]
         for ref in refs:
