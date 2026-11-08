@@ -417,7 +417,64 @@ for name in ("reply", "post_message", "update_message", "edit_message", "post_wi
 out = run("reply-check.py", {"tool_input": {"message_id": "cmsg_1", "body": "Done; saved."}})
 if not (out and out["hookSpecificOutput"]["permissionDecision"] == "deny"):
     failures.append("reply-check, expected refused: an edit whose text is called body")
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES)
+# Saves to main: Nwani's newest message since the last save must be a Save tap or typed words.
+def wake(body):
+    return '<wake reason="x"><project><thread><message trigger="true" from="human" trust="principal">%s</message></thread></project></wake>' % body
+TAPPED_SAVE = wake("Chose &#34;Save it&#34; on the decision card asking &#34;Save the check&#34;")
+TAPPED_CHANGE = wake("Chose &#34;Change&#34; on the decision card asking &#34;Save the check&#34;")
+TYPED = wake("yes save it")
+MERGE = {"name": "mcp__github__merge_pull_request", "input": {"owner": "nogbu", "repo": "claude", "pullNumber": 30}}
+def saves(*events):
+    lines, n = [], 0
+    for kind, value in events:
+        n += 1
+        if kind == "nwani":
+            lines.append({"type": "user", "message": {"content": value}})
+        elif kind == "tap mid-turn":
+            lines.append({"type": "attachment", "attachment": {"type": "queued_command", "prompt": value}})
+        elif kind == "note":
+            lines.append({"type": "user", "isMeta": True, "message": {"content": value}})
+        elif kind in ("save", "failed save"):
+            lines.append({"type": "assistant", "message": {"content": [dict(value, type="tool_use", id="t%d" % n)]}})
+            lines.append({"type": "user", "message": {"content": [{"type": "tool_result", "tool_use_id": "t%d" % n,
+                                                                   "is_error": kind == "failed save", "content": "ok"}]}})
+    f = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
+    f.write("\n".join(json.dumps(l) for l in lines))
+    f.close()
+    return f.name
+OTHER = tempfile.mkdtemp()
+subprocess.run(["git", "init", "-q", "-b", "main", OTHER], check=True)
+subprocess.run(["git", "-C", OTHER, "remote", "add", "origin", "https://github.com/nogbu/claude.old"], check=True)
+OURS = tempfile.mkdtemp()
+subprocess.run(["git", "init", "-q", "-b", "main", OURS], check=True)
+subprocess.run(["git", "-C", OURS, "remote", "add", "origin", "https://github.com/nogbu/claude"], check=True)
+subprocess.run(["git", "-C", OURS, "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "--allow-empty", "-m", "start"], check=True)
+SAVES = [
+    ("merge after a Save tap", MERGE, saves(("nwani", TAPPED_SAVE)), False),
+    ("merge after typed words", MERGE, saves(("nwani", TYPED)), False),
+    ("merge after a Change tap", MERGE, saves(("nwani", TAPPED_CHANGE)), True),
+    ("merge with no message from Nwani", MERGE, saves(("note", "a helper's report")), True),
+    ("second merge after one Save tap", MERGE, saves(("nwani", TAPPED_SAVE), ("save", MERGE)), True),
+    ("merge after a failed merge", MERGE, saves(("nwani", TAPPED_SAVE), ("failed save", MERGE)), False),
+    ("merge after a Save tap mid-turn", MERGE, saves(("tap mid-turn", TAPPED_SAVE)), False),
+    ("Change tap after a Save tap", MERGE, saves(("nwani", TAPPED_SAVE), ("nwani", TAPPED_CHANGE)), True),
+    ("merge in another repo", {"name": MERGE["name"], "input": {"owner": "nogbu", "repo": "claude.old"}}, saves(), False),
+    ("file written to main", {"name": "mcp__github__push_files", "input": {"owner": "nogbu", "repo": "claude", "branch": "main"}}, saves(), True),
+    ("file written to a branch", {"name": "mcp__github__push_files", "input": {"owner": "nogbu", "repo": "claude", "branch": "claude/x"}}, saves(), False),
+    ("git push to main", {"name": "Bash", "input": {"command": "cd %s && git push origin main" % OURS}}, saves(), True),
+    ("git push HEAD:main", {"name": "Bash", "input": {"command": "git -C %s push -u origin HEAD:main" % OURS}}, saves(), True),
+    ("bare git push on main", {"name": "Bash", "input": {"command": "cd %s && git push" % OURS}}, saves(), True),
+    ("git push to a branch", {"name": "Bash", "input": {"command": "cd %s && git push -u origin claude/x" % OURS}}, saves(), False),
+    ("git push in another repo", {"name": "Bash", "input": {"command": "cd %s && git push origin main" % OTHER}}, saves(), False),
+    ("git push to main after a Save tap", {"name": "Bash", "input": {"command": "cd %s && git push origin main" % OURS}}, saves(("nwani", TAPPED_SAVE)), False),
+    ("other shell command", {"name": "Bash", "input": {"command": "git log main"}}, saves(), False),
+]
+for name, call, path, want in SAVES:
+    out = run("save-check.py", {"tool_name": call["name"], "tool_input": call["input"], "transcript_path": path, "cwd": OURS})
+    got = bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+    if got != want:
+        failures.append("save-check, expected %s: %s" % ("refused" if want else "allowed", name))
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES)
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
