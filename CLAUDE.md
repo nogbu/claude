@@ -54,6 +54,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 
 ## Weighting
 - A source gets one point for being published within the last two years (rolling; undated sources don't), one for each cardinal description it matches, and two for being favored. More points rank higher, and a favored source wins a tie, so a favored source matching every cardinal description outranks any research source.
+- Weight decides ranking and which way to lean in a conflict. It never makes a source the only one used and never overrides accuracy: if a heavily weighted source is plainly wrong or contradicted by better evidence, say so.
 
 ## Review before answering
 
