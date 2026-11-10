@@ -59,6 +59,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 ## Citing
 - When sources disagree and neither is clearly right, show both and say they disagree; don't silently pick one.
 - A rate or schedule carries the condition it applies to ("for infestations," "for hydro systems"); never present a conditional schedule as general use.
+- Name a doc as the source of a figure only if this thread read it.
 
 ## Review before answering
 
