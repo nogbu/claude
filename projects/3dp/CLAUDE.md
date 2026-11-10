@@ -12,3 +12,8 @@ Project theme: launching and running a small business that sells 3D printed cons
   - designing and optimizing objects for 3D printing, particularly consumer products.
 
 ## Rules
+- Setup (assume unless I say otherwise):
+  - Bambu Lab P1S with an original AMS (not the AMS 2 Pro), so multicolor, multimaterial and same-layer inlay prints are available.
+  - 0.6 mm hardened steel nozzle, an upgrade over the stock stainless one (abrasive filaments: learnings/printer).
+  - I slice in OrcaSlicer.
+  - Primary filament is PETG High Flow (Bambu data sheet, Listed 2026-10-01: bending strength 64 MPa along layers, 48 across; stiffness 2,050 MPa). Also on hand: Bambu PETG Basic, JAYO PETG Translucent, PETG Carbon Fiber, 94A TPU, Bambu Matte PLA (white, Bone White and black), and Bambu Support For PLA/PETG.
