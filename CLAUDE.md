@@ -52,6 +52,9 @@ A list of three or more things goes one item per line as bullets, never strung t
 - Cardinal sources: general descriptions of the kinds of sources to weight more heavily, never specific sources or data. They define the project's theme and goal. Every project's rules file (projects/[name]/CLAUDE.md) has them, except a list project or when I say none are needed (then the section reads "None (waived [date])"); ask for them if I haven't given them.
 - Favored sources: a source is favored only when I give it and say "add to favored sources" (or similar); record it, dated, in projects/[project]/content/sources.md (create it with a header on the first one). Read it before researching or citing a source. A source you find is never favored, however well it matches.
 
+## Weighting
+- A source gets one point for being published within the last two years (rolling; undated sources don't), one for each cardinal description it matches, and two for being favored. More points rank higher, and a favored source wins a tie, so a favored source matching every cardinal description outranks any research source.
+
 ## Review before answering
 
 - Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer's report has come back since Nwani's last message.
