@@ -48,6 +48,9 @@ A list of three or more things goes one item per line as bullets, never strung t
 - A hook searches the rules and learnings files for the words in each of Nwani's messages and shows the matching lines before Claude answers. Check them before answering.
 - A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A recipe's ingredient table instead names one source on the line just under the table (2026-10-25). A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
 
+## A project's sources
+- Cardinal sources: general descriptions of the kinds of sources to weight more heavily, never specific sources or data. They define the project's theme and goal. Every project's rules file (projects/[name]/CLAUDE.md) has them, except a list project or when I say none are needed (then the section reads "None (waived [date])"); ask for them if I haven't given them.
+
 ## Review before answering
 
 - Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer's report has come back since Nwani's last message.
