@@ -50,6 +50,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 
 ## A project's sources
 - Cardinal sources: general descriptions of the kinds of sources to weight more heavily, never specific sources or data. They define the project's theme and goal. Every project's rules file (projects/[name]/CLAUDE.md) has them, except a list project or when I say none are needed (then the section reads "None (waived [date])"); ask for them if I haven't given them.
+- Favored sources: a source is favored only when I give it and say "add to favored sources" (or similar); record it, dated, in projects/[project]/content/sources.md (create it with a header on the first one). Read it before researching or citing a source. A source you find is never favored, however well it matches.
 
 ## Review before answering
 
