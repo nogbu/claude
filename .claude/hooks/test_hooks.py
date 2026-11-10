@@ -328,9 +328,24 @@ REVIEWS = [
     ("long reply, reviewed after Nwani's mid-turn message", LONG, reviewed("nwani", "nwani mid-turn", "review"), False),
 ]
 
+# Project Files with one view, for copies of a doc that skip review (my words 2026-11-10).
+FILES = pathlib.Path(tempfile.mkdtemp())
+(FILES / "views").mkdir()
+DOC = " ".join("step%d mix the batch; stir it well and check pH" % n for n in range(12))
+(FILES / "views" / "putes.md").write_text("# putes\n\n" + DOC + "\n")
+COPY = "Here's putes (source: putes.md).\n\n" + DOC.replace(";", ".")
+REVIEWS += [
+    ("long copy of a view, no review", COPY, reviewed("nwani"), False),
+    ("long copy with many source tags, no review", COPY + " (source: putes.md)" * 20, reviewed("nwani"), False),
+    ("long copy plus 41 new words, no review", COPY + " " + LONG, reviewed("nwani"), True),
+    ("long text no view holds, no review", " ".join("line%d water the plant and wait a week" % n for n in range(12)),
+     reviewed("nwani"), True),
+]
+
 
 def review_refused(text, transcript):
-    out = run("review-check.py", {"tool_input": {"text": text}, "transcript_path": transcript})
+    out = run("review-check.py", {"tool_input": {"text": text}, "transcript_path": transcript},
+              dict(os.environ, PROJECT_FILES=str(FILES)))
     return bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
 
 
