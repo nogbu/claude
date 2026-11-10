@@ -56,6 +56,9 @@ A list of three or more things goes one item per line as bullets, never strung t
 - A source gets one point for being published within the last two years (rolling; undated sources don't), one for each cardinal description it matches, and two for being favored. More points rank higher, and a favored source wins a tie, so a favored source matching every cardinal description outranks any research source.
 - Weight decides ranking and which way to lean in a conflict. It never makes a source the only one used and never overrides accuracy: if a heavily weighted source is plainly wrong or contradicted by better evidence, say so.
 
+## Citing
+- When sources disagree and neither is clearly right, show both and say they disagree; don't silently pick one.
+
 ## Review before answering
 
 - Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer's report has come back since Nwani's last message.
