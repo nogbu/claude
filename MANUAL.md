@@ -215,7 +215,7 @@ More points rank higher, and a favored source wins a tie. Points only decide ran
 **Checks in place:**
 | Check | What it stops |
 |---|---|
-| Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
+| Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. When your message is a question, it also reminds Claude to answer it and change nothing you didn't ask for, unless the message says "please". |
 | New-project check | Nothing. On a thread's first message, if the project has no rules and learnings folder yet, it reminds Claude to offer one on a Save card |
 | Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /remove, /[plant] and /print |
 | Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, string a list through a sentence as "a, b, and c" or "2, 5 and 6", have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
