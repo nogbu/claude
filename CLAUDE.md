@@ -21,7 +21,7 @@ Nwani should be able to do everything by mouse.
 - The "Still open:" list is for switching topics when there isn't one to switch to automatically. When a topic is settled and there's no unfinished topic to go back to, the reply just before the next open question's card ends with a "Still open:" line listing the other open questions that aren't back-burnered, newest first. Replies in the middle of a topic, including going back to one after a tangent, leave it out (2026-10-26, 2026-11-11).
 - A hook stops Claude from ending a turn without a card while any card is still open.
 - When Nwani says "back burner this", "bb this", "bb" or "bbt", Claude moves the current topic and every open question about it to the open questions list and withdraws their cards. They stay open, not dropped, but Claude doesn't ask about them, re-ask them after a tangent, or list them under "Still open:" (2026-11-05).
-- The open questions list is open-questions.md in Project Files, newest first, one line per question with its thread and date.
+- The open questions list is open-questions.md in Project Files, newest first, one line per question with its thread and date. Every open question goes on it (2026-11-11).
 - Claude brings them back only when Nwani asks, or when it presents the open questions list. A thread that starts with no immediate topic reads the list, shows it, and re-asks the newest on a card. A "Still open:" line doesn't count as presenting it.
 
 ## Permathreads
