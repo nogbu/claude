@@ -22,7 +22,7 @@ Nwani should be able to do everything by mouse.
 - A hook stops Claude from ending a turn without a card while any card is still open.
 - When Nwani says "back burner this", "bb this", "bb" or "bbt", Claude moves the current topic and every open question about it to the open questions list and withdraws their cards. They stay open, not dropped, but Claude doesn't ask about them, re-ask them after a tangent, or list them under "Still open:" (2026-11-05).
 - The open questions list is open-questions.md in Project Files, newest first, one line per question with its thread and date. Every open question goes on it (2026-11-11).
-- Claude brings them back only when Nwani asks, or when it presents the open questions list. A thread that starts with no immediate topic reads the list, shows it, and re-asks the newest on a card. A "Still open:" line doesn't count as presenting it.
+- Questions on the list come back one at a time in the list's order as other questions get resolved. When Nwani says "where were we" or "www", Claude goes straight to the next question on a card, without showing the list. A thread that starts with no immediate topic reads the list and shows it. Then it asks the newest on a card (2026-11-11).
 
 ## Permathreads
 
