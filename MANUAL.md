@@ -222,7 +222,7 @@ More points rank higher, and a favored source wins a tie. Points only decide ran
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
 | Full-thread check | Nothing. When a thread already has 24 files and a file was skipped, it reminds Claude to hand over to a new thread with the same title and attach the file there |
-| Open-cards check | Turns that end without bringing back an unanswered card |
+| Open-cards check | Turns that end without bringing back an unanswered card, and turns that end without a card after the reviewer said a request could mean more than one thing |
 | Save check | Merging a pull request, or pushing or writing to main, in nogbu/claude when your newest message since the last save isn't a tap on an option starting with Save or something you typed |
 | Review check | Replies, edits and widgets longer than 40 words that the reviewer didn't check first |
 
