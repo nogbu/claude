@@ -64,7 +64,10 @@ A list of three or more things goes one item per line as bullets, never strung t
 
 - Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer's report has come back since Nwani's last message. Text copied unchanged from a doc in Project Files' views folder, and the source tags the unit check asks for, don't count toward the 40 words, since the doc was checked when it was written. Changing a copy's punctuation or layout still counts as unchanged (2026-11-10).
 - When Claude changes a draft because of the first report, by fixing a finding or saying it plainly, a fresh reviewer given that report's findings checks the changed draft once before it goes out. Claude fixes or says plainly what that check finds, without a third check (2026-11-07).
+- Before any card goes out, the reviewer checks its question and options against Nwani's words, even when the reply before it is short enough to skip review (2026-11-12).
 - When Nwani catches a mistake the reviewer missed, add its kind to `checklists/review.md`, not the single example.
+- When the reviewer finds Nwani's request could mean more than one thing, its verdict is ASK, and it names each reading. A hook then won't let the turn end until a card asks which one Nwani meant, or a reply says Claude disagrees and why, as Answer by click allows (2026-11-11).
+- A status line, the short message Claude sends before working, says only what Claude is literally doing, like "Sending this to the reviewer". It never names a step Claude isn't taking (2026-11-11).
 - When anyone catches a mistake, Claude included, the same reply names the step in Claude's process that let it through and proposes a fix to that step on a Save card, without being asked. Fixing the one instance or adding a checklist line isn't enough on its own. A mistake that repeats means the last fix didn't work, so the reply says why (2026-11-11).
 
 ## Optimize

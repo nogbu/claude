@@ -215,14 +215,14 @@ More points rank higher, and a favored source wins a tie. Points only decide ran
 **Checks in place:**
 | Check | What it stops |
 |---|---|
-| Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
+| Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. When your message is a question, it also reminds Claude to answer it and change nothing you didn't ask for, unless the message says "please". |
 | New-project check | Nothing. On a thread's first message, if the project has no rules and learnings folder yet, it reminds Claude to offer one on a Save card |
 | Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /remove, /[plant] and /print |
 | Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, string a list through a sentence as "a, b, and c" or "2, 5 and 6", have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
 | Full-thread check | Nothing. When a thread already has 24 files and a file was skipped, it reminds Claude to hand over to a new thread with the same title and attach the file there |
-| Open-cards check | Turns that end without bringing back an unanswered card |
+| Open-cards check | Turns that end without bringing back an unanswered card, and turns that end without a card after the reviewer said a request could mean more than one thing |
 | Save check | Merging a pull request, or pushing or writing to main, in nogbu/claude when your newest message since the last save isn't a tap on an option starting with Save or something you typed |
 | Review check | Replies, edits and widgets longer than 40 words that the reviewer didn't check first |
 

@@ -213,6 +213,18 @@ LOOKUPS = [
 ]
 
 
+QUESTIONS = [
+    ("why didnt you just look at the name of the plugin attached to the account?", True),
+    ("i didnt say look now, i asked why you didnt look then", False),
+    ("arent there two sets of tests", True),
+    ("what is the difference between pmax and shopping", True),
+    ("can you add brand list inclusions to google pmax?", True),
+    ("please list the tests without purchases", False),
+    ("go back to the shopify tests. list the ones without purchases", False),
+    ("Chose Save on the decision card", False),
+]
+
+
 def looked_up(message, root=ROOT):
     env = dict(os.environ, CLAUDE_PROJECT_DIR=str(root))
     out = run("lookup.py", {"prompt": '<wake><message trigger="true">%s</message></wake>' % message}, env)
@@ -272,6 +284,19 @@ TURNS = [
             ("tap mid-turn", '<wake><message from="human">one more thing</message></wake>'), ("reply", "ok")), True),
     ("refused card doesn't count as posted",
      record(("nwani", "hi"), ("reply", "here"), ("refused card", "Save it")), False),
+    ("ASK verdict, turn ends on a reply",
+     record(("nwani", "a question"), ("note", "report: - **Verdict:** ASK"), ("reply", "an answer")), True),
+    ("ASK verdict, then a card",
+     record(("nwani", "a question"), ("note", "report: - **Verdict:** ASK"), ("reply", "context"),
+            ("card", "Which one")), False),
+    ("ASK verdict, then a reply that disagrees",
+     record(("nwani", "a question"), ("note", "report: Verdict: ASK"), ("reply", "I disagree with the reviewer")), False),
+    ("ASK verdict, turn posts nothing",
+     record(("nwani", "a question"), ("note", "report: Verdict: ASK")), True),
+    ("ASK verdict from an earlier turn",
+     record(("note", "report: Verdict: ASK"), ("nwani", "a question"), ("reply", "an answer")), False),
+    ("FIX verdict doesn't count as ASK",
+     record(("nwani", "a question"), ("note", "report: - **Verdict:** FIX"), ("reply", "an answer")), False),
     ("refused card doesn't count as ending on a card",
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer"), ("refused card", "Other")), True),
 ]
@@ -363,6 +388,10 @@ for message, want in LOOKUPS:
     got = looked_up(message)
     if (want is None and got) or (want and (not got or want not in got)):
         failures.append("lookup, expected %r for %r, got %r" % (want, message, got))
+for message, want in QUESTIONS:
+    got = looked_up(message)
+    if bool(got and "This is a question." in got) != want:
+        failures.append("lookup question reminder, expected %s for %r" % ("shown" if want else "none", message))
 # The new-project check, against a repo with one project folder and one project listed as needing none
 NEW = pathlib.Path(tempfile.mkdtemp())
 (NEW / "claude" / "checklists").mkdir(parents=True)
@@ -503,7 +532,7 @@ for name, call, path, want in SAVES:
     got = bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
     if got != want:
         failures.append("save-check, expected %s: %s" % ("refused" if want else "allowed", name))
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES)
+total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES)
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
