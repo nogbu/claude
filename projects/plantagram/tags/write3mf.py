@@ -19,7 +19,7 @@ write(..., cli=True) makes a copy for /opt/orca/slice: with supports painted, th
 painted part's own filament with 0.3 mm top and bottom z gaps, since the command-line slicer refuses a support
 filament whose temperature range misses the part's (learnings/slicing-checks); leave it off for the file I print.
 Every write() but a cli copy also draws [file]_master.png beside the 3mf (picture.py --master: each printed part
-once, numbered, with its size; a single part gets measured size lines), about 10 to 16 s.
+once, numbered, with its size; a single part gets measured size lines), about 10 to 16 s, unless MASTER is False.
 write(..., plates=[(name, [object indexes]), ...]) puts each group on its own plate, in order; each object's at is
 its spot on its own plate. Plates sit on Bambu Studio's grid (as in plantTags_source.3mf): a stride of 1.2 bed widths
 (307.2 mm on the 256 mm bed), ceil(sqrt(plates)) columns, rows going -y.
@@ -161,6 +161,9 @@ def _guard(objs, settings, cli=False):
     return settings
 
 
+MASTER = True   # False skips the _master.png picture; tags.py turns it off (my words 2026-11-12)
+
+
 def write(path, objs, settings, layer_gcode=None, plate_name=None, thumbnails=True, cli=False, plates=None, bed=256.0):
     """Write an Orca 2.4.2 3mf. layer_gcode: [(top_z, gcode)] for the layer slider (the command-line
     slicer drops these; put must-keep G-code in the printer's layer-change G-code instead). cli: a copy for
@@ -262,7 +265,7 @@ def write(path, objs, settings, layer_gcode=None, plate_name=None, thumbnails=Tr
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED, compresslevel=1) as z:   # level 1: about 5x faster, a little larger
         for name, data in files.items():
             z.writestr(name, data)
-    if not cli:
+    if not cli and MASTER:
         _master(path)
     return path
 
