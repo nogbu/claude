@@ -98,6 +98,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 - Claude shows you the exact change: the new wording, and what it replaces.
 - A card asks you to **Save**, **Change** or **Drop**.
 - Nothing is saved until you click Save or type it. Changing the subject is not a yes.
+- Before a Save card for a rule, the reviewer checks the new wording against the other rules, checklists, hooks and instructions, including changes you've already approved in the same set. The message before the card says whether it found a duplicate or a conflict. It can't see your project instructions, like the Permathreads list (2026-11-13).
 - Saving also approves the merge, unless you say otherwise, like "save but don't merge". Claude opens the pull request and merges it, with no second card.
 
 **What you'll see:** after you save, a short note confirming what was saved.
