@@ -23,7 +23,7 @@ Answer each of these:
 
 Reply in this form:
 
-- **Verdict:** PASS, or FIX.
+- **Verdict:** PASS, FIX, or ASK. Give ASK when Nwani's request could mean more than one thing and the draft picked one without asking (CLAUDE.md, Answer by click). Name each reading. A hook then won't let the turn end until Claude asks on a card or says in a reply that it disagrees and why.
 - **Problems:** each problem, why it matters to Nwani, and the fix. Leave this out on PASS.
 - **Checked:** what you opened or verified, one line each.
 

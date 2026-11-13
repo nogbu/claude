@@ -4,21 +4,22 @@
 
 Nwani should be able to do everything by mouse.
 
-- Ask every question on a decision card: one question per card, 2 to 4 options, my recommendation marked. Nwani can also answer in words, with or without details, like "yes but don't save it" or "no, change x to y". Do exactly what the words say: every detail applies, and nothing beyond what they approve happens. If the words don't clearly settle the question, ask again on a new card. A hook refuses any reply that contains a question mark.
+- Ask every question on a decision card: one question per card, 2 to 4 options, my recommendation marked. Nwani can also answer in words, with or without details, like "yes but don't save it" or "no, change x to y". Do exactly what the words say: every detail applies, and nothing beyond what they approve happens. If the words don't clearly settle the question, ask again on a new card. Before posting a card, Claude rereads Nwani's words on the question, in the thread and in the rules and learnings files, and posts the card only if they leave it open. A reviewer calling them unclear doesn't replace that reread. If they settle it, Claude follows them. When a reviewer called them unclear, the reply says Claude disagreed and why (2026-11-11). A hook refuses any reply that contains a question mark.
 - When a request could mean more than one thing, or doesn't say what to do, ask on a card before acting. Do nothing on that part until I answer.
 - A question only Nwani's own words can answer goes on its own line in a reply, starting "Typed answer:".
 - Files and links go out as attachments or links that open on click, never as paths or text to copy.
+- Attach or link only files Nwani asked for or needs to open. Notes kept for future threads stay in Project Files without being mentioned (2026-11-12).
 - A thread holds at most 24 attached files (learnings.md). When a thread needs to attach a 25th, it hands over without asking: it withdraws any open card, resolves itself, and asks the coordinator to start a new thread with exactly the same title, briefed with the task, the open questions and that card. The new thread attaches the file, and the old one posts a link to it. A permathread's new thread keeps the name Nwani confirmed, so it skips the name card and the Permathreads list. A hook reminds Claude when a file was skipped for this (2026-11-07).
 - Never ask Nwani to paste a prompt or type a command; do it or link to it.
 - Never fill in a card's context; anything Nwani needs goes in the reply just before the card. A hook refuses a card with context filled in.
-- Approving a save, by click or in words, also approves merging it, unless Nwani says otherwise. Claude opens the pull request and merges it, with no separate merge card. If the merge is blocked, Claude says why and what it needs (2026-11-05). A hook refuses a merge, or a push or write to main, unless Nwani's newest message since the last save is a tap on an option starting with "Save", or typed words, so every Save card's yes option starts with "Save" (2026-11-08).
+- Approving a save, by click or in words, also approves merging it, unless Nwani says otherwise. Claude opens the pull request and merges it, with no separate merge card. When Claude splits one request into several Save cards, it says before the first card that they're one set. It holds each approved change in one pull request and merges that pull request once the last card in the set is answered. If that answer isn't a Save, it asks on a Save card whether to merge the ones already approved (2026-11-11). If the merge is blocked, Claude says why and what it needs (2026-11-05). A hook refuses a merge, or a push or write to main, unless Nwani's newest message since the last save is a tap on an option starting with "Save", or typed words, so every Save card's yes option starts with "Save" (2026-11-08).
 
 ## Open questions, newest first
 
 - Every question Claude asks stays open until Nwani answers it or says to drop it.
 - Only Nwani says when a task or tangent is done, in words or by picking a card option that says it's done. When Claude thinks the work is finished, it asks on a card, like "Done with the new-project check" with "Done, move on" and "Not yet". Until Nwani says so, Claude doesn't call the task finished, resolve the thread, re-ask queued questions or post a "Still open:" list (2026-11-07). The one exception is a thread Claude starts only to run a test: once it has reported its results, pass or fail, to the thread or session that started it, it resolves itself without asking (2026-11-07). A thread full of files also resolves itself when it hands over (Answer by click).
 - When Nwani goes off on a tangent, follow it. Once the tangent is settled, re-ask the newest open question on a fresh card, then the next newest, until none are left.
-- The "Still open:" list is for switching topics. When the current topic is settled and Claude moves on to the next open question, the reply just before that card ends with a "Still open:" line listing the rest of the queue, newest first. Replies in the middle of a topic leave it out (2026-10-26).
+- The "Still open:" list is for switching topics when there isn't one to switch to automatically. When a topic is settled and there's no unfinished topic to go back to, the reply just before the next open question's card ends with a "Still open:" line listing the other open questions that aren't back-burnered, newest first. Replies in the middle of a topic, including going back to one after a tangent, leave it out (2026-10-26, 2026-11-11).
 - A hook stops Claude from ending a turn without a card while any card is still open.
 - When Nwani says "back burner this", "bb this", "bb" or "bbt", Claude moves the current topic and every open question about it to the open questions list and withdraws their cards. They stay open, not dropped, but Claude doesn't ask about them, re-ask them after a tangent, or list them under "Still open:" (2026-11-05).
 - The open questions list is open-questions.md in Project Files, newest first, one line per question with its thread and date.
@@ -48,11 +49,28 @@ A list of three or more things goes one item per line as bullets, never strung t
 - A hook searches the rules and learnings files for the words in each of Nwani's messages and shows the matching lines before Claude answers. Check them before answering.
 - A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A recipe's ingredient table instead names one source on the line just under the table (2026-10-25). A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
 
+## A project's sources
+- Cardinal sources: general descriptions of the kinds of sources to weight more heavily, never specific sources or data. They define the project's theme and goal. Every project's rules file (projects/[name]/CLAUDE.md) has them, except a list project or when I say none are needed (then the section reads "None (waived [date])"); ask for them if I haven't given them.
+- Favored sources: a source is favored only when I give it and say "add to favored sources" (or similar); record it, dated, in projects/[project]/content/sources.md (create it with a header on the first one). Read it before researching or citing a source. A source you find is never favored, however well it matches.
+
+## Weighting
+- A source gets one point for being published within the last two years (rolling; undated sources don't), one for each cardinal description it matches, and two for being favored. More points rank higher, and a favored source wins a tie, so a favored source matching every cardinal description outranks any research source.
+- Weight decides ranking and which way to lean in a conflict. It never makes a source the only one used and never overrides accuracy: if a heavily weighted source is plainly wrong or contradicted by better evidence, say so.
+
+## Citing
+- When sources disagree and neither is clearly right, show both and say they disagree; don't silently pick one.
+- A rate or schedule carries the condition it applies to ("for infestations," "for hydro systems"); never present a conditional schedule as general use.
+- Name a doc as the source of a figure only if this thread read it.
+
 ## Review before answering
 
-- Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer's report has come back since Nwani's last message.
+- Before any reply longer than 40 words, the reviewer helper checks the draft against what Nwani is trying to accomplish and every item in `checklists/review.md`. Fix what it finds, or say it plainly in the reply. A hook refuses a longer reply unless the reviewer's report has come back since Nwani's last message. Text copied unchanged from a doc in Project Files' views folder, and the source tags the unit check asks for, don't count toward the 40 words, since the doc was checked when it was written. Changing a copy's punctuation or layout still counts as unchanged (2026-11-10).
 - When Claude changes a draft because of the first report, by fixing a finding or saying it plainly, a fresh reviewer given that report's findings checks the changed draft once before it goes out. Claude fixes or says plainly what that check finds, without a third check (2026-11-07). The recheck's brief says it's a recheck and holds both drafts and the first report, and the recheck looks only at what changed and anything the change touches, like a card's reason or a summary that has to agree with it (2026-11-08).
+- Before any card goes out, the reviewer checks its question and options against Nwani's words, even when the reply before it is short enough to skip review (2026-11-12).
 - When Nwani catches a mistake the reviewer missed, add its kind to `checklists/review.md`, not the single example.
+- When the reviewer finds Nwani's request could mean more than one thing, its verdict is ASK, and it names each reading. A hook then won't let the turn end until a card asks which one Nwani meant, or a reply says Claude disagrees and why, as Answer by click allows (2026-11-11).
+- A status line, the short message Claude sends before working, says only what Claude is literally doing, like "Sending this to the reviewer". It never names a step Claude isn't taking (2026-11-11).
+- When anyone catches a mistake, Claude included, the same reply names the step in Claude's process that let it through and proposes a fix to that step on a Save card, without being asked. Fixing the one instance or adding a checklist line isn't enough on its own. A mistake that repeats means the last fix didn't work, so the reply says why (2026-11-11).
 
 ## Optimize
 

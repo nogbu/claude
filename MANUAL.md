@@ -132,6 +132,31 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 ---
 
+## Sources Claude leans on (research)
+
+**What it's for:** making Claude lean on the kinds of sources you trust when it researches, and say plainly when sources disagree.
+
+**How you use it:**
+- Give each project its cardinal sources: short descriptions of the kinds of sources to weight more heavily, like sources about one craft or one diet. They go in the project's rules file. Claude asks for them when a project has none, unless it's a list project or you say none are needed.
+- To favor one specific source, give it and say "add to favored sources". Claude records it, dated, in the project's content/sources.md. A source Claude finds on its own is never favored.
+
+**What you'll see:**
+- When sources disagree and neither is clearly right, Claude shows both and says they disagree, unless a project's own rule says which source to follow, like plantagram's rule on Kelpak.
+- A dose or schedule that only applies in one situation says which situation.
+- Claude names a document as the source of a number only if it read that document in the thread.
+- If a heavily weighted source is plainly wrong or contradicted by better evidence, Claude says so.
+
+**When it goes wrong:** if Claude ignored a favored source, say so. Claude checks that it's recorded in the project's content/sources.md, which it reads before researching or citing a source. If Claude picked one side without showing the other, and no project rule says to, say so.
+
+**What's behind it:** each source gets points:
+- one for being published in the last two years (an undated source doesn't get it)
+- one for each cardinal description it matches
+- two for being favored
+
+More points rank higher, and a favored source wins a tie. Points only decide ranking and which way to lean, never which source is the only one used. These rules are in the shared rules file, so every thread follows them. One automatic check backs up the last Citing rule: it stops a reply that cites a file:line Claude didn't open since your last message. It doesn't catch a document named by title or link.
+
+---
+
 ## Reviewed answers
 
 **What it's for:** catching the simple wrong deductions you shouldn't have to look for, like ranking a full team against half-drafted ones, before you see them.
@@ -190,14 +215,14 @@ How to use the systems we've built for working with Claude. Each section covers 
 **Checks in place:**
 | Check | What it stops |
 |---|---|
-| Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. |
+| Lookup | Nothing. It shows Claude the rules and learnings that match each of your messages. When your message is a question, it also reminds Claude to answer it and change nothing you didn't ask for, unless the message says "please". |
 | New-project check | Nothing. On a thread's first message, if the project has no rules and learnings folder yet, it reminds Claude to offer one on a Save card |
 | Collection commands | Nothing. In plantagram threads it shows Claude the steps for collection.md's commands: headcount or /headcount, /increment, /confirm, /remove, /[plant] and /print |
 | Reply check | Replies, edits of sent replies, and the words shown in widgets (pictures, tables and draft cards) that ask you a question in text, use semicolons, string a list through a sentence as "a, b, and c" or "2, 5 and 6", have a "Still open:" line without bullets, give a number and unit with no source, or point to a file Claude didn't open |
 | Card check | Cards with text in the context box |
 | Helper check | Saving a helper or skill that doesn't name its model and effort level |
 | Full-thread check | Nothing. When a thread already has 24 files and a file was skipped, it reminds Claude to hand over to a new thread with the same title and attach the file there |
-| Open-cards check | Turns that end without bringing back an unanswered card |
+| Open-cards check | Turns that end without bringing back an unanswered card, and turns that end without a card after the reviewer said a request could mean more than one thing |
 | Save check | Merging a pull request, or pushing or writing to main, in nogbu/claude when your newest message since the last save isn't a tap on an option starting with Save or something you typed |
 | Review check | Replies, edits and widgets longer than 40 words that the reviewer didn't check first |
 

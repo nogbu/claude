@@ -2,9 +2,13 @@
 """PreToolUse hook on thread replies (CLAUDE.md, Review before answering).
 
 Refuses a reply, edit or widget longer than a short acknowledgment unless the reviewer helper ran and finished
-since Nwani's last message.
+since Nwani's last message. Text copied unchanged from a doc in Project Files' views folder doesn't count toward
+the length, since it was checked when it was written (my words 2026-11-10). Source tags that the unit check asks
+for don't count either.
 """
+import glob
 import json
+import os
 import re
 import sys
 
@@ -13,6 +17,9 @@ from shown_text import shown
 
 SHORT = 40  # words; a reply this long or shorter is an acknowledgment and skips review
 AGENT_ID = re.compile(r"agentId: (\w+)")
+RUN = 6  # a run of this many words in a row, in the same order as a doc, counts as copied from it
+TOKEN = re.compile(r"[\w½⅓⅔¼¾]+")
+SOURCE_TAG = re.compile(r"\(?\bsource:[^)\n]*\)?", re.I)
 
 
 def result_text(block):
@@ -64,10 +71,39 @@ def words(text):
     return [w for w in text.split() if not re.fullmatch(r"[|:\-]+", w)]
 
 
+def tokens(text):
+    """Words without their punctuation or case, so a copy whose semicolons became periods still matches."""
+    return TOKEN.findall(text.lower())
+
+
+def doc_runs():
+    """Every run of RUN words in a row from the docs in Project Files' views folder."""
+    root = os.environ.get("PROJECT_FILES", "/mnt/project-files")
+    runs = set()
+    for path in glob.glob(os.path.join(root, "views", "**", "*.md"), recursive=True):
+        try:
+            words_ = tokens(open(path, encoding="utf-8").read())
+        except OSError:
+            continue
+        runs.update(tuple(words_[i:i + RUN]) for i in range(len(words_) - RUN + 1))
+    return runs
+
+
+def new_words(text):
+    """The number of words Claude wrote itself: not inside a run copied from a doc, and not a source tag."""
+    words_ = tokens(SOURCE_TAG.sub(" ", text))
+    runs = doc_runs() if len(words_) > SHORT else set()
+    copied = [False] * len(words_)
+    for i in range(len(words_) - RUN + 1):
+        if tuple(words_[i:i + RUN]) in runs:
+            copied[i:i + RUN] = [True] * RUN
+    return copied.count(False)
+
+
 def main():
     hook = json.load(sys.stdin)
     text = "\n".join(part for part, _ in shown(hook)[0])
-    if len(words(text)) <= SHORT or not hook.get("transcript_path"):
+    if len(words(text)) <= SHORT or new_words(text) <= SHORT or not hook.get("transcript_path"):
         return
     if not reviewed_this_turn(hook["transcript_path"]):
         print(json.dumps({"hookSpecificOutput": {
