@@ -38,7 +38,7 @@ def words(text):
 
 
 QUESTION_START = re.compile(
-    r"^(why|how|what|whats|when|where|who|which|did|didnt|do|does|doesnt|dont|is|isnt|are|arent|was|wasnt|"
+    r"^(why|how|what|whats|where|who|which|did|didnt|do|does|doesnt|dont|is|isnt|are|arent|was|wasnt|"
     r"were|werent|has|hasnt|have|havent|should|shouldnt)\b")
 ASKS_FOR_ACTION = re.compile(r"\bplease\b|^can you\b")
 REMINDER = ("This is a question. Answer it, and take no action beyond what answering needs, and change "

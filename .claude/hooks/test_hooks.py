@@ -222,6 +222,8 @@ QUESTIONS = [
     ("please list the tests without purchases", False),
     ("go back to the shopify tests. list the ones without purchases", False),
     ("Chose Save on the decision card", False),
+    ("when I say refresh re-read the rules", False),
+    ("when will the print finish?", True),
 ]
 
 
