@@ -9,7 +9,7 @@ writes again:
 
 It uses lookup.py's question test, so a message with "please" or "can you" counts as a request.
 It can miss a request worded another way, like "could you fix X", which then waits for Nwani's
-next message. A shell write hidden inside a script isn't seen (Nwani's Save card, 2026-11-16).
+next message, unless Claude offers the step on a one-tap card. A shell write hidden inside a script isn't seen (Nwani's Save card, 2026-11-16).
 """
 import html
 import json
@@ -84,7 +84,8 @@ def main():
         "hookEventName": "PreToolUse",
         "permissionDecision": "deny",
         "permissionDecisionReason": "Nwani's newest message is a question, so it gets only an answer: no "
-            "edits, commits, pushes or non-reviewer helpers until Nwani writes again (CLAUDE.md, Optimize).",
+            "edits, commits, pushes or non-reviewer helpers until Nwani writes again. If the message asks for this step, answer, then "
+            "offer the step on a one-tap card, and Nwani's tap lets it through (CLAUDE.md, Optimize).",
     }}))
 
 

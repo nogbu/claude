@@ -42,7 +42,8 @@ QUESTION_START = re.compile(
     r"were|werent|has|hasnt|have|havent|should|shouldnt)\b")
 ASKS_FOR_ACTION = re.compile(r"\bplease\b|^can you\b")
 REMINDER = ("This is a question. Answer it, and take no action beyond what answering needs, and change "
-            "nothing, unless Nwani asked (CLAUDE.md, Answer by click, and Nwani's Save card 2026-11-11).")
+            "nothing, unless Nwani asked (CLAUDE.md, Answer by click, and Nwani's Save card 2026-11-11). If "
+            "the message also asks for a step, answer, then offer that step on a one-tap card (Save card 2026-11-16).")
 
 
 def is_question(text):
