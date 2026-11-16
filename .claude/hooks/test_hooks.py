@@ -218,7 +218,7 @@ QUESTIONS = [
     ("i didnt say look now, i asked why you didnt look then", False),
     ("arent there two sets of tests", True),
     ("what is the difference between pmax and shopping", True),
-    ("can you add brand list inclusions to google pmax?", True),
+    ("can you add brand list inclusions to google pmax?", False),
     ("please list the tests without purchases", False),
     ("go back to the shopify tests. list the ones without purchases", False),
     ("Chose Save on the decision card", False),
@@ -547,7 +547,27 @@ for name, call, path, want in SAVES:
     got = bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
     if got != want:
         failures.append("save-check, expected %s: %s" % ("refused" if want else "allowed", name))
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES)
+QUESTION = wake("why did you change the rule?")
+REQUEST = wake("fix the rule")
+ANSWER_ONLY = [
+    ("edit after a question", {"name": "Edit", "input": {}}, saves(("nwani", QUESTION)), True),
+    ("edit after a request", {"name": "Edit", "input": {}}, saves(("nwani", REQUEST)), False),
+    ("edit after a Save tap", {"name": "Edit", "input": {}}, saves(("nwani", TAPPED_SAVE)), False),
+    ("edit after a question then a request mid-turn", {"name": "Edit", "input": {}}, saves(("nwani", QUESTION), ("tap mid-turn", REQUEST)), False),
+    ("reviewer after a question", {"name": "Agent", "input": {"subagent_type": "reviewer"}}, saves(("nwani", QUESTION)), False),
+    ("other helper after a question", {"name": "Agent", "input": {"subagent_type": "Explore"}}, saves(("nwani", QUESTION)), True),
+    ("git commit after a question", {"name": "Bash", "input": {"command": "cd x && git commit -m y"}}, saves(("nwani", QUESTION)), True),
+    ("sed -i after a question", {"name": "Bash", "input": {"command": "sed -i s/a/b/ f"}}, saves(("nwani", QUESTION)), True),
+    ("write by redirect after a question", {"name": "Bash", "input": {"command": "echo a > f"}}, saves(("nwani", QUESTION)), True),
+    ("grep after a question", {"name": "Bash", "input": {"command": "grep -n 'git push' f 2>/dev/null"}}, saves(("nwani", QUESTION)), False),
+    ("merge after a question", MERGE, saves(("nwani", QUESTION)), True),
+]
+for name, call, path, want in ANSWER_ONLY:
+    out = run("answer-only.py", {"tool_name": call["name"], "tool_input": call["input"], "transcript_path": path})
+    got = bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+    if got != want:
+        failures.append("answer-only, expected %s: %s" % ("refused" if want else "allowed", name))
+total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES)
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))

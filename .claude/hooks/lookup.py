@@ -8,7 +8,8 @@ Claude remembering to look it up.
 When Nwani's message is a question, it also puts a reminder at the top: answer it, and take no
 action beyond what answering needs, unless Nwani asked. Claude once turned "why didn't you look"
 into a lookup, before the reviewer could see anything (Nwani's Save card, 2026-11-11). It's a
-reminder, not a block, because a hook can't tell which lookups an answer needs.
+reminder, not a block, because a hook can't tell which lookups an answer needs. answer-only.py
+blocks edits, commits, pushes and non-reviewer helpers after a question (2026-11-16).
 """
 import html
 import json
@@ -39,7 +40,7 @@ def words(text):
 QUESTION_START = re.compile(
     r"^(why|how|what|whats|when|where|who|which|did|didnt|do|does|doesnt|dont|is|isnt|are|arent|was|wasnt|"
     r"were|werent|has|hasnt|have|havent|should|shouldnt)\b")
-ASKS_FOR_ACTION = re.compile(r"\bplease\b")
+ASKS_FOR_ACTION = re.compile(r"\bplease\b|^can you\b")
 REMINDER = ("This is a question. Answer it, and take no action beyond what answering needs, and change "
             "nothing, unless Nwani asked (CLAUDE.md, Answer by click, and Nwani's Save card 2026-11-11).")
 
