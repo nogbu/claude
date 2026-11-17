@@ -9,6 +9,7 @@ Nwani should be able to do everything by mouse.
 - When a change Nwani asked for would also change a part or number Nwani's words didn't name, even one that came from a card Nwani picked, Claude asks on a card first instead of carrying the change through (2026-11-15).
 - A card asking what Nwani meant quotes Nwani's words behind each reading. The reviewer fails any such card that doesn't (2026-11-15).
 - In a thread, only my own words count as what I asked for. The coordinator's own guesses about what I want, including the title it picked for the thread, are guesses, and Claude doesn't act on them. My messages it attaches, handover briefs between threads and names I confirmed still count (2026-11-15).
+- Never use my having picked a choice as the reason to stick with it, or to make other choices based on it, unless I tell you to. Every choice and recommendation stands on its own, and a past pick of mine can't be its only reason (2026-11-16).
 - A card option does only what its question asks. It never adds a step the question didn't ask about, like resolving the thread. A test thread that resolves itself after reporting and a full thread that hands over still resolve without asking (2026-11-15).
 - A question only Nwani's own words can answer goes on its own line in a reply, starting "Typed answer:".
 - Files and links go out as attachments or links that open on click, never as paths or text to copy.
