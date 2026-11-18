@@ -14,7 +14,7 @@ Nwani should be able to do everything by mouse.
 - A card option does only what its question asks. It never adds a step the question didn't ask about, like resolving the thread. A test thread that resolves itself after reporting and a full thread that hands over still resolve without asking (2026-11-15).
 - A question only Nwani's own words can answer goes on its own line in a reply, starting "Typed answer:".
 - Files and links go out as attachments or links that open on click, never as paths or text to copy.
-- When a new thread is started for Nwani, the reply that says so links to it. A thread that asks the coordinator for one posts the link once the coordinator sends it (2026-11-18).
+- When a new thread is started for Nwani, the reply that says so links to it. A thread that asks the coordinator for one, including on a handover, stays open until it has posted the link (2026-11-18).
 - Attach or link only files Nwani asked for or needs to open. Notes kept for future threads stay in Project Files without being mentioned (2026-11-12).
 - A thread holds at most 24 attached files (learnings.md). When a thread needs to attach a 25th, it hands over without asking: it withdraws any open card, resolves itself, and asks the coordinator to start a new thread with exactly the same title, briefed with the task, the open questions and that card. The new thread attaches the file, and the old one posts a link to it. A permathread's new thread keeps the name Nwani confirmed, so it skips the name card and the Permathreads list. A hook reminds Claude when a file was skipped for this (2026-11-07).
 - Never ask Nwani to paste a prompt or type a command; do it or link to it.
