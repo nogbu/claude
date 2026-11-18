@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """PreToolUse hook (CLAUDE.md, Optimize: a question gets only an answer).
 
-When Nwani's newest message is a question, refuses the steps that change things, until Nwani
+When every sentence of Nwani's newest message is a question, refuses the steps that change things, until Nwani
 writes again:
 - file edits (Write, Edit, NotebookEdit, and shell commands that write files)
 - commits, pushes and merges, by git or through GitHub
 - helpers other than the reviewer
 
-It uses lookup.py's question test, so a message with "please" or "can you" counts as a request.
-It can miss a request worded another way, like "could you fix X", which then waits for Nwani's
-next message, unless Claude offers the step on a one-tap card. A shell write hidden inside a script isn't seen (Nwani's Save card, 2026-11-16).
+It uses lookup.py's sentence test (Nwani, 2026-11-17): a sentence ending in "?" is a question, and
+one that could be either counts as a question, so "can you fix X" waits for Nwani's next message
+unless Claude offers the step on a one-tap card. A message with any request sentence lets edits through. A shell write hidden inside a script isn't seen (Nwani's Save card, 2026-11-16).
 """
 import html
 import json

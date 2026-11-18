@@ -1,0 +1,3 @@
+# Sentences Nwani corrected. One per line: Q | sentence (a question) or R | sentence (a request).
+# Claude adds a line whenever Nwani corrects how a sentence was read (CLAUDE.md, Answer by click).
+R | do so

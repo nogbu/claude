@@ -218,12 +218,17 @@ QUESTIONS = [
     ("i didnt say look now, i asked why you didnt look then", False),
     ("arent there two sets of tests", True),
     ("what is the difference between pmax and shopping", True),
-    ("can you add brand list inclusions to google pmax?", False),
+    ("can you add brand list inclusions to google pmax?", True),
     ("please list the tests without purchases", False),
     ("go back to the shopify tests. list the ones without purchases", False),
     ("Chose Save on the decision card", False),
     ("when I say refresh re-read the rules", False),
     ("when will the print finish?", True),
+    ("do so", False),
+    ("Do the row's Next items in order, one card at a time", False),
+    ("WHAT THE ACTUAL FUCK IS HAPPENING", True),
+    ("wait why are you looking for a place for the 270 words", True),
+    ("lets fix this question issue. why are you trying to identify which messages are questions?", True),
 ]
 
 
@@ -409,7 +414,7 @@ for message, want in LOOKUPS:
         failures.append("lookup, expected %r for %r, got %r" % (want, message, got))
 for message, want in QUESTIONS:
     got = looked_up(message)
-    if bool(got and "This is a question." in got) != want:
+    if bool(got and "These sentences are questions" in got) != want:
         failures.append("lookup question reminder, expected %s for %r" % ("shown" if want else "none", message))
 # The new-project check, against a repo with one project folder and one project listed as needing none
 NEW = pathlib.Path(tempfile.mkdtemp())
@@ -553,6 +558,7 @@ for name, call, path, want in SAVES:
         failures.append("save-check, expected %s: %s" % ("refused" if want else "allowed", name))
 QUESTION = wake("why did you change the rule?")
 REQUEST = wake("fix the rule")
+MIXED = wake("lets fix this question issue. why are you trying to identify which messages are questions?")
 ANSWER_ONLY = [
     ("edit after a question", {"name": "Edit", "input": {}}, saves(("nwani", QUESTION)), True),
     ("edit after a request", {"name": "Edit", "input": {}}, saves(("nwani", REQUEST)), False),
@@ -565,6 +571,7 @@ ANSWER_ONLY = [
     ("write by redirect after a question", {"name": "Bash", "input": {"command": "echo a > f"}}, saves(("nwani", QUESTION)), True),
     ("grep after a question", {"name": "Bash", "input": {"command": "grep -n 'git push' f 2>/dev/null"}}, saves(("nwani", QUESTION)), False),
     ("merge after a question", MERGE, saves(("nwani", QUESTION)), True),
+    ("edit after a request with a question in it", {"name": "Edit", "input": {}}, saves(("nwani", MIXED)), False),
 ]
 for name, call, path, want in ANSWER_ONLY:
     out = run("answer-only.py", {"tool_name": call["name"], "tool_input": call["input"], "transcript_path": path})
