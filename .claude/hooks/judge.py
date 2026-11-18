@@ -9,7 +9,9 @@ be either a question or a request counts as a question (Nwani, 2026-11-17).
 
 The model learns from examples taken from Nwani's own threads (judge-examples.txt) and from
 Nwani's corrections (sentence-examples.txt), read fresh from the repo on each message. If the
-model can't be reached, it falls back to Nwani's rule alone: a sentence ending in "?" is a question.
+model can't be reached, it falls back to Nwani's rule alone: a sentence ending in "?" is a question,
+and every other sentence counts as other. A message with no request lets edits through only when it
+has no question either, so a message of only reactions or statements doesn't block edits.
 
 Run: python3 judge.py "message"   (prints the verdict, for testing)
 """
@@ -73,18 +75,30 @@ def places(name):
     return found + [HERE / name]
 
 
+def split(message):
+    """The sentences, split in code so the model labels each one and can't merge them."""
+    return [s.strip() for s in SENTENCE_END.split(message) if s and s.strip()]
+
+
 def fallback(message):
-    parts = [s.strip() for s in SENTENCE_END.split(message) if s and s.strip()]
-    return [{"sentence": s, "kind": "question" if s.endswith("?") else "request"} for s in parts]
+    """Without the model, only Nwani's rule: a sentence ending in "?" is a question. Everything else
+    counts as other, so a message with a "?" still gets only an answer."""
+    return [{"sentence": s, "kind": "question" if s.endswith("?") else "other"} for s in split(message)]
 
 
-def key(message):
-    return hashlib.sha256(message.strip().encode()).hexdigest()[:24]
+def key(message, before=""):
+    """The message, the reply it answers and the examples, so a new correction changes the verdict."""
+    text = "\0".join((message.strip(), (before or "")[-1500:], examples()))
+    return hashlib.sha256(text.encode()).hexdigest()[:24]
 
 
-def saved(message):
+def saved(message, before=None):
+    """The verdict lookup.py saved for this message. Without the reply it answered, the newest one."""
     try:
-        return json.loads((CACHE / (key(message) + ".json")).read_text())
+        if before is not None:
+            return json.loads((CACHE / (key(message, before) + ".json")).read_text())
+        latest = CACHE / ("latest-" + hashlib.sha256(message.strip().encode()).hexdigest()[:24] + ".json")
+        return json.loads(latest.read_text())
     except (OSError, ValueError):
         return None
 
@@ -114,11 +128,14 @@ def judge(message, before=""):
     """The verdict for each sentence, saved so answer-only.py can read it."""
     if not message.strip() or message.startswith("Chose "):
         return {"sentences": [{"sentence": message, "kind": "request"}], "model": False}
-    found = saved(message)
+    found = saved(message, before)
     if found:
         return found
-    prompt = "%s\nExamples:\n%s\n\nThe assistant reply this answers:\n%s\n\nNwani's message:\n%s" % (
-        INSTRUCTIONS, examples(), (before or "(none)")[-1500:], message)
+    parts = split(message)
+    prompt = ("%s\nExamples:\n%s\n\nThe assistant reply this answers:\n%s\n\nNwani's whole message:\n%s\n\n"
+              "Label each of these sentences of it, in order, keeping each sentence exactly as given:\n%s") % (
+        INSTRUCTIONS, examples(), (before or "(none)")[-1500:], message,
+        "\n".join("%d. %s" % (n + 1, p) for n, p in enumerate(parts)))
     verdict = {"sentences": fallback(message), "model": False}
     try:
         if os.environ.get("CLAUDE_JUDGE_CHILD") or os.environ.get("CLAUDE_JUDGE_OFFLINE"):
@@ -131,14 +148,24 @@ def judge(message, before=""):
                 env=dict(os.environ, CLAUDE_JUDGE_CHILD="1"))
         result = json.loads(out.stdout)
         answer = result.get("structured_output") or json.loads(result.get("result") or "{}")
-        if answer.get("sentences"):
-            verdict = {"sentences": answer["sentences"], "model": True,
+        labels = answer.get("sentences") or []
+        if len(labels) == len(parts):
+            sentences = []
+            for part, label in zip(parts, labels):
+                kind = label.get("kind")
+                # Nwani's rule: a "?" sentence is never a request, only a question or a reaction.
+                if part.endswith("?") and kind == "request":
+                    kind = "question"
+                sentences.append({"sentence": part, "kind": kind})
+            verdict = {"sentences": sentences, "model": True,
                        "cost_usd": result.get("total_cost_usd"), "ms": result.get("duration_ms")}
     except (OSError, ValueError, subprocess.SubprocessError):
         pass
     try:
         CACHE.mkdir(parents=True, exist_ok=True)
-        (CACHE / (key(message) + ".json")).write_text(json.dumps(verdict))
+        (CACHE / (key(message, before) + ".json")).write_text(json.dumps(verdict))
+        latest = "latest-" + hashlib.sha256(message.strip().encode()).hexdigest()[:24] + ".json"
+        (CACHE / latest).write_text(json.dumps(verdict))
     except OSError:
         pass
     return verdict

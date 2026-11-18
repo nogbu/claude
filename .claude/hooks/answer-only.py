@@ -80,8 +80,10 @@ def main():
         return
     message = newest_message(hook.get("transcript_path") or "")
     # Reads the verdict lookup.py saved for this message, so the model runs once per message, not per step.
-    verdict = judge.saved(message) if message is not None else None
-    if message is None or not judge.asks_only(verdict or {"sentences": judge.fallback(message)}):
+    # A message that arrived mid-turn never went through lookup.py, so it's judged here, once.
+    verdict = (judge.saved(message) or judge.judge(message, judge.last_reply(hook.get("transcript_path") or "")))\
+        if message is not None else None
+    if message is None or not judge.asks_only(verdict):
         return
     print(json.dumps({"hookSpecificOutput": {
         "hookEventName": "PreToolUse",

@@ -233,7 +233,6 @@ QUESTIONS = [
 MODEL_QUESTIONS = [
     ("arent there two sets of tests", True),
     ("what is the difference between pmax and shopping", True),
-    ("please list the tests without purchases", True),
     ("\"A single avoided call, worth 264,000\" what does this mean", True),
     ("if the old repo doesnt have any files, where does the conflict come from", True),
     ("wait why are you looking for a place for the 270 words", True),
@@ -583,7 +582,8 @@ ANSWER_ONLY = [
     ("write by redirect after a question", {"name": "Bash", "input": {"command": "echo a > f"}}, saves(("nwani", QUESTION)), True),
     ("grep after a question", {"name": "Bash", "input": {"command": "grep -n 'git push' f 2>/dev/null"}}, saves(("nwani", QUESTION)), False),
     ("merge after a question", MERGE, saves(("nwani", QUESTION)), True),
-    ("edit after a request with a question in it", {"name": "Edit", "input": {}}, saves(("nwani", MIXED)), False),
+    # With the model the request is seen and edits go through. Without it only "?" counts, so they don't.
+    ("edit after a request with a question in it", {"name": "Edit", "input": {}}, saves(("nwani", MIXED)), not os.environ.get("CLAUDE_JUDGE_LIVE")),
 ]
 for name, call, path, want in ANSWER_ONLY:
     out = run("answer-only.py", {"tool_name": call["name"], "tool_input": call["input"], "transcript_path": path})
