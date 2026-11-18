@@ -42,16 +42,21 @@ def words(text):
 # below come from Nwani's 735 messages across every thread, where questions often drop the "?".
 WH_START = re.compile(r"^(why|how|what|whats|where|wheres|who|whos|which|hows|whys)\b"
                       r"(?!\s+(i|we|they|he|she|the(?!\s+(actual\s+)?(fuck|hell|heck)\b))\b)")
-FILLER = re.compile(r"^((wait|so|and|but|ok|okay|also|then|oh|hm+|um+|lol|seriously|now|ugh|again|well|"
-                    r"hold on|actually|if not|if so|no)\b\s*)+")
+FILLER = re.compile(r"^((oh my( fucking)? god|wait|so|and|but|ok|okay|also|then|oh|hm+|um+|lol|seriously|now|ugh|again|well|"
+                    r"hold on|actually|if not|if so|no|i mean|oh my( fucking)? god|omg)\b\s*)+")
 SUBJECT = r"(you|i|we|they|it|its|this|that|these|those|there|the|my|your|our|he|she|any|anything|all)"
 AUX_START = re.compile(
     r"^(is|isnt|are|arent|was|wasnt|were|werent|has|hasnt|have|havent|should|shouldnt|can|cant|could|"
     r"couldnt|would|wouldnt|will|wont|did|didnt|does|doesnt|am)\s+(not\s+)?" + SUBJECT + r"\b"
     r"|^(do|dont)\s+(not\s+)?(you|i|we|they|people|these|those)\b")
 WHEN_ASKS = re.compile(r"^when\s+(is|are|was|will|would|do|does|did|can|could|should)\b")
-SENTENCE_END = re.compile(r"(?<=[.?!])\s+|\n+")
-EXAMPLES = pathlib.Path(__file__).with_name("sentence-examples.txt")
+# A "?" ends a sentence only right after a word, so "sentences that end in ? are" stays whole.
+SENTENCE_END = re.compile(r"(?<=[.!])\s+|(?<=[^\s?]\?)\s+|\n+")
+# A question after an "if" clause, or after a quote, still counts: "if it cant, what is it".
+CONDITION = re.compile(r"^\W*((but|and|so|even)\s+)?if\b")
+AFTER_CONDITION = re.compile(r",|\bthen\b")
+QUOTE_MARKS = "\"\u201c\u201d"
+EXAMPLES = "sentence-examples.txt"
 REMINDER = ("These sentences are questions: answer them, and take no action for them beyond what "
             "answering needs (CLAUDE.md, Answer by click, and Nwani's Save card 2026-11-11). Every other "
             "sentence in the message is handled on its own:\n")
@@ -62,16 +67,31 @@ def plain(text):
 
 
 def examples():
-    """Sentences Nwani corrected, as Q (a question) or R (a request), read fresh each time."""
-    known = {}
+    """Sentences Nwani corrected, as Q (a question) or R (a request), read fresh from the repo each
+    time, so a correction works from the next message without a new plugin upload."""
+    start = pathlib.Path(os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd())
+    places = [pathlib.Path(__file__).with_name(EXAMPLES)]
     try:
-        for line in EXAMPLES.read_text().splitlines():
+        places += [root / ".claude" / "hooks" / EXAMPLES for root in folders(start)]
+    except OSError:
+        pass
+    known = {}
+    for place in places:
+        try:
+            lines = place.read_text().splitlines()
+        except OSError:
+            continue
+        for line in lines:
             kind, _, said = line.partition("|")
             if kind.strip() in ("Q", "R") and said.strip():
                 known[plain(said)] = kind.strip() == "Q"
-    except OSError:
-        pass
     return known
+
+
+def asks(text):
+    text = FILLER.sub("", text) or text
+    return (text.endswith("?") or bool(WH_START.match(text)) or bool(AUX_START.match(text))
+            or bool(WHEN_ASKS.match(text)))
 
 
 def sentence_is_question(sentence, known=None):
@@ -80,9 +100,12 @@ def sentence_is_question(sentence, known=None):
         return False
     if known and text in known:
         return known[text]
-    text = FILLER.sub("", text) or text
-    return (text.endswith("?") or bool(WH_START.match(text)) or bool(AUX_START.match(text))
-            or bool(WHEN_ASKS.match(text)))
+    after_quote = re.split("[%s]" % QUOTE_MARKS, sentence)[-1]
+    if asks(text) or (after_quote != sentence and WH_START.match(FILLER.sub("", plain(after_quote)))):
+        return True
+    if CONDITION.match(sentence.lower()):
+        return any(asks(plain(part)) for part in AFTER_CONDITION.split(sentence.lower())[1:])
+    return False
 
 
 def sentences(text):

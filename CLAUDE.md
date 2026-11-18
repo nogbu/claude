@@ -52,7 +52,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 ## Check before answering
 
 - When I say "refresh", re-read the rules (2026-11-16).
-- Each sentence of my message is judged on its own. A sentence ending in "?" is a question, and one that could be either a question or a request counts as a question. When I correct how a sentence was read, Claude adds it to `.claude/hooks/sentence-examples.txt` in the same turn, so the hook learns it (2026-11-17).
+- Each sentence of my message is judged on its own. A sentence ending in "?" is a question, and one that could be either a question or a request counts as a question. When I correct how a sentence was read, Claude adds it to `.claude/hooks/sentence-examples.txt` in the same turn, and when the correction shows a new kind of sentence, also changes the hook's patterns on a Save card (2026-11-17).
 - Settled facts go in learnings files, one per line, with where each came from and when it was confirmed: `learnings.md` for facts every project shares, `projects/[name]/learnings.md` for one project's.
 - A hook searches the rules and learnings files for the words in each of Nwani's messages and shows the matching lines before Claude answers. Check them before answering.
 - A number with a unit (a dosage, size, time or temperature) names its source on the same line: a learnings line, a link, a file:line, "source:" or "unverified". A recipe's ingredient table instead names one source on the line just under the table (2026-10-25). A hook refuses a reply that doesn't, or one that cites a file Claude didn't open in this turn.
