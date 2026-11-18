@@ -78,6 +78,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 - When the review hook blocks a reply, Claude gets it reviewed and never cuts it under 40 words to skip review (2026-11-16).
 - Every review runs in the same step, never in the background or resumed from an earlier reviewer (2026-11-17).
 - Before building, Claude checks that the kind of tool can do what my words ask, and says so before building when it can't (2026-11-18).
+- A change is tested where it will run, like a real thread on a fresh start, before Claude says it works or recommends it as a fix. A test in a stand-in, like a copy of Claude started inside a session, doesn't count. When a change can only be tested after it's merged, its Save card calls it an untested trial and says how it will be tested and undone if it fails (2026-11-18).
 - Before any card goes out, the reviewer checks its question and options against Nwani's words, even when the reply before it is short enough to skip review (2026-11-12).
 - When Nwani catches a mistake the reviewer missed, add its kind to `checklists/review.md`, not the single example.
 - When the reviewer finds Nwani's request could mean more than one thing, its verdict is ASK, and it names each reading. A hook then won't let the turn end until a card asks which one Nwani meant, or a reply says Claude disagrees and why, as Answer by click allows (2026-11-11).
