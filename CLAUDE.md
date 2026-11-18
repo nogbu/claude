@@ -47,7 +47,7 @@ The project-instructions text (the coordinator can't read this repo, so it gets 
 
 ## Lists are bulleted
 
-A list of three or more things goes one item per line as bullets, never strung together in a sentence. A hook refuses a reply with a semicolon, with a list strung through a sentence as "a, b, and c" or "2, 5 and 6" (2026-11-07), or with a "Still open:" line that isn't followed by bullets. The reviewer checks for the ones the hook can't spot, like "a, b and c".
+A list of three or more things goes one item per line as bullets, never strung together in a sentence. A hook refuses a reply with a semicolon, with a list strung through a sentence as "a, b, and c" or "2, 5 and 6" (2026-11-07), or with a "Still open:" line that isn't followed by bullets. The reviewer checks for the ones the hook can't spot, like "a, b and c". Before a reply or card goes to the reviewer, Claude runs scripts/draft-check.py on its text and puts each flag that's a real list on bullets. It catches kinds the hook lets through, like steps joined by "then" (2026-11-18).
 
 ## Check before answering
 
