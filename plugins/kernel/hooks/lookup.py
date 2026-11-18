@@ -8,7 +8,8 @@ Claude remembering to look it up.
 When Nwani's message is a question, it also puts a reminder at the top: answer it, and take no
 action beyond what answering needs, unless Nwani asked. Claude once turned "why didn't you look"
 into a lookup, before the reviewer could see anything (Nwani's Save card, 2026-11-11). It's a
-reminder, not a block, because a hook can't tell which lookups an answer needs.
+reminder, not a block, because a hook can't tell which lookups an answer needs. answer-only.py
+blocks edits, commits, pushes and non-reviewer helpers after a question (2026-11-16).
 """
 import html
 import json
@@ -16,6 +17,8 @@ import os
 import pathlib
 import re
 import sys
+
+import judge
 
 FILES = ["CLAUDE.md", "learnings.md", "projects/*/CLAUDE.md", "projects/*/learnings.md"]
 MAX_LINES = 8
@@ -36,20 +39,14 @@ def words(text):
             if len(w) >= 3 and w not in STOP}
 
 
-QUESTION_START = re.compile(
-    r"^(why|how|what|whats|when|where|who|which|did|didnt|do|does|doesnt|dont|is|isnt|are|arent|was|wasnt|"
-    r"were|werent|has|hasnt|have|havent|should|shouldnt)\b")
-ASKS_FOR_ACTION = re.compile(r"\bplease\b")
-REMINDER = ("This is a question. Answer it, and take no action beyond what answering needs, and change "
-            "nothing, unless Nwani asked (CLAUDE.md, Answer by click, and Nwani's Save card 2026-11-11).")
+REMINDER = ("These sentences are questions: answer them, and take no action for them beyond what "
+            "answering needs (CLAUDE.md, Answer by click, and Nwani's Save card 2026-11-11). The rest of "
+            "the message is handled as it asks:\n")
 
 
-def is_question(text):
-    """A message that asks something rather than asking for something to be done."""
-    plain = re.sub(r"[^a-z0-9 ?]", "", text.lower()).strip()
-    if not plain or ASKS_FOR_ACTION.search(plain):
-        return False
-    return plain.endswith("?") or bool(QUESTION_START.match(plain))
+def is_question(text, before=""):
+    """True when the message gets only an answer: a question in it, and no request (judge.py)."""
+    return judge.asks_only(judge.judge(text, before))
 
 
 def folders(start):
@@ -83,7 +80,9 @@ def main():
     root = pathlib.Path(os.environ.get("CLAUDE_PROJECT_DIR") or hook.get("cwd") or ".")
     said = message(hook.get("prompt") or "")
     found = matches(root, said)
-    parts = [REMINDER] if is_question(said) else []
+    verdict = judge.judge(said, judge.last_reply(hook.get("transcript_path") or ""))
+    asked = [s["sentence"] for s in verdict.get("sentences", []) if s.get("kind") == "question"]
+    parts = [REMINDER + "\n".join("- " + s[:200] for s in asked)] if asked else []
     if found:
         text = "\n".join("%s:%d: %s" % (path, n, line[:300]) for _, path, n, line in found)
         parts.append("Rules and learnings that match this message. Check them before "

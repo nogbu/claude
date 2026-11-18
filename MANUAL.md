@@ -74,7 +74,7 @@ How to use the systems we've built for working with Claude. Each section covers 
 
 **When it goes wrong:** if a turn ends without bringing back an open question, say so. The check below should have caught it.
 
-**What's behind it:** at the end of every turn, a check reads the thread's own record of cards. If any card is still unanswered and the turn didn't end on a card, Claude is stopped. It's told to ask about the current task if you haven't said it's done, and otherwise which card to bring back. It only stops a turn once, so it can't get stuck in a loop.
+**What's behind it:** at the end of every turn, a check reads the thread's own record of cards. If a card posted that turn is still unanswered and the turn didn't end on a card, Claude is stopped. A card from an earlier turn stays open without being re-posted, so it can scroll up out of view. It's told to ask about the current task if you haven't said it's done, and otherwise which card to bring back. It only stops a turn once, so it can't get stuck in a loop.
 
 ---
 

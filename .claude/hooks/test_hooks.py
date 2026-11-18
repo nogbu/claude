@@ -9,6 +9,11 @@ import subprocess
 import sys
 import tempfile
 
+# The judge saves verdicts, so tests use their own folder, and no model unless asked for.
+os.environ["CLAUDE_JUDGE_CACHE"] = tempfile.mkdtemp()
+if not os.environ.get("CLAUDE_JUDGE_LIVE"):
+    os.environ["CLAUDE_JUDGE_OFFLINE"] = "1"
+
 HOOKS = pathlib.Path(__file__).parent
 
 
@@ -213,16 +218,29 @@ LOOKUPS = [
 ]
 
 
+# Without the model (tests, or the model unreachable) only Nwani's "?" rule applies. The model cases
+# run only with CLAUDE_JUDGE_LIVE=1, since each one is a small-model call.
 QUESTIONS = [
     ("why didnt you just look at the name of the plugin attached to the account?", True),
-    ("i didnt say look now, i asked why you didnt look then", False),
-    ("arent there two sets of tests", True),
-    ("what is the difference between pmax and shopping", True),
     ("can you add brand list inclusions to google pmax?", True),
-    ("please list the tests without purchases", False),
     ("go back to the shopify tests. list the ones without purchases", False),
     ("Chose Save on the decision card", False),
+    ("when I say refresh re-read the rules", False),
+    ("when will the print finish?", True),
+    ("do so", False),
+    ("lets fix this question issue. why are you trying to identify which messages are questions?", True),
 ]
+MODEL_QUESTIONS = [
+    ("arent there two sets of tests", True),
+    ("what is the difference between pmax and shopping", True),
+    ("\"A single avoided call, worth 264,000\" what does this mean", True),
+    ("if the old repo doesnt have any files, where does the conflict come from", True),
+    ("wait why are you looking for a place for the 270 words", True),
+    ("Do the row's Next items in order, one card at a time", False),
+    ("wtf? why is x happening", True),
+]
+if os.environ.get("CLAUDE_JUDGE_LIVE"):
+    QUESTIONS += MODEL_QUESTIONS
 
 
 def looked_up(message, root=ROOT):
@@ -253,52 +271,69 @@ EDITED.write_text(GOOD)
 CARDS = [("", False), ("   ", False), ("Still open after this: the usage script.", True)]
 
 TURNS = [
-    ("no cards at all", record(("nwani", "hi"), ("reply", "hello")), False),
+    ("no card open, no Done tap, turn ends on a reply", record(("nwani", "hi"), ("reply", "hello")), True),
+    ("no card open, reply asks a typed answer", record(("nwani", "wtf"), ("reply", "Typed answer: what went wrong.")), False),
+    ("Done tapped, then a reply", record(("card", "Done with it"),
+                                          ("nwani", 'Chose "Done, move on" on the decision card. decision_id=cmsg_Donewithit'),
+                                          ("reply", "Resolving.")), False),
+    ("Save tapped, merged, turn ends on a reply", record(("card", "Save it"),
+                                                         ("nwani", 'Chose "Save the rule" on the decision card. decision_id=cmsg_Saveit'),
+                                                         ("reply", "Merged.")), True),
+    ("Done tapped, then a question gets a reply", record(("card", "Done with it"),
+                                                         ("nwani", 'Chose "Done, move on". decision_id=cmsg_Donewithit'),
+                                                         ("nwani", "what rule told you"), ("reply", "None.")), False),
+    ("Done tapped, but a card went out since", record(("card", "Done with it"),
+                                                      ("nwani", 'Chose "Done". decision_id=cmsg_Donewithit'),
+                                                      ("card", "Save a fix"),
+                                                      ("nwani", 'Chose "Save the fix". decision_id=cmsg_Saveafix'),
+                                                      ("reply", "Merged.")), True),
     ("turn ends on a card", record(("nwani", "hi"), ("reply", "here"), ("card", "Save it")), False),
-    ("open card, turn ends on a reply",
-     record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer")), True),
+    ("open card from an earlier turn, turn ends on a reply (2026-11-16)",
+     record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer")), False),
+    ("card posted this turn, then a reply",
+     record(("nwani", "a question"), ("card", "Save it"), ("reply", "an answer")), True),
     ("open card re-asked",
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer"),
             ("withdraw", "cmsg_Saveit"), ("card", "Save it again")), False),
-    ("card answered by tap", record(("card", "Save it"), ("nwani", "Chose Save. decision_id=cmsg_Saveit"),
+    ("card answered by tap", record(("card", "Save it"), ("nwani", "Chose Done. decision_id=cmsg_Saveit"),
                                     ("reply", "Saved.")), False),
-    ("card withdrawn", record(("card", "Save it"), ("nwani", "drop it"), ("withdraw", "cmsg_Saveit"),
-                              ("reply", "Dropped.")), False),
+    ("card withdrawn, then a reply still needs a card (2026-11-15)", record(("card", "Save it"), ("nwani", "drop it"), ("withdraw", "cmsg_Saveit"),
+                              ("reply", "Dropped.")), True),
     ("open card, turn posted nothing", record(("card", "Save it"), ("nwani", "thanks")), False),
     ("a helper's report mid-turn doesn't reset the turn",
-     record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer"), ("note", "report")), True),
+     record(("nwani", "a question"), ("card", "Save it"), ("reply", "an answer"), ("note", "report")), True),
     ("newer tool names: open card, turn ends on a reply",
-     record(("new card", "Save it"), ("nwani", "a question"), ("new reply", "an answer")), True),
+     record(("nwani", "a question"), ("new card", "Save it"), ("new reply", "an answer")), True),
     ("newer tool names: turn ends on a card",
      record(("nwani", "hi"), ("new reply", "here"), ("new card", "Save it")), False),
     ("card answered by a tap that arrived mid-turn",
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"),
-            ("tap mid-turn", '<wake><message from="human">Chose Save</message><system-note>decision_id=cmsg_Saveit'
+            ("tap mid-turn", '<wake><message from="human">Chose Done</message><system-note>decision_id=cmsg_Saveit'
                              '</system-note></wake>'), ("reply", "Saved.")), False),
     ("a helper's mid-turn report quoting a card's id doesn't answer it",
-     record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"),
+     record(("nwani", "a question"), ("card", "Save it"), ("reply", "working"),
             ("tap mid-turn", '<agent-message from="a1">It said decision_id=cmsg_Saveit</agent-message>'),
             ("reply", "Saved.")), True),
     ("Nwani's mid-turn message starts a new turn",
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "working"), ("card", "Save it again"),
-            ("tap mid-turn", '<wake><message from="human">one more thing</message></wake>'), ("reply", "ok")), True),
+            ("tap mid-turn", '<wake><message from="human">one more thing</message></wake>'), ("reply", "ok")), False),
     ("refused card doesn't count as posted",
-     record(("nwani", "hi"), ("reply", "here"), ("refused card", "Save it")), False),
+     record(("nwani", 'Chose "Done, move on". decision_id=cmsg_Earlier'), ("nwani", "hi"), ("reply", "here"), ("refused card", "Save it")), False),
     ("ASK verdict, turn ends on a reply",
      record(("nwani", "a question"), ("note", "report: - **Verdict:** ASK"), ("reply", "an answer")), True),
     ("ASK verdict, then a card",
      record(("nwani", "a question"), ("note", "report: - **Verdict:** ASK"), ("reply", "context"),
             ("card", "Which one")), False),
     ("ASK verdict, then a reply that disagrees",
-     record(("nwani", "a question"), ("note", "report: Verdict: ASK"), ("reply", "I disagree with the reviewer")), False),
+     record(("nwani", 'Chose "Done, move on". decision_id=cmsg_Earlier'), ("nwani", "a question"), ("note", "report: Verdict: ASK"), ("reply", "I disagree with the reviewer")), False),
     ("ASK verdict, turn posts nothing",
      record(("nwani", "a question"), ("note", "report: Verdict: ASK")), True),
     ("ASK verdict from an earlier turn",
-     record(("note", "report: Verdict: ASK"), ("nwani", "a question"), ("reply", "an answer")), False),
+     record(("nwani", 'Chose "Done, move on". decision_id=cmsg_Earlier'), ("note", "report: Verdict: ASK"), ("nwani", "a question"), ("reply", "an answer")), False),
     ("FIX verdict doesn't count as ASK",
-     record(("nwani", "a question"), ("note", "report: - **Verdict:** FIX"), ("reply", "an answer")), False),
+     record(("nwani", 'Chose "Done, move on". decision_id=cmsg_Earlier'), ("nwani", "a question"), ("note", "report: - **Verdict:** FIX"), ("reply", "an answer")), False),
     ("refused card doesn't count as ending on a card",
-     record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer"), ("refused card", "Other")), True),
+     record(("nwani", "a question"), ("card", "Save it"), ("reply", "an answer"), ("refused card", "Other")), True),
 ]
 
 def reviewed(*events):
@@ -390,7 +425,7 @@ for message, want in LOOKUPS:
         failures.append("lookup, expected %r for %r, got %r" % (want, message, got))
 for message, want in QUESTIONS:
     got = looked_up(message)
-    if bool(got and "This is a question." in got) != want:
+    if bool(got and "These sentences are questions" in got) != want:
         failures.append("lookup question reminder, expected %s for %r" % ("shown" if want else "none", message))
 # The new-project check, against a repo with one project folder and one project listed as needing none
 NEW = pathlib.Path(tempfile.mkdtemp())
@@ -532,7 +567,30 @@ for name, call, path, want in SAVES:
     got = bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
     if got != want:
         failures.append("save-check, expected %s: %s" % ("refused" if want else "allowed", name))
-total = len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES)
+QUESTION = wake("why did you change the rule?")
+REQUEST = wake("fix the rule")
+MIXED = wake("lets fix this question issue. why are you trying to identify which messages are questions?")
+ANSWER_ONLY = [
+    ("edit after a question", {"name": "Edit", "input": {}}, saves(("nwani", QUESTION)), True),
+    ("edit after a request", {"name": "Edit", "input": {}}, saves(("nwani", REQUEST)), False),
+    ("edit after a Save tap", {"name": "Edit", "input": {}}, saves(("nwani", TAPPED_SAVE)), False),
+    ("edit after a question then a request mid-turn", {"name": "Edit", "input": {}}, saves(("nwani", QUESTION), ("tap mid-turn", REQUEST)), False),
+    ("reviewer after a question", {"name": "Agent", "input": {"subagent_type": "reviewer"}}, saves(("nwani", QUESTION)), False),
+    ("other helper after a question", {"name": "Agent", "input": {"subagent_type": "Explore"}}, saves(("nwani", QUESTION)), True),
+    ("git commit after a question", {"name": "Bash", "input": {"command": "cd x && git commit -m y"}}, saves(("nwani", QUESTION)), True),
+    ("sed -i after a question", {"name": "Bash", "input": {"command": "sed -i s/a/b/ f"}}, saves(("nwani", QUESTION)), True),
+    ("write by redirect after a question", {"name": "Bash", "input": {"command": "echo a > f"}}, saves(("nwani", QUESTION)), True),
+    ("grep after a question", {"name": "Bash", "input": {"command": "grep -n 'git push' f 2>/dev/null"}}, saves(("nwani", QUESTION)), False),
+    ("merge after a question", MERGE, saves(("nwani", QUESTION)), True),
+    # With the model the request is seen and edits go through. Without it only "?" counts, so they don't.
+    ("edit after a request with a question in it", {"name": "Edit", "input": {}}, saves(("nwani", MIXED)), not os.environ.get("CLAUDE_JUDGE_LIVE")),
+]
+for name, call, path, want in ANSWER_ONLY:
+    out = run("answer-only.py", {"tool_name": call["name"], "tool_input": call["input"], "transcript_path": path})
+    got = bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+    if got != want:
+        failures.append("answer-only, expected %s: %s" % ("refused" if want else "allowed", name))
+total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES)
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))

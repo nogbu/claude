@@ -14,6 +14,7 @@ list.txt holds my list as I pasted it, one plant or tag per line, in my order:
 Text keeps my exact spelling, all lowercase (my words 2026-10-11), and " x " starts row 2 (plantTags_lib.wrap). Installs the builder's libraries (LIBS), then writes tags.txt
 (the builder's input) to outdir, then builds plantTags_LABEL with plantTags_lib.make_set (by_kind: name tags on plate 1,
 species on plate 2, one blank on plate 3; 8 plants per file, more as .1, .2 ...) and prints one TAG line per tag: file, kind, text and whether it wrapped to a second row.
+It draws no _master.png picture, since I didn't ask for one (my words 2026-11-12); the 3mf keeps its built-in thumbnail.
 A tag that doesn't fit two rows stops the run before building: each one is listed (exit 2), and the thread asks me
 whether to let it run past the soil line (saying how far), abbreviate it (suggesting an abbreviation) or skip it,
 asking each time (my pick 2026-10-13); it never shortens my text itself.
@@ -68,6 +69,7 @@ def main(src, label, outdir='/mnt/project-files/3mfs', past_soil=0.0):
     subprocess.run([sys.executable, '-m', 'pip', 'install', '-q'] + LIBS.split(), check=True)
     sys.path.insert(0, HERE)
     import plantTags_lib as P
+    P.W.MASTER = False   # no _master.png pictures for tag runs: not asked for (my words 2026-11-12)
     P.SOIL_X += past_soil
     tags = to_tags(src)
     os.makedirs(outdir, exist_ok=True)
