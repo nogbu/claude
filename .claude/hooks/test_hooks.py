@@ -9,6 +9,11 @@ import subprocess
 import sys
 import tempfile
 
+# The judge saves verdicts, so tests use their own folder, and no model unless asked for.
+os.environ["CLAUDE_JUDGE_CACHE"] = tempfile.mkdtemp()
+if not os.environ.get("CLAUDE_JUDGE_LIVE"):
+    os.environ["CLAUDE_JUDGE_OFFLINE"] = "1"
+
 HOOKS = pathlib.Path(__file__).parent
 
 
@@ -213,18 +218,29 @@ LOOKUPS = [
 ]
 
 
+# Without the model (tests, or the model unreachable) only Nwani's "?" rule applies. The model cases
+# run only with CLAUDE_JUDGE_LIVE=1, since each one is a small-model call.
 QUESTIONS = [
     ("why didnt you just look at the name of the plugin attached to the account?", True),
-    ("i didnt say look now, i asked why you didnt look then", False),
-    ("arent there two sets of tests", True),
-    ("what is the difference between pmax and shopping", True),
-    ("can you add brand list inclusions to google pmax?", False),
-    ("please list the tests without purchases", False),
+    ("can you add brand list inclusions to google pmax?", True),
     ("go back to the shopify tests. list the ones without purchases", False),
     ("Chose Save on the decision card", False),
     ("when I say refresh re-read the rules", False),
     ("when will the print finish?", True),
+    ("do so", False),
+    ("lets fix this question issue. why are you trying to identify which messages are questions?", True),
 ]
+MODEL_QUESTIONS = [
+    ("arent there two sets of tests", True),
+    ("what is the difference between pmax and shopping", True),
+    ("\"A single avoided call, worth 264,000\" what does this mean", True),
+    ("if the old repo doesnt have any files, where does the conflict come from", True),
+    ("wait why are you looking for a place for the 270 words", True),
+    ("Do the row's Next items in order, one card at a time", False),
+    ("wtf? why is x happening", True),
+]
+if os.environ.get("CLAUDE_JUDGE_LIVE"):
+    QUESTIONS += MODEL_QUESTIONS
 
 
 def looked_up(message, root=ROOT):
@@ -409,7 +425,7 @@ for message, want in LOOKUPS:
         failures.append("lookup, expected %r for %r, got %r" % (want, message, got))
 for message, want in QUESTIONS:
     got = looked_up(message)
-    if bool(got and "This is a question." in got) != want:
+    if bool(got and "These sentences are questions" in got) != want:
         failures.append("lookup question reminder, expected %s for %r" % ("shown" if want else "none", message))
 # The new-project check, against a repo with one project folder and one project listed as needing none
 NEW = pathlib.Path(tempfile.mkdtemp())
@@ -553,6 +569,7 @@ for name, call, path, want in SAVES:
         failures.append("save-check, expected %s: %s" % ("refused" if want else "allowed", name))
 QUESTION = wake("why did you change the rule?")
 REQUEST = wake("fix the rule")
+MIXED = wake("lets fix this question issue. why are you trying to identify which messages are questions?")
 ANSWER_ONLY = [
     ("edit after a question", {"name": "Edit", "input": {}}, saves(("nwani", QUESTION)), True),
     ("edit after a request", {"name": "Edit", "input": {}}, saves(("nwani", REQUEST)), False),
@@ -565,6 +582,8 @@ ANSWER_ONLY = [
     ("write by redirect after a question", {"name": "Bash", "input": {"command": "echo a > f"}}, saves(("nwani", QUESTION)), True),
     ("grep after a question", {"name": "Bash", "input": {"command": "grep -n 'git push' f 2>/dev/null"}}, saves(("nwani", QUESTION)), False),
     ("merge after a question", MERGE, saves(("nwani", QUESTION)), True),
+    # With the model the request is seen and edits go through. Without it only "?" counts, so they don't.
+    ("edit after a request with a question in it", {"name": "Edit", "input": {}}, saves(("nwani", MIXED)), not os.environ.get("CLAUDE_JUDGE_LIVE")),
 ]
 for name, call, path, want in ANSWER_ONLY:
     out = run("answer-only.py", {"tool_name": call["name"], "tool_input": call["input"], "transcript_path": path})
