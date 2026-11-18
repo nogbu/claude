@@ -8,6 +8,8 @@ would refuse some ordinary sentences. Here a false alarm only costs a look, so t
 - "a, b and c": three items with no comma before "and"/"or"
 - steps joined by "then": "do a, then b, then c", "a, then b and c" or "a, b, then c"
 - lists of long clauses: "a, b, and c" where an item runs up to 12 words
+It also flags sweeping claims like "no record shows" or "was never" in a sentence that doesn't
+say what was searched, since such a claim usually covers only what Claude looked at (2026-11-18).
 Prints each finding and exits 1, or prints nothing and exits 0.
 """
 import importlib.util
@@ -38,6 +40,16 @@ STRICT = [
     ("a list of long clauses",
      re.compile(r"%s,\s+(?!%s)%s(?:\s+%s){0,11},\s+(?:and|or)\s+%s" % (WORD, SUBORD, ITEM, ITEM, WORD), re.I)),
 ]
+# Sweeping claims, and the words that show a sentence already names what was searched.
+ABSOLUTE = re.compile(
+    r"\b(?:no (?:record|sign|trace|evidence|case|instance|example)s?\b|nothing (?:shows|showed|in)\b"
+    r"|none of\b|not once\b|(?:has|have|had|was|were|is|are|did)\s+never\b"
+    r"|never (?:happened|ran|runs|shows|showed|appears|appeared|came|comes|fired|fires)\b"
+    r"|every (?:record|thread|session|time)\b|all (?:records|threads|sessions)\b)", re.I)
+SCOPE = re.compile(
+    r"\b(?:this|that|the) (?:thread|session|record|file|test|repo|folder|chat)\b|\bthis thread's\b|\bsearched\b"
+    r"|\bchecked\b|\bI (?:looked|read|listed)\b|\bin [\w./-]+\.(?:md|py|jsonl|txt|json)\b|\bsource:", re.I)
+SENTENCE = re.compile(r"[^.!\n]+[.!]?")
 CONDITION = re.compile(r"(?:^|[.!:]\s+|\W)(?:if|once|when|whenever|after|before|unless|since)\b[^.,\n]*$", re.I)
 
 
@@ -61,6 +73,11 @@ def findings(text):
                 found.append("Possible list strung through a sentence (%s): \"%s\". Put it on bullets "
                              "or reword, unless it isn't a list." % (name, m.group(0)[:120]))
                 break
+    for sentence in SENTENCE.findall(plain):
+        m = ABSOLUTE.search(sentence)
+        if m and not SCOPE.search(sentence):
+            found.append("Sweeping claim (\"%s\"): \"%s\". Name what was searched in the same sentence, "
+                         "or narrow the claim." % (m.group(0), sentence.strip()[:120]))
     return found
 
 
