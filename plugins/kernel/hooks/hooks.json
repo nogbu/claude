@@ -52,7 +52,7 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/run.sh\" answer-only.py",
-            "timeout": 10
+            "timeout": 60
           }
         ]
       }
@@ -86,7 +86,7 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/run.sh\" lookup.py",
-            "timeout": 10
+            "timeout": 60
           },
           {
             "type": "command",

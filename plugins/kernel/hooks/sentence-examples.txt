@@ -1,0 +1,6 @@
+# Nwani's corrections, read by judge.py ahead of everything else. One per line:
+# Q | sentence (a question), R | sentence (a request), O | sentence (other: a reaction or statement).
+# Claude adds a line, and merges it, whenever Nwani corrects how a sentence was read (Nwani, 2026-11-17).
+R | do so
+R | when I say refresh re-read the rules
+O | wtf? (when the next sentence asks the real question)
