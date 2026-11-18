@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_AUTO_BACKGROUND_TASKS": "false"
+  },
   "hooks": {
     "PreToolUse": [
       {
