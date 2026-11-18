@@ -26,15 +26,18 @@ JOINER = reply_check.JOINER
 # A first item that is really a sentence opener, like "Yes, merged and uploaded".
 OPENER = r"(?:yes|no|ok|okay|so|well|also|now|still|sure|thanks|right|first|next|then|here|again|instead)\b"
 ITEM = r"(?!%s)%s" % (JOINER, WORD)
+# A second part that starts like this is a clause, not a list item: "requested, with the card and notes".
+SUBORD = r"(?:with|without|since|as|though|although|when|if|unless|after|before|until|for|from|by|in|on|at|to|where|whose|whom|even|just|only|not|plus)\b"
 STRICT = [
     ("three items with no comma before and/or",
-     re.compile(r"(?<![\w,-])(?!%s|[^,\n]*\d)%s(?:\s+%s){0,3},\s+(?!%s|%s)%s(?:\s+%s){0,3}\s+(?:and|or)\s+%s"
-                % (OPENER, WORD, ITEM, JOINER, reply_check.PRONOUN, WORD, ITEM, WORD), re.I)),
+     re.compile(r"(?<![\w,-])(?!%s|[^,\n]*\d)%s(?:\s+%s){0,3},\s+(?!%s|%s|%s)%s(?:\s+%s){0,3}\s+(?:and|or)\s+%s"
+                % (OPENER, WORD, ITEM, JOINER, reply_check.PRONOUN, SUBORD, WORD, ITEM, WORD), re.I)),
     ("steps joined by then",
      re.compile(r"\bthen\b[^.\n]{1,80}?,\s+(?:and\s+)?then\b|,\s+then\b[^.\n]{1,80}?(?:,\s+|\s+and\s+)(?:and\s+|then\s+)?\w", re.I)),
     ("a list of long clauses",
-     re.compile(r"%s,\s+%s(?:\s+%s){0,11},\s+(?:and|or)\s+%s" % (WORD, ITEM, ITEM, WORD), re.I)),
+     re.compile(r"%s,\s+(?!%s)%s(?:\s+%s){0,11},\s+(?:and|or)\s+%s" % (WORD, SUBORD, ITEM, ITEM, WORD), re.I)),
 ]
+CONDITION = re.compile(r"(?:^|[.!:]\s+|\W)(?:if|once|when|whenever|after|before|unless|since)\b[^.,\n]*$", re.I)
 
 
 def findings(text):
@@ -50,6 +53,8 @@ def findings(text):
             continue
         for name, pattern in STRICT:
             m = pattern.search(line)
+            if m and name == "steps joined by then" and CONDITION.search(line[:m.start()]):
+                m = None  # "If it passes, then I merge it and tell you" is one step after a condition
             if m:
                 found.append("Possible list strung through a sentence (%s): \"%s\". Put it on bullets "
                              "or reword, unless it isn't a list." % (name, m.group(0)[:120]))
