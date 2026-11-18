@@ -86,7 +86,7 @@
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/lookup.py",
-            "timeout": 10
+            "timeout": 60
           },
           {
             "type": "command",

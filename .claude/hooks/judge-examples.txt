@@ -1,0 +1,43 @@
+# Examples from Nwani's own messages, used by judge.py. One per line: Q | question, R | request, O | other.
+# When one sentence depends on another, both are shown together, as one message.
+Q | why is this taking so long
+Q | so now what
+Q | what does this mean
+Q | where is the box
+Q | what are you talking about
+Q | wait why are you looking for a place for the 270 words when the word caps have been found to hurt more than help
+Q | "A single avoided call, worth 264,000" what does this mean
+Q | if it cant be made smaller, what relevance does it have on making reads smaller
+Q | you still havent explained why you have a 220k token limit
+Q | i still dont understand why this needs to be done.
+Q | im particularly curious about how the way shared files and folders work now impacts it
+Q | ho wmuch is the savings
+Q | QUOTE WHERE I SAID THAT
+Q | explain why you proposed that rule instead
+Q | dont you have a rule requiring that it be restated on a reask
+Q | can you add brand list inclusions to google pmax?
+Q | which number is this question for?
+Q | wtf?
+O | wtf? (when another sentence in the message asks the real question)
+O | oh my fucking god
+O | thats not what im asking.
+O | who cares about the walkthrough rules when the bolding rules is independant of it and universal
+O | what started it was you saying that you label verifiable assertions as inference instead of verifying them
+O | this sounds like you're siloing the sentences in a message, but each sentence provides context for the others
+O | the move has already happened though
+R | do so
+R | go through the numbered list you just showed
+R | when I say refresh re-read the rules
+R | New rule, never use my indicating a choice as the rationale for sticking with that choice
+R | replace the process you use to identify questions.
+R | Do the row's Next items in order, one card at a time
+R | don't merge it
+R | stop
+R | bb
+Q | walk me through it
+R | start a thread for refactor process updates
+R | read through every thread you have access to to learn how I phrase questions
+R | lets fix this question issue.
+R | and create the todo list for all existing projects
+R | okay always ask which model and effort should be used when we create predefined helpers or skills
+R | no, give me the prompts

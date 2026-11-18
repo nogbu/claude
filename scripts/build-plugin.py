@@ -67,6 +67,8 @@ def build(out, packed=True):
         "README.md": README,
         "hooks/run.sh": RUN,
     }
+    for script in sorted((REPO / ".claude" / "hooks").glob("*.txt")):
+        files["hooks/" + script.name] = script.read_text()
     for script in sorted((REPO / ".claude" / "hooks").glob("*.py")):
         if script.name != "test_hooks.py":
             files["hooks/" + script.name] = script.read_text()

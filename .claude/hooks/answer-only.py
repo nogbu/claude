@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """PreToolUse hook (CLAUDE.md, Optimize: a question gets only an answer).
 
-When every sentence of Nwani's newest message is a question, refuses the steps that change things, until Nwani
+When Nwani's newest message asks questions and no request, refuses the steps that change things, until Nwani
 writes again:
 - file edits (Write, Edit, NotebookEdit, and shell commands that write files)
 - commits, pushes and merges, by git or through GitHub
 - helpers other than the reviewer
 
-It uses lookup.py's sentence test (Nwani, 2026-11-17): a sentence ending in "?" is a question, and
-one that could be either counts as a question, so "can you fix X" waits for Nwani's next message
-unless Claude offers the step on a one-tap card. A message with any request sentence lets edits through. A shell write hidden inside a script isn't seen (Nwani's Save card, 2026-11-16).
+It reads the verdict judge.py saved for the message (Nwani's pick, 2026-11-18): a small model reads the
+whole message and marks each sentence a question, a request or other. A message with any request lets
+edits through. A sentence that could be either counts as a question, so "can you fix X" waits for
+Nwani's next message unless Claude offers the step on a one-tap card. A shell write hidden inside a script isn't seen (Nwani's Save card, 2026-11-16).
 """
 import html
 import json
 import re
 import sys
 
-from lookup import is_question
+import judge
 from nwani import queued_message
 
 NWANI = re.compile(r'<message\b(?=[^>]*\btrigger="true")(?=[^>]*\bfrom="human")[^>]*>(.*?)</message>', re.S)
@@ -78,7 +79,9 @@ def main():
     if not changes(name, args):
         return
     message = newest_message(hook.get("transcript_path") or "")
-    if message is None or not is_question(message):
+    # Reads the verdict lookup.py saved for this message, so the model runs once per message, not per step.
+    verdict = judge.saved(message) if message is not None else None
+    if message is None or not judge.asks_only(verdict or {"sentences": judge.fallback(message)}):
         return
     print(json.dumps({"hookSpecificOutput": {
         "hookEventName": "PreToolUse",
