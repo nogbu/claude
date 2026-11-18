@@ -21,7 +21,7 @@ filament whose temperature range misses the part's (learnings/slicing-checks); l
 Every write() but a cli copy also draws [file]_master.png beside the 3mf (picture.py --master: each printed part
 once, numbered, with its size; a single part gets measured size lines), about 10 to 16 s, unless MASTER is False.
 write(..., plates=[(name, [object indexes]), ...]) puts each group on its own plate, in order; each object's at is
-its spot on its own plate. Plates sit on Bambu Studio's grid (as in plantTags_source.3mf): a stride of 1.2 bed widths
+its spot on its own plate. Plates sit on OrcaSlicer's plate grid (as in plantTags_source.3mf): a stride of 1.2 bed widths
 (307.2 mm on the 256 mm bed), ceil(sqrt(plates)) columns, rows going -y.
 Tested 2026-10-07: the pot and photo board slice to the same G-code time and filament as their old
 writers; Orca's estimate moves several seconds with a 0.00002 mm shift, so compare slices of one file.
@@ -213,6 +213,7 @@ def write(path, objs, settings, layer_gcode=None, plate_name=None, thumbnails=Tr
                     '   <option opt_key="%s">%s</option>' % kv for kv in _range_opts(opts, settings))) for a, b, opts in o.ranges)))
         oid += 1
     today = datetime.date.today().isoformat()
+    # OrcaSlicer 2.4.2 writes these BambuStudio tags itself in every 3mf it saves, so they mark the file format, not the app
     root = (HEAD + '<model unit="millimeter" xml:lang="en-US" %s>\n <metadata name="Application">BambuStudio-02.06.00.51</metadata>\n'
             ' <metadata name="OrcaSlicer">2.4.2</metadata>\n <metadata name="BambuStudio:3mfVersion">1</metadata>\n'
             ' <metadata name="CreationDate">%s</metadata>\n <metadata name="ModificationDate">%s</metadata>\n'
