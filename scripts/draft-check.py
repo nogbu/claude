@@ -6,7 +6,7 @@ Usage: python3 scripts/draft-check.py draft.txt   (or the draft on stdin)
 Runs the reply hook's own checks, then stricter list checks the hook leaves out because they
 would refuse some ordinary sentences. Here a false alarm only costs a look, so they flag:
 - "a, b and c": three items with no comma before "and"/"or"
-- steps joined by "then": "do a, then b, then c" or "a, then b and c"
+- steps joined by "then": "do a, then b, then c", "a, then b and c" or "a, b, then c"
 - lists of long clauses: "a, b, and c" where an item runs up to 12 words
 Prints each finding and exits 1, or prints nothing and exits 0.
 """
@@ -33,7 +33,8 @@ STRICT = [
      re.compile(r"(?<![\w,-])(?!%s|[^,\n]*\d)%s(?:\s+%s){0,3},\s+(?!%s|%s|%s)%s(?:\s+%s){0,3}\s+(?:and|or)\s+%s"
                 % (OPENER, WORD, ITEM, JOINER, reply_check.PRONOUN, SUBORD, WORD, ITEM, WORD), re.I)),
     ("steps joined by then",
-     re.compile(r"\bthen\b[^.\n]{1,80}?,\s+(?:and\s+)?then\b|,\s+then\b[^.\n]{1,80}?(?:,\s+|\s+and\s+)(?:and\s+|then\s+)?\w", re.I)),
+     re.compile(r"\bthen\b[^.\n]{1,80}?,\s+(?:and\s+)?then\b|,\s+then\b[^.\n]{1,80}?(?:,\s+|\s+and\s+)(?:and\s+|then\s+)?\w"
+                r"|\w,\s+(?!%s)[^,.\n]{1,40},\s+then\s+\w" % SUBORD, re.I)),
     ("a list of long clauses",
      re.compile(r"%s,\s+(?!%s)%s(?:\s+%s){0,11},\s+(?:and|or)\s+%s" % (WORD, SUBORD, ITEM, ITEM, WORD), re.I)),
 ]
@@ -53,7 +54,8 @@ def findings(text):
             continue
         for name, pattern in STRICT:
             m = pattern.search(line)
-            if m and name == "steps joined by then" and CONDITION.search(line[:m.start()]):
+            if (m and name == "steps joined by then" and CONDITION.search(line[:m.start()])
+                    and len(re.findall(r"\bthen\b", m.group(0), re.I)) < 2):
                 m = None  # "If it passes, then I merge it and tell you" is one step after a condition
             if m:
                 found.append("Possible list strung through a sentence (%s): \"%s\". Put it on bullets "
