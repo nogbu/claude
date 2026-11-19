@@ -532,6 +532,46 @@ for name, text, path, want in REVIEWS:
         failures.append("review-check, expected %s: %s" % ("refused" if want else "allowed", name))
 if stopped(TURNS[2][1], again=True):
     failures.append("open-cards, expected allowed: second stop in a row")
+# The turn-end check also runs before the "no reply needed" step, whose result ends the turn outright
+# (claude/endTurn), so a Stop refusal only came back at the next wake (rev12 test, 2026-11-19).
+# turn-end.jsonl is copied from a real thread's record: Nwani's tap (OPTION stands for its label), a
+# reply and its result, a card and its result, then the no-reply step.
+def turn_end(option, keep, extra=()):
+    with open(os.path.join(REAL, "turn-end.jsonl")) as f:
+        rows = [json.loads(line.replace("OPTION", option)) for line in f if line.strip()]
+    lines = [rows[0]] + [r for i, r in enumerate(rows[1:5], 1) if ("card" in keep or i < 3)]
+    lines += list(extra) + [rows[5]]
+    f = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
+    f.write("\n".join(json.dumps(l) for l in lines))
+    f.close()
+    return f.name
+
+
+def no_reply_refused(path, again=False):
+    out = run("open-cards.py", {"hook_event_name": "PreToolUse", "tool_name": "mcp__hearthbot__no_reply_needed",
+                                "transcript_path": path, "stop_hook_active": again})
+    return bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
+
+
+NO_REPLY = [
+    ("reply then card, then the no-reply step", turn_end("Save it", "card"), False),
+    ("reply only, no card open, Save tapped", turn_end("Save it", ""), True),
+    ("reply only, Done tapped", turn_end("Done", ""), False),
+    ("card, then a reviewer's ASK", turn_end("Save it", "card", real_entries("foreground-review.jsonl", "ASK")), True),
+    ("card, then a reviewer's PASS", turn_end("Save it", "card", real_entries("foreground-review.jsonl", "PASS")), False),
+]
+for name, path, want in NO_REPLY:
+    if no_reply_refused(path) != want:
+        failures.append("open-cards before no-reply, expected %s: %s" % ("refused" if want else "allowed", name))
+    if stopped(path) != want:
+        failures.append("open-cards at Stop, expected %s: %s" % ("stopped" if want else "allowed", name))
+if not no_reply_refused(NO_REPLY[1][1], again=True):
+    failures.append("open-cards before no-reply, expected refused even after a Stop refusal")
+for settings in (HOOKS.parent / "settings.json", HOOKS.parents[1] / "plugins" / "kernel" / "hooks" / "hooks.json"):
+    groups = json.loads(settings.read_text())["hooks"]["PreToolUse"]
+    if not any(re.fullmatch(g["matcher"], "mcp__hearthbot__no_reply_needed") and "open-cards.py" in json.dumps(g)
+               for g in groups):
+        failures.append("%s, expected open-cards.py before mcp__hearthbot__no_reply_needed" % settings.name)
 for args, want in WIDGETS:
     if widget_refused(args) != want:
         failures.append("reply-check widget, expected %s: %r" % ("refused" if want else "allowed", args))
@@ -674,7 +714,7 @@ for name, path, want in SIZES:
 logged = open(SIZE_LOG).read()
 if logged.count("fired at") != 2 or logged.count("ran, session test") != 1:
     failures.append("thread-size, expected 2 fired lines and 1 ran line")
-total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES) + len(SIZES) + len(ORDERS) + 1
+total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES) + len(SIZES) + len(ORDERS) + 1 + 2 * len(NO_REPLY) + 3
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))

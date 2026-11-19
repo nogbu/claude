@@ -27,6 +27,16 @@
         ]
       },
       {
+        "matcher": "mcp__hearthbot__no_reply_needed",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/open-cards.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
         "matcher": "Write|Edit",
         "hooks": [
           {

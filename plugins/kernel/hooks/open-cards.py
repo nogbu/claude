@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Stop hook (CLAUDE.md, Open questions, newest first).
+"""Turn-end check (CLAUDE.md, Open questions, newest first). Runs as the Stop hook, and also before
+the "no reply needed" step (mcp__hearthbot__no_reply_needed). That step's result carries
+claude/endTurn, which ends the turn outright, so a Stop hook's refusal only reached the thread at its
+next wake (the rev12 test, 2026-11-19). Run before the step, the refusal comes back at once as the
+step's error. A turn that ends on a reply carries no endTurn, so the Stop hook still covers it.
 
 Reads the thread's own record to find cards that were posted and not yet answered or withdrawn.
 If a card posted this turn is open and the turn posted something but didn't end on a card, the turn
@@ -132,34 +136,49 @@ def read_record(path):
     return [(q, n == turn_no) for card, (q, n) in posted.items() if card not in closed], turn, asking, done, exempt
 
 
+def refuse(hook, reason):
+    """Prints a refusal in the form this hook's event takes."""
+    if hook.get("hook_event_name") == "PreToolUse":
+        print(json.dumps({"hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": "deny",
+            "permissionDecisionReason": reason}}))
+    else:
+        print(json.dumps({"decision": "block", "reason": reason}))
+
+
 def main():
     hook = json.load(sys.stdin)
-    if hook.get("stop_hook_active") or not hook.get("transcript_path"):
+    if not hook.get("transcript_path"):
+        return
+    # A second Stop in a row is let through once, so a Stop refusal can't loop. Before the no-reply step
+    # there's no loop to guard: a refused step simply isn't taken.
+    if hook.get("hook_event_name") != "PreToolUse" and hook.get("stop_hook_active"):
         return
     open_cards, turn, asking, done, exempt = read_record(hook["transcript_path"])
     if asking:
-        print(json.dumps({"decision": "block", "reason": (
+        refuse(hook, (
             "The reviewer's verdict was ASK: Nwani's request could mean more than one thing (CLAUDE.md, "
             "Review before answering). Reread Nwani's words on it first (CLAUDE.md, Answer by click). If "
             "they leave it open, ask which one Nwani meant on a card. If they settle it, send a reply that "
-            "says you disagree with the reviewer and why.")}))
+            "says you disagree with the reviewer and why."))
         return
     if any(current for _, current in open_cards) and turn and turn[-1] != "card":
-        print(json.dumps({"decision": "block", "reason": (
+        refuse(hook, (
             "A card is still open, so this turn has to end on a card (CLAUDE.md, Open questions, "
             "newest first). Unless this turn already asked a new question: if Nwani hasn't said the "
             "current task is done, end on a card about that task, like asking whether it's done. A thread "
             "started only to run a test reports its results and resolves itself instead. "
             "Only once Nwani has said so, re-ask the newest open card: withdraw it with close_decision, "
             "send a reply ending with a \"Still open:\" bullet list of the rest, then post it again. "
-            "Newest open card: \"%s\"" % open_cards[-1][0])}))
+            "Newest open card: \"%s\"" % open_cards[-1][0]))
 
     elif not open_cards and turn and turn[-1] == "reply" and not done and not exempt:
-        print(json.dumps({"decision": "block", "reason": (
+        refuse(hook, (
             "No card is open and Nwani hasn't tapped Done, so this turn has to end on a card (CLAUDE.md, "
             "Open questions, newest first). If the work looks finished, ask on a Done card. Otherwise ask "
             "the question this turn leaves open on a card, or a \"Typed answer:\" line if only Nwani's "
-            "words can answer it.")}))
+            "words can answer it."))
 
 
 if __name__ == "__main__":
