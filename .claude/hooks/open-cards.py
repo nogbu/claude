@@ -4,6 +4,8 @@ the "no reply needed" step (mcp__hearthbot__no_reply_needed). That step's result
 claude/endTurn, which ends the turn outright, so a Stop hook's refusal only reached the thread at its
 next wake (the rev12 test, 2026-11-19). Run before the step, the refusal comes back at once as the
 step's error. A turn that ends on a reply carries no endTurn, so the Stop hook still covers it.
+A call sent at the same moment as the no-reply step may not be in the record yet, so that refusal says
+to send the step again on its own (the rev13 test, 2026-11-19).
 
 Reads the thread's own record to find cards that were posted and not yet answered or withdrawn.
 If a card posted this turn is open and the turn posted something but didn't end on a card, the turn
@@ -136,6 +138,13 @@ def read_record(path):
     return [(q, n == turn_no) for card, (q, n) in posted.items() if card not in closed], turn, asking, done, exempt
 
 
+# Before the no-reply step, a call sent at the same moment may not be in the record yet, so a resolve or
+# a coordinator message in that step doesn't count as exempt (the rev13 test, 2026-11-19).
+SAME_STEP = (" If this step went out at the same moment as resolving the thread or messaging the coordinator, "
+             "that call may not be in the record yet: send this step again on its own, once that call has "
+             "come back.")
+
+
 def refuse(hook, reason):
     """Prints a refusal in the form this hook's event takes."""
     if hook.get("hook_event_name") == "PreToolUse":
@@ -178,7 +187,7 @@ def main():
             "No card is open and Nwani hasn't tapped Done, so this turn has to end on a card (CLAUDE.md, "
             "Open questions, newest first). If the work looks finished, ask on a Done card. Otherwise ask "
             "the question this turn leaves open on a card, or a \"Typed answer:\" line if only Nwani's "
-            "words can answer it."))
+            "words can answer it." + SAME_STEP * (hook.get("hook_event_name") == "PreToolUse")))
 
 
 if __name__ == "__main__":

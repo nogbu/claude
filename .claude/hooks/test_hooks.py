@@ -567,6 +567,30 @@ for name, path, want in NO_REPLY:
         failures.append("open-cards at Stop, expected %s: %s" % ("stopped" if want else "allowed", name))
 if not no_reply_refused(NO_REPLY[1][1], again=True):
     failures.append("open-cards before no-reply, expected refused even after a Stop refusal")
+# A turn that resolves the thread or messages the coordinator is exempt, at both events. exempt.jsonl is
+# copied from a real thread's record: a coordinator message (NOTE stands for its text) and its result.
+# The resolve case renames that call, since no real resolve entry was at hand (2026-11-19).
+with open(os.path.join(REAL, "exempt.jsonl")) as f:
+    COORD = [json.loads(line) for line in f if line.strip()]
+RESOLVE = json.loads(json.dumps(COORD).replace("mcp__hearthbot__message_coordinator", "mcp__hearthbot__set_thread_resolved"))
+EXEMPTS = [
+    ("reply, then a coordinator message", turn_end("Save it", "", COORD)),
+    ("reply, then a resolve", turn_end("Save it", "", RESOLVE)),
+]
+for name, path in EXEMPTS:
+    if no_reply_refused(path):
+        failures.append("open-cards before no-reply, expected allowed: " + name)
+    if stopped(path):
+        failures.append("open-cards at Stop, expected allowed: " + name)
+# A resolve sent at the same moment as the no-reply step isn't in the record yet, so the refusal says to
+# send the step again on its own. The Stop refusal, which comes after every call is in, doesn't.
+out = run("open-cards.py", {"hook_event_name": "PreToolUse", "tool_name": "mcp__hearthbot__no_reply_needed",
+                            "transcript_path": NO_REPLY[1][1]})
+if "again on its own" not in out["hookSpecificOutput"]["permissionDecisionReason"]:
+    failures.append("open-cards before no-reply, expected the refusal to say to send the step again on its own")
+out = run("open-cards.py", {"hook_event_name": "Stop", "transcript_path": NO_REPLY[1][1]})
+if "again on its own" in out["reason"]:
+    failures.append("open-cards at Stop, expected no same-moment advice")
 for settings in (HOOKS.parent / "settings.json", HOOKS.parents[1] / "plugins" / "kernel" / "hooks" / "hooks.json"):
     groups = json.loads(settings.read_text())["hooks"]["PreToolUse"]
     if not any(re.fullmatch(g["matcher"], "mcp__hearthbot__no_reply_needed") and "open-cards.py" in json.dumps(g)
@@ -714,7 +738,7 @@ for name, path, want in SIZES:
 logged = open(SIZE_LOG).read()
 if logged.count("fired at") != 2 or logged.count("ran, session test") != 1:
     failures.append("thread-size, expected 2 fired lines and 1 ran line")
-total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES) + len(SIZES) + len(ORDERS) + 1 + 2 * len(NO_REPLY) + 3
+total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES) + len(SIZES) + len(ORDERS) + 1 + 2 * len(NO_REPLY) + 3 + 2 * len(EXEMPTS) + 2
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
