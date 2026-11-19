@@ -590,7 +590,34 @@ for name, call, path, want in ANSWER_ONLY:
     got = bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny"
     if got != want:
         failures.append("answer-only, expected %s: %s" % ("refused" if want else "allowed", name))
-total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES)
+# The thread-size check: quiet at or under the limit, fires over it, quiet with no record
+def sized(*sizes):
+    lines = [{"type": "user", "message": {"content": "hi"}}, {"type": "user", "message": None}, "not an entry"]
+    for n in sizes:
+        lines.append({"type": "assistant", "message": {"role": "assistant", "content": [],
+                      "usage": {"input_tokens": 0, "cache_read_input_tokens": n, "cache_creation_input_tokens": 0}}})
+    f = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
+    f.write("\n".join(json.dumps(l) for l in lines))
+    f.close()
+    return f.name
+
+
+SIZE_LOG = tempfile.NamedTemporaryFile(suffix=".md", delete=False).name
+SIZES = [
+    ("under the limit", sized(150000, 199999), False),
+    ("at the limit", sized(200000), False),
+    ("over the limit", sized(150000, 200001), True),
+    ("over, then a step with no usage", sized(250000, 0), True),
+    ("no record", "/nonexistent/record.jsonl", False),
+]
+for name, path, want in SIZES:
+    out = run("thread-size.py", {"transcript_path": path, "session_id": "test"}, dict(os.environ, CLAUDE_THREAD_SIZE_LOG=SIZE_LOG))
+    if bool(out) != want:
+        failures.append("thread-size, expected %s: %s" % ("fired" if want else "quiet", name))
+logged = open(SIZE_LOG).read()
+if logged.count("fired at") != 2 or logged.count("ran, session test") != 1:
+    failures.append("thread-size, expected 2 fired lines and 1 ran line")
+total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES) + len(SIZES) + 1
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
