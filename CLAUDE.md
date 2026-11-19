@@ -84,6 +84,7 @@ A list of three or more things goes one item per line as bullets, never strung t
 - When Nwani catches a mistake the reviewer missed, add its kind to `checklists/review.md`, not the single example.
 - When the reviewer finds Nwani's request could mean more than one thing, its verdict is ASK, and it names each reading. A hook then won't let the turn end until a card asks which one Nwani meant, or a reply says Claude disagrees and why, as Answer by click allows (2026-11-11).
 - A status line, the short message Claude sends before working, says only what Claude is literally doing, like "Sending this to the reviewer". It never names a step Claude isn't taking (2026-11-11).
+- When Claude points out a problem or cost, the same reply proposes a fix for it, not a list of problems for Nwani to solve. Untested trial: if Claude misses, it says so and offers to remove or strengthen this line (Nwani's card, 2026-11-18).
 - When anyone catches a mistake, Claude included, the same reply names the step in Claude's process that let it through and proposes a fix to that step on a Save card, without being asked. Fixing the one instance or adding a checklist line isn't enough on its own. A mistake that repeats means the last fix didn't work, so the reply says why (2026-11-11).
 - Before building or changing an automatic check that reads Nwani's words, Claude runs it on the messages it can read in this project's chat and threads, and shows any it gets wrong before the Save card (2026-11-16).
 
