@@ -50,14 +50,17 @@ def record(*events):
             continue
         name = {"card": "mcp__hearthbot__ask_decision", "reply": "mcp__hearthbot__reply",
                 "withdraw": "mcp__hearthbot__close_decision", "refused card": "mcp__hearthbot__ask_decision",
-                "new card": "mcp__hearthbot__request_decision", "new reply": "mcp__hearthbot__post_message"}[kind]
+                "new card": "mcp__hearthbot__request_decision", "new reply": "mcp__hearthbot__post_message",
+                "refused reply": "mcp__hearthbot__post_message", "same-step reply": "mcp__hearthbot__post_message"}[kind]
         args = {"message_id": value} if kind == "withdraw" else {"question": value} if "card" in kind else {"text": value}
         lines.append({"type": "assistant", "message": {"content": [
             {"type": "tool_use", "id": tid, "name": name, "input": args}]}})
         result = {"type": "tool_result", "tool_use_id": tid,
                   "content": [{"type": "text", "text": json.dumps({"message_id": "cmsg_" + value.replace(" ", "")})}]}
-        if kind == "refused card":
+        if kind in ("refused card", "refused reply"):
             result = {"type": "tool_result", "tool_use_id": tid, "is_error": True, "content": "denied"}
+        if kind == "same-step reply":
+            continue
         lines.append({"type": "user", "message": {"content": [result]}})
     f = tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False)
     f.write("\n".join(json.dumps(l) for l in lines))
@@ -467,6 +470,21 @@ if helper_refused({"file_path": str(EDITED), "old_string": "Do the audit.", "new
 for context, want in CARDS:
     if card_refused(context) != want:
         failures.append("card-check, expected %s: %r" % ("refused" if want else "allowed", context))
+# A card goes out only after the reply just before it has gone through (Nwani's card, 2026-11-19).
+ORDERS = [
+    ("reply through, then card", record(("nwani", "go"), ("new reply", "Here's why.")), False),
+    ("reply and card in the same step", record(("nwani", "go"), ("same-step reply", "Here's why.")), True),
+    ("refused reply, then card", record(("nwani", "go"), ("refused reply", "Here's why.")), True),
+    ("no reply this turn", record(("new reply", "Old turn."), ("nwani", "go")), True),
+    ("card after a card", record(("nwani", "go"), ("new reply", "Why."), ("new card", "First")), True),
+    ("refused card, then card again", record(("nwani", "go"), ("new reply", "Why."), ("refused card", "First")), False),
+    ("tap mid-turn, then card", record(("new reply", "Why."), ("tap mid-turn", '<message from="human">Chose x</message>')), True),
+    ("note after the reply", record(("nwani", "go"), ("new reply", "Why."), ("note", "Stop hook feedback")), False),
+]
+for name, path, want in ORDERS:
+    out = run("card-check.py", {"tool_input": {"question": "Save it"}, "transcript_path": path, "tool_use_id": "toolu_x"})
+    if (bool(out) and out["hookSpecificOutput"]["permissionDecision"] == "deny") != want:
+        failures.append("card-check order, expected %s: %s" % ("refused" if want else "allowed", name))
 for name, path, want in TURNS:
     if stopped(path) != want:
         failures.append("open-cards, expected %s: %s" % ("stopped" if want else "allowed", name))
@@ -617,7 +635,7 @@ for name, path, want in SIZES:
 logged = open(SIZE_LOG).read()
 if logged.count("fired at") != 2 or logged.count("ran, session test") != 1:
     failures.append("thread-size, expected 2 fired lines and 1 ran line")
-total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES) + len(SIZES) + 1
+total = len(ANSWER_ONLY) + len(REPLIES) + len(CITES) + len(LOOKUPS) + len(QUESTIONS) + len(HELPERS) + 2 + len(CARDS) + len(TURNS) + len(REVIEWS) + 2 + 6 + len(WIDGETS) + 2 + len(NEW_PROJECTS) + len(ATTACHES) + len(SAVES) + len(SIZES) + len(ORDERS) + 1
 for failure in failures:
     print("FAIL", failure)
 print("%d of %d cases pass" % (total - len(failures), total))
