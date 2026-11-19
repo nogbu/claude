@@ -4,6 +4,8 @@ the "no reply needed" step (mcp__hearthbot__no_reply_needed). That step's result
 claude/endTurn, which ends the turn outright, so a Stop hook's refusal only reached the thread at its
 next wake (the rev12 test, 2026-11-19). Run before the step, the refusal comes back at once as the
 step's error. A turn that ends on a reply carries no endTurn, so the Stop hook still covers it.
+A call sent at the same moment as the no-reply step may not be in the record yet, so that refusal says
+to send the step again on its own (the rev13 test, 2026-11-19).
 
 Reads the thread's own record to find cards that were posted and not yet answered or withdrawn.
 If a card posted this turn is open and the turn posted something but didn't end on a card, the turn
