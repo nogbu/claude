@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """Wait for a moved review's report (CLAUDE.md, Review before answering).
 
-Usage: python3 scripts/wait-review.py OUTPUT_FILE
+Usage: python3 scripts/wait-review.py OUTPUT_FILE [MAX_SECONDS]
 Run it in one foreground Bash call with a timeout of 600000. It checks the
 task's output file every 5 seconds, prints only the report, and stops at the
 first assistant entry whose content has a tool_use named SubagentHandback.
 A plain text match isn't enough: the helper's own setup text names the tool
 too, which stopped a hand-written loop early on 2026-11-19.
+Tests: python3 scripts/test_wait_review.py (on entries copied from real records).
 """
 import json, os, sys, time
 
 path = sys.argv[1]
+limit = float(sys.argv[2]) if len(sys.argv) > 2 else 580  # tests pass a short limit
 start, pos, rest, found = time.time(), 0, b"", None
-while time.time() - start < 580 and found is None:
+while time.time() - start < limit and found is None:
     if os.path.exists(path):
         with open(path, "rb") as f:
             f.seek(pos)
