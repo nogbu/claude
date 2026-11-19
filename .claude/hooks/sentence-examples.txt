@@ -4,3 +4,4 @@
 R | do so
 R | when I say refresh re-read the rules
 O | wtf? (when the next sentence asks the real question)
+R | the strip that runs across the front of the shelf is flimsy, even with 4 walls. Can ribs be added to it to make it flex less? (a "can X be added" about the work in hand, Nwani 2026-11-19: "i explicitly told you to add ribs")
