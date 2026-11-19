@@ -4,7 +4,7 @@
 Reads the size of the thread's last model step from its own record: the tokens it read, new and
 from cache. Every step rereads the whole thread, so a long thread makes each step cost more. When
 the last step passed LIMIT, Claude is told to hand over to a fresh thread the way a full thread
-does. Nwani picked 200,000 tokens per step on a card (2026-11-18).
+does. Nwani set 800,000 tokens per step in words (2026-11-19, up from 200,000).
 
 It adds a line to LOG in Project Files the first time it runs in a thread, so a new thread can check
 on its first turn that the hook loaded, and another line each time it fires.
@@ -14,7 +14,7 @@ import json
 import os
 import sys
 
-LIMIT = 200000
+LIMIT = 800000
 LOG = os.environ.get("CLAUDE_THREAD_SIZE_LOG", "/mnt/project-files/new-config/thread-size-log.md")
 
 

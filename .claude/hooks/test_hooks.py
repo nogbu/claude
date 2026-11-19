@@ -288,14 +288,14 @@ EDITED.write_text(GOOD)
 CARDS = [("", False), ("   ", False), ("Still open after this: the usage script.", True)]
 
 TURNS = [
-    ("no card open, no Done tap, turn ends on a reply", record(("nwani", "hi"), ("reply", "hello")), True),
+    ("no card open, no Done tap, turn ends on a reply", record(("nwani", "hi"), ("reply", "hello")), False),
     ("no card open, reply asks a typed answer", record(("nwani", "wtf"), ("reply", "Typed answer: what went wrong.")), False),
     ("Done tapped, then a reply", record(("card", "Done with it"),
                                           ("nwani", 'Chose "Done, move on" on the decision card. decision_id=cmsg_Donewithit'),
                                           ("reply", "Resolving.")), False),
     ("Save tapped, merged, turn ends on a reply", record(("card", "Save it"),
                                                          ("nwani", 'Chose "Save the rule" on the decision card. decision_id=cmsg_Saveit'),
-                                                         ("reply", "Merged.")), True),
+                                                         ("reply", "Merged.")), False),
     ("Done tapped, then a question gets a reply", record(("card", "Done with it"),
                                                          ("nwani", 'Chose "Done, move on". decision_id=cmsg_Donewithit'),
                                                          ("nwani", "what rule told you"), ("reply", "None.")), False),
@@ -303,7 +303,7 @@ TURNS = [
                                                       ("nwani", 'Chose "Done". decision_id=cmsg_Donewithit'),
                                                       ("card", "Save a fix"),
                                                       ("nwani", 'Chose "Save the fix". decision_id=cmsg_Saveafix'),
-                                                      ("reply", "Merged.")), True),
+                                                      ("reply", "Merged.")), False),
     ("turn ends on a card", record(("nwani", "hi"), ("reply", "here"), ("card", "Save it")), False),
     ("open card from an earlier turn, turn ends on a reply (2026-11-16)",
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer")), False),
@@ -314,8 +314,8 @@ TURNS = [
             ("withdraw", "cmsg_Saveit"), ("card", "Save it again")), False),
     ("card answered by tap", record(("card", "Save it"), ("nwani", "Chose Done. decision_id=cmsg_Saveit"),
                                     ("reply", "Saved.")), False),
-    ("card withdrawn, then a reply still needs a card (2026-11-15)", record(("card", "Save it"), ("nwani", "drop it"), ("withdraw", "cmsg_Saveit"),
-                              ("reply", "Dropped.")), True),
+    ("card withdrawn, then a reply ends the turn (forced card removed 2026-11-19)", record(("card", "Save it"), ("nwani", "drop it"), ("withdraw", "cmsg_Saveit"),
+                              ("reply", "Dropped.")), False),
     ("open card, turn posted nothing", record(("card", "Save it"), ("nwani", "thanks")), False),
     ("a helper's report mid-turn doesn't reset the turn",
      record(("nwani", "a question"), ("card", "Save it"), ("reply", "an answer"), ("note", "report")), True),
@@ -555,7 +555,7 @@ def no_reply_refused(path, again=False):
 
 NO_REPLY = [
     ("reply then card, then the no-reply step", turn_end("Save it", "card"), False),
-    ("reply only, no card open, Save tapped", turn_end("Save it", ""), True),
+    ("reply only, no card open, Save tapped", turn_end("Save it", ""), False),
     ("reply only, Done tapped", turn_end("Done", ""), False),
     ("card, then a reviewer's ASK", turn_end("Save it", "card", real_entries("foreground-review.jsonl", "ASK")), True),
     ("card, then a reviewer's PASS", turn_end("Save it", "card", real_entries("foreground-review.jsonl", "PASS")), False),
@@ -565,7 +565,7 @@ for name, path, want in NO_REPLY:
         failures.append("open-cards before no-reply, expected %s: %s" % ("refused" if want else "allowed", name))
     if stopped(path) != want:
         failures.append("open-cards at Stop, expected %s: %s" % ("stopped" if want else "allowed", name))
-if not no_reply_refused(NO_REPLY[1][1], again=True):
+if not no_reply_refused(NO_REPLY[3][1], again=True):
     failures.append("open-cards before no-reply, expected refused even after a Stop refusal")
 # A turn that resolves the thread or messages the coordinator is exempt, at both events. exempt.jsonl is
 # copied from a real thread's record: a coordinator message (NOTE stands for its text) and its result.
@@ -584,15 +584,7 @@ for name, path in EXEMPTS:
         failures.append("open-cards before no-reply, expected allowed: " + name)
     if stopped(path):
         failures.append("open-cards at Stop, expected allowed: " + name)
-# A resolve sent at the same moment as the no-reply step isn't in the record yet, so the refusal says to
-# send the step again on its own. The Stop refusal, which comes after every call is in, doesn't.
-out = run("open-cards.py", {"hook_event_name": "PreToolUse", "tool_name": "mcp__hearthbot__no_reply_needed",
-                            "transcript_path": NO_REPLY[1][1]})
-if "again on its own" not in out["hookSpecificOutput"]["permissionDecisionReason"]:
-    failures.append("open-cards before no-reply, expected the refusal to say to send the step again on its own")
-out = run("open-cards.py", {"hook_event_name": "Stop", "transcript_path": NO_REPLY[1][1]})
-if "again on its own" in out["reason"]:
-    failures.append("open-cards at Stop, expected no same-moment advice")
+# The same-moment advice went with the forced card it was part of (Nwani's card "Save no forced Done card", 2026-11-19).
 for settings in (HOOKS.parent / "settings.json", HOOKS.parents[1] / "plugins" / "kernel" / "hooks" / "hooks.json"):
     groups = json.loads(settings.read_text())["hooks"]["PreToolUse"]
     if not any(re.fullmatch(g["matcher"], "mcp__hearthbot__no_reply_needed") and "open-cards.py" in json.dumps(g)
@@ -727,10 +719,10 @@ def sized(*sizes):
 
 SIZE_LOG = tempfile.NamedTemporaryFile(suffix=".md", delete=False).name
 SIZES = [
-    ("under the limit", sized(150000, 199999), False),
-    ("at the limit", sized(200000), False),
-    ("over the limit", sized(150000, 200001), True),
-    ("over, then a step with no usage", sized(250000, 0), True),
+    ("under the limit", sized(150000, 799999), False),
+    ("at the limit", sized(800000), False),
+    ("over the limit", sized(150000, 800001), True),
+    ("over, then a step with no usage", sized(850000, 0), True),
     ("no record", "/nonexistent/record.jsonl", False),
 ]
 for name, path, want in SIZES:

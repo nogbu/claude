@@ -17,10 +17,8 @@ It also stops a turn whose reviewer gave the verdict ASK, meaning Nwani's reques
 than one thing, until a card goes out after that report or a reply after it says Claude disagreed
 and why (CLAUDE.md, Review before answering, 2026-11-11).
 
-With no card open, a turn that posted something can't end on a reply unless Nwani's latest tap was on a
-Done option and no card has gone out since, so finished work always gets a Done card (2026-11-15). A
-reply asking a "Typed answer:" question, and a turn that resolves the thread or messages the coordinator
-(a test thread reporting, or a full thread handing over), are exempt.
+With no card open, a turn can end on a reply. The forced Done card was removed on Nwani's card
+"Save no forced Done card" (2026-11-19).
 """
 import json
 import re
@@ -138,13 +136,6 @@ def read_record(path):
     return [(q, n == turn_no) for card, (q, n) in posted.items() if card not in closed], turn, asking, done, exempt
 
 
-# Before the no-reply step, a call sent at the same moment may not be in the record yet, so a resolve or
-# a coordinator message in that step doesn't count as exempt (the rev13 test, 2026-11-19).
-SAME_STEP = (" If this step went out at the same moment as resolving the thread or messaging the coordinator, "
-             "that call may not be in the record yet: send this step again on its own, once that call has "
-             "come back.")
-
-
 def refuse(hook, reason):
     """Prints a refusal in the form this hook's event takes."""
     if hook.get("hook_event_name") == "PreToolUse":
@@ -182,12 +173,6 @@ def main():
             "send a reply ending with a \"Still open:\" bullet list of the rest, then post it again. "
             "Newest open card: \"%s\"" % open_cards[-1][0]))
 
-    elif not open_cards and turn and turn[-1] == "reply" and not done and not exempt:
-        refuse(hook, (
-            "No card is open and Nwani hasn't tapped Done, so this turn has to end on a card (CLAUDE.md, "
-            "Open questions, newest first). If the work looks finished, ask on a Done card. Otherwise ask "
-            "the question this turn leaves open on a card, or a \"Typed answer:\" line if only Nwani's "
-            "words can answer it." + SAME_STEP * (hook.get("hook_event_name") == "PreToolUse")))
 
 
 if __name__ == "__main__":
