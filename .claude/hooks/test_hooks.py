@@ -569,10 +569,12 @@ if not no_reply_refused(NO_REPLY[1][1], again=True):
     failures.append("open-cards before no-reply, expected refused even after a Stop refusal")
 # A turn that resolves the thread or messages the coordinator is exempt, at both events. exempt.jsonl is
 # copied from a real thread's record: a coordinator message (NOTE stands for its text) and its result.
-# The resolve case renames that call, since no real resolve entry was at hand (2026-11-19).
+# resolve.jsonl is a real set_thread_resolved call and its result, copied from the same-moment test
+# thread's record (2026-11-19).
 with open(os.path.join(REAL, "exempt.jsonl")) as f:
     COORD = [json.loads(line) for line in f if line.strip()]
-RESOLVE = json.loads(json.dumps(COORD).replace("mcp__hearthbot__message_coordinator", "mcp__hearthbot__set_thread_resolved"))
+with open(os.path.join(REAL, "resolve.jsonl")) as f:
+    RESOLVE = [json.loads(line) for line in f if line.strip()]
 EXEMPTS = [
     ("reply, then a coordinator message", turn_end("Save it", "", COORD)),
     ("reply, then a resolve", turn_end("Save it", "", RESOLVE)),
