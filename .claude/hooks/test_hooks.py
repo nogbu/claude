@@ -288,14 +288,14 @@ EDITED.write_text(GOOD)
 CARDS = [("", False), ("   ", False), ("Still open after this: the usage script.", True)]
 
 TURNS = [
-    ("no card open, no Done tap, turn ends on a reply", record(("nwani", "hi"), ("reply", "hello")), True),
+    ("no card open, no Done tap, turn ends on a reply", record(("nwani", "hi"), ("reply", "hello")), False),
     ("no card open, reply asks a typed answer", record(("nwani", "wtf"), ("reply", "Typed answer: what went wrong.")), False),
     ("Done tapped, then a reply", record(("card", "Done with it"),
                                           ("nwani", 'Chose "Done, move on" on the decision card. decision_id=cmsg_Donewithit'),
                                           ("reply", "Resolving.")), False),
     ("Save tapped, merged, turn ends on a reply", record(("card", "Save it"),
                                                          ("nwani", 'Chose "Save the rule" on the decision card. decision_id=cmsg_Saveit'),
-                                                         ("reply", "Merged.")), True),
+                                                         ("reply", "Merged.")), False),
     ("Done tapped, then a question gets a reply", record(("card", "Done with it"),
                                                          ("nwani", 'Chose "Done, move on". decision_id=cmsg_Donewithit'),
                                                          ("nwani", "what rule told you"), ("reply", "None.")), False),
@@ -303,7 +303,7 @@ TURNS = [
                                                       ("nwani", 'Chose "Done". decision_id=cmsg_Donewithit'),
                                                       ("card", "Save a fix"),
                                                       ("nwani", 'Chose "Save the fix". decision_id=cmsg_Saveafix'),
-                                                      ("reply", "Merged.")), True),
+                                                      ("reply", "Merged.")), False),
     ("turn ends on a card", record(("nwani", "hi"), ("reply", "here"), ("card", "Save it")), False),
     ("open card from an earlier turn, turn ends on a reply (2026-11-16)",
      record(("card", "Save it"), ("nwani", "a question"), ("reply", "an answer")), False),
@@ -314,8 +314,8 @@ TURNS = [
             ("withdraw", "cmsg_Saveit"), ("card", "Save it again")), False),
     ("card answered by tap", record(("card", "Save it"), ("nwani", "Chose Done. decision_id=cmsg_Saveit"),
                                     ("reply", "Saved.")), False),
-    ("card withdrawn, then a reply still needs a card (2026-11-15)", record(("card", "Save it"), ("nwani", "drop it"), ("withdraw", "cmsg_Saveit"),
-                              ("reply", "Dropped.")), True),
+    ("card withdrawn, then a reply ends the turn (forced card removed 2026-11-19)", record(("card", "Save it"), ("nwani", "drop it"), ("withdraw", "cmsg_Saveit"),
+                              ("reply", "Dropped.")), False),
     ("open card, turn posted nothing", record(("card", "Save it"), ("nwani", "thanks")), False),
     ("a helper's report mid-turn doesn't reset the turn",
      record(("nwani", "a question"), ("card", "Save it"), ("reply", "an answer"), ("note", "report")), True),
@@ -555,7 +555,7 @@ def no_reply_refused(path, again=False):
 
 NO_REPLY = [
     ("reply then card, then the no-reply step", turn_end("Save it", "card"), False),
-    ("reply only, no card open, Save tapped", turn_end("Save it", ""), True),
+    ("reply only, no card open, Save tapped", turn_end("Save it", ""), False),
     ("reply only, Done tapped", turn_end("Done", ""), False),
     ("card, then a reviewer's ASK", turn_end("Save it", "card", real_entries("foreground-review.jsonl", "ASK")), True),
     ("card, then a reviewer's PASS", turn_end("Save it", "card", real_entries("foreground-review.jsonl", "PASS")), False),
@@ -565,7 +565,7 @@ for name, path, want in NO_REPLY:
         failures.append("open-cards before no-reply, expected %s: %s" % ("refused" if want else "allowed", name))
     if stopped(path) != want:
         failures.append("open-cards at Stop, expected %s: %s" % ("stopped" if want else "allowed", name))
-if not no_reply_refused(NO_REPLY[1][1], again=True):
+if not no_reply_refused(NO_REPLY[3][1], again=True):
     failures.append("open-cards before no-reply, expected refused even after a Stop refusal")
 for settings in (HOOKS.parent / "settings.json", HOOKS.parents[1] / "plugins" / "kernel" / "hooks" / "hooks.json"):
     groups = json.loads(settings.read_text())["hooks"]["PreToolUse"]
