@@ -34,11 +34,25 @@ def card_refused(context):
 
 
 # A small thread record: posts are (kind, text or card id); "nwani" starts a new turn.
+REAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "real-records")
+
+
+def real_entries(name, verdict):
+    """Record entries copied from a real thread's record, so a change in the record's form fails a test.
+    foreground-review.jsonl is one reviewer run from 2026-11-19: the Agent call, its result, and the report
+    coming back as a queued note. VERDICT in it stands for the reviewer's verdict."""
+    with open(os.path.join(REAL, name)) as f:
+        return [json.loads(line.replace("VERDICT", verdict)) for line in f if line.strip()]
+
+
 def record(*events):
     lines, n = [], 0
     for kind, value in events:
         n += 1
         tid = "toolu_%d" % n
+        if kind == "real review":
+            lines.extend(real_entries("foreground-review.jsonl", value))
+            continue
         if kind == "nwani":
             lines.append({"type": "user", "message": {"content": value}})
             continue
@@ -333,6 +347,14 @@ TURNS = [
      record(("nwani", "a question"), ("note", "report: Verdict: ASK")), True),
     ("ASK verdict from an earlier turn",
      record(("nwani", 'Chose "Done, move on". decision_id=cmsg_Earlier'), ("note", "report: Verdict: ASK"), ("nwani", "a question"), ("reply", "an answer")), False),
+    ("real record: ASK verdict in a queued report, turn ends on a reply",
+     record(("nwani", 'Chose "Done, move on". decision_id=cmsg_Earlier'), ("nwani", "a question"),
+            ("real review", "ASK"), ("reply", "an answer")), True),
+    ("real record: ASK verdict in a queued report, then a card",
+     record(("nwani", "a question"), ("real review", "ASK"), ("reply", "context"), ("card", "Which one")), False),
+    ("real record: FIX verdict in a queued report",
+     record(("nwani", 'Chose "Done, move on". decision_id=cmsg_Earlier'), ("nwani", "a question"),
+            ("real review", "FIX"), ("reply", "an answer")), False),
     ("FIX verdict doesn't count as ASK",
      record(("nwani", 'Chose "Done, move on". decision_id=cmsg_Earlier'), ("nwani", "a question"), ("note", "report: - **Verdict:** FIX"), ("reply", "an answer")), False),
     ("refused card doesn't count as ending on a card",
@@ -351,6 +373,9 @@ def reviewed(*events):
         if kind == "nwani mid-turn":
             lines.append({"type": "attachment", "attachment": {"type": "queued_command",
                           "prompt": '<wake><message from="human">one more thing</message></wake>'}})
+            continue
+        if kind == "real review":
+            lines.extend(real_entries("foreground-review.jsonl", "PASS"))
             continue
         if kind == "queued report back":
             # The shape a moved reviewer's report really had in the wait loop rerun (2026-11-19).
@@ -394,6 +419,10 @@ REVIEWS = [
     ("long reply, background review came back as a queued note", LONG,
      reviewed("nwani", "background review", "queued report back"), False),
     ("long reply, queued note from a reviewer never launched", LONG, reviewed("nwani", "queued report back"), True),
+    ("real record: long reply after a reviewer whose report came back as a queued note", LONG,
+     reviewed("nwani", "real review"), False),
+    ("real record: long reply, the review was before Nwani's last message", LONG,
+     reviewed("nwani", "real review", "nwani"), True),
     ("long reply, review failed", LONG, reviewed("nwani", "failed review"), True),
     ("long reply, a different helper ran", LONG, reviewed("nwani", "other helper"), True),
     ("long reply, reviewed by the plugin's helper", LONG, reviewed("nwani", "plugin review"), False),

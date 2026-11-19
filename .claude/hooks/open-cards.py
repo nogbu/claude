@@ -69,6 +69,15 @@ def read_record(path):
             except ValueError:
                 continue
             content = (entry.get("message") or {}).get("content")
+            attached = (entry.get("attachment") or {}) if entry.get("type") == "attachment" else {}
+            origin = attached.get("origin") or {}
+            if origin.get("handback"):
+                # A helper's report now comes back as a queued note (seen 2026-11-19). It isn't Nwani's
+                # message, but a reviewer's report can carry an ASK verdict.
+                report = origin.get("handbackReportText") or origin.get("body") or attached.get("prompt")
+                if ASK_VERDICT.search(str(report or "")):
+                    asking = True
+                continue
             queued = queued_message(entry)
             if queued:
                 closed.update(ANSWERED.findall(queued))
