@@ -701,10 +701,10 @@ def sized(*sizes):
 
 SIZE_LOG = tempfile.NamedTemporaryFile(suffix=".md", delete=False).name
 SIZES = [
-    ("under the limit", sized(150000, 199999), False),
-    ("at the limit", sized(200000), False),
-    ("over the limit", sized(150000, 200001), True),
-    ("over, then a step with no usage", sized(250000, 0), True),
+    ("under the limit", sized(150000, 499999), False),
+    ("at the limit", sized(500000), False),
+    ("over the limit", sized(150000, 500001), True),
+    ("over, then a step with no usage", sized(550000, 0), True),
     ("no record", "/nonexistent/record.jsonl", False),
 ]
 for name, path, want in SIZES:
