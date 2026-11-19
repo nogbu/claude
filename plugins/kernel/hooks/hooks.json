@@ -27,6 +27,16 @@
         ]
       },
       {
+        "matcher": "mcp__hearthbot__no_reply_needed",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/run.sh\" open-cards.py",
+            "timeout": 10
+          }
+        ]
+      },
+      {
         "matcher": "Write|Edit",
         "hooks": [
           {
