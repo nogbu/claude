@@ -40,9 +40,13 @@ def reviewed_this_turn(transcript_path):
             except ValueError:
                 continue
             content = (entry.get("message") or {}).get("content")
-            if entry.get("type") == "user" and entry.get("isMeta"):
+            # A moved reviewer's report comes back as a harness note: a user entry with isMeta, or a queued
+            # attachment carrying isMeta and origin inside it (the wait loop rerun, 2026-11-19).
+            attached = (entry.get("attachment") or {}) if entry.get("type") == "attachment" else {}
+            note = attached if (attached.get("origin") or {}).get("handback") else entry
+            if note.get("type") in ("user", "queued_command") and note.get("isMeta"):
                 # Harness notes, like a helper's report coming back, aren't Nwani's messages.
-                origin = entry.get("origin") or {}
+                origin = note.get("origin") or {}
                 if origin.get("handback") and (origin.get("senderTaskId") or origin.get("from")) in waiting:
                     done = True
             elif (entry.get("type") == "user" and isinstance(content, str)) or queued_message(entry):

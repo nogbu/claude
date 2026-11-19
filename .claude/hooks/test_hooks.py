@@ -352,6 +352,13 @@ def reviewed(*events):
             lines.append({"type": "attachment", "attachment": {"type": "queued_command",
                           "prompt": '<wake><message from="human">one more thing</message></wake>'}})
             continue
+        if kind == "queued report back":
+            # The shape a moved reviewer's report really had in the wait loop rerun (2026-11-19).
+            lines.append({"type": "attachment", "attachment": {
+                "type": "queued_command", "isMeta": True, "prompt": "Another Claude session sent a message",
+                "origin": {"kind": "peer", "from": "a1", "senderTaskId": "a1", "name": "reviewer",
+                           "handback": True, "handbackReportText": "Verdict: PASS"}}})
+            continue
         if kind in ("report back", "named report back"):
             sender = {"from": "review-1", "senderTaskId": "a1"} if kind.startswith("named") else {"from": "a1"}
             lines.append({"type": "user", "isMeta": True, "origin": dict(handback=True, **sender),
@@ -384,6 +391,9 @@ REVIEWS = [
      reviewed("nwani", "background review", "named report back"), False),
     ("long reply, a report back from an earlier turn", LONG,
      reviewed("nwani", "background review", "nwani", "report back"), True),
+    ("long reply, background review came back as a queued note", LONG,
+     reviewed("nwani", "background review", "queued report back"), False),
+    ("long reply, queued note from a reviewer never launched", LONG, reviewed("nwani", "queued report back"), True),
     ("long reply, review failed", LONG, reviewed("nwani", "failed review"), True),
     ("long reply, a different helper ran", LONG, reviewed("nwani", "other helper"), True),
     ("long reply, reviewed by the plugin's helper", LONG, reviewed("nwani", "plugin review"), False),
