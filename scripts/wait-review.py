@@ -3,7 +3,7 @@
 
 Usage: python3 scripts/wait-review.py OUTPUT_FILE
 Run it in one foreground Bash call with a timeout of 600000. It checks the
-task's output file every 5 seconds, reading only new bytes, and stops at the
+task's output file every 5 seconds, prints only the report, and stops at the
 first assistant entry whose content has a tool_use named SubagentHandback.
 A plain text match isn't enough: the helper's own setup text names the tool
 too, which stopped a hand-written loop early on 2026-11-19.
